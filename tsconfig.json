@@ -22,7 +22,6 @@
       "@/*": ["./src/*"]
     },
     "types": [
-      "jest",
       //"vitest/globals"
     ]
   }

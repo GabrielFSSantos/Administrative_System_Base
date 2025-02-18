@@ -13,7 +13,6 @@ export default [
     languageOptions: {
       globals: {
         ...globals.node,
-        ...globals.jest,
       },
       ecmaVersion: 'latest',
       sourceType: 'module',
