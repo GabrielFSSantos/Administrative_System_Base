@@ -14,15 +14,15 @@
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+    "forceConsistentCasingInFileNames": false,
     "paths": {
       "@/*": ["./src/*"]
     },
     "types": [
-      //"vitest/globals"
-    ]
+      "vitest/globals"
+    ],
   }
 }
