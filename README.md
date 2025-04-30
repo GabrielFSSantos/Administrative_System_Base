@@ -1,18 +1,55 @@
-# Instruções de Projeto – Administrative System Base
-O Administrative System Base é um projeto desenvolvido com NestJS no backend e React no frontend, com o objetivo de servir como uma base sólida para a construção de sistemas administrativos. A proposta é criar uma estrutura robusta e reutilizável, contendo os principais recursos necessários para qualquer sistema administrativo, permitindo que novos projetos possam ser iniciados rapidamente a partir dessa base.
+# 🏗️ Administrative System Base
 
-## Objetivos Principais
-### Autenticação e Autorização
-Implementação de um sistema de cadastro e autenticação de usuários.
-Controle de tipos de usuários (roles e permissões) para determinar quais funcionalidades cada perfil pode acessar.
+**Administrative System Base** é uma fundação reutilizável para o desenvolvimento de sistemas administrativos no modelo **SaaS (Software as a Service)**, desenvolvida com o framework **NestJS**. O objetivo principal é fornecer uma estrutura sólida, extensível e bem arquitetada, que sirva como ponto de partida para a criação de novos sistemas administrativos, reduzindo retrabalho e garantindo padrões de qualidade.
 
-### Arquitetura e Boas Práticas
-Código estruturado seguindo os princípios do SOLID para garantir manutenibilidade e escalabilidade.
-Aplicação do conceito de Domain-Driven Design (DDD) para melhor organização e separação de responsabilidades dentro do sistema.
+## 🎯 Objetivo
 
-### Modularidade e Extensibilidade
-O sistema deve ser modular, permitindo que novos módulos sejam adicionados sem comprometer a estrutura existente.
-Fácil configuração e integração com outras aplicações.
+O projeto tem como propósito acelerar o desenvolvimento de sistemas administrativos ao disponibilizar uma base pronta com funcionalidades essenciais, seguindo boas práticas de engenharia de software. Com isso, os desenvolvedores poderão se concentrar nas regras de negócio específicas de cada aplicação, sem a necessidade de reescrever componentes fundamentais.
 
-### Uso e Aplicação
-Essa base servirá como um ponto de partida para novos sistemas administrativos, evitando a necessidade de reescrever funcionalidades essenciais e garantindo que todos os projetos iniciados tenham um código bem estruturado e alinhado às melhores práticas de desenvolvimento.
+## ⚙️ Funcionalidades Principais
+
+A base inclui os recursos indispensáveis para sistemas administrativos modernos:
+
+- ✅ **CRUD completo** (Create, Read, Update, Delete) para entidades principais;
+- 🔐 **Autenticação de usuários**, com login seguro e gerenciamento de sessões;
+- 🛡️ **Autorização baseada em papéis (roles) e permissões**, com controle de acesso detalhado;
+- 🧱 Código estruturado com os princípios do **SOLID**, garantindo manutenibilidade e escalabilidade;
+- 🧠 Aplicação de **Domain-Driven Design (DDD)** para uma separação clara entre domínio, aplicação, infraestrutura e interfaces.
+
+## 🧩 Arquitetura
+
+O projeto adota uma abordagem de arquitetura limpa e modular, respeitando os seguintes pilares:
+
+- **Separação de responsabilidades** entre as camadas;
+- **Facilidade de extensão** para novos domínios e regras de negócio;
+- **Reuso de código** em diversos projetos sem necessidade de refatorações estruturais;
+- **Adoção de padrões e boas práticas** amplamente reconhecidos na comunidade.
+
+## 🚀 Benefícios
+
+- Mais **agilidade** no desenvolvimento de novos sistemas;
+- **Padronização** na estrutura e nos processos de codificação;
+- Redução de **erros recorrentes** em implementações comuns;
+- Base robusta para sistemas escaláveis e seguros.
+
+## 🛠️ Tecnologias Utilizadas
+
+- [NestJS](https://nestjs.com/) — Framework Node.js baseado em TypeScript
+- [TypeORM / Prisma] — ORM para abstração de banco de dados (dependente da implementação)
+- [JWT / Passport] — Gerenciamento de autenticação
+- [Docker (opcional)] — Contêineres para facilitar a implantação
+
+## 📦 Próximos Passos
+
+- 🔄 Modularização de funcionalidades por domínio
+- 🧪 Integração de testes automatizados
+- 📊 Dashboard administrativo inicial
+- 📁 Documentação com Swagger
+
+## 📄 Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE).
+
+---
+
+Desenvolvido com 💡 e foco em qualidade para servir como alicerce de soluções administrativas reutilizáveis.
