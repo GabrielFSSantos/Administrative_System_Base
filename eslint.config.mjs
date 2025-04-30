@@ -31,7 +31,7 @@ export default [
       'no-useless-constructor': 'off',
 
       // Regras similares às do @rocketseat/eslint-config/node
-      'semi': ['error', 'always'],
+      'semi': ['error', 'never'],
       'quotes': ['error', 'single'],
       'indent': ['error', 2],
       'comma-dangle': ['error', 'always-multiline'],
