@@ -1,28 +1,32 @@
-import { AuthenticateUserUseCase } from './authenticate'
+import { CreateSessionUseCase } from './create-session'
+import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import { makeUser } from 'test/factories/make-user'
 
+let inMemorySessionsRepository:InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
 let fakeEncrypter: FakeEncrypter
-let sut: AuthenticateUserUseCase
+let sut: CreateSessionUseCase
 
-describe('Authenticate User', () => {
+describe('Create Session', () => {
   beforeEach(() => {
+    inMemorySessionsRepository = new InMemorySessionsRepository()
     inMemoryUsersRepository = new InMemoryUsersRepository()
     fakeHasher = new FakeHasher()
     fakeEncrypter = new FakeEncrypter()
 
-    sut = new AuthenticateUserUseCase(
+    sut = new CreateSessionUseCase(
+      inMemorySessionsRepository,
       inMemoryUsersRepository,
       fakeHasher,
       fakeEncrypter,
     )
   })
 
-  it('should be able to authenticate a new user', async () => {
+  it('should be able to create a new session', async () => {
     const user = makeUser({
       email: 'johndoe@exemple.com',
       password: await fakeHasher.generate('123456'),
@@ -41,7 +45,7 @@ describe('Authenticate User', () => {
     })
   })
 
-  it('should not authenticate with malformed email', async () => {
+  it('should not create a new session with malformed email', async () => {
     const user = makeUser({
       email: 'johndoe@exemple.com',
       password: await fakeHasher.generate('123456'),
@@ -73,7 +77,7 @@ describe('Authenticate User', () => {
     expect(result.isLeft()).toBe(true)
   })
 
-  it('should not authenticate with SQL injection string as email', async () => {
+  it('should not create a new session with SQL injection string as email', async () => {
     const user = makeUser({
       email: 'johndoe@exemple.com',
       password: await fakeHasher.generate('123456'),

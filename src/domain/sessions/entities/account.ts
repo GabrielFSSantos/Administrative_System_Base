@@ -1,14 +1,14 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
-export interface UserAuthProps {
+export interface AccountProps {
   email: string
   password: string
   role: string
   isActive: boolean
 }
 
-export class UserAuth extends Entity<UserAuthProps> {
+export class Account extends Entity<AccountProps> {
 
   get email() {
     return this.props.email
@@ -22,9 +22,9 @@ export class UserAuth extends Entity<UserAuthProps> {
     return this.props.role
   }
 
-  static create(props: UserAuthProps, id?: UniqueEntityId) {
-    const userauth = new UserAuth(props, id)
+  static create(props: AccountProps, id?: UniqueEntityId) {
+    const account = new Account(props, id)
 
-    return userauth
+    return account
   }
 }
