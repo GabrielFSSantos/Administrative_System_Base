@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common'
 import { SessionsRepository } from '../repositories/sessions-repository'
 import { AccountsRepository } from '../repositories/accounts-repository'
 import { WrongCredentialsError } from '@/domain/sessions/use-cases/errors/wrong-credentials-error'
-import { HashComparer } from '@/core/cryptography/hash-comparer'
-import { Encrypter } from '@/core/cryptography/encrypter'
+import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
+import { Encrypter } from '@/core/contracts/cryptography/encrypter'
 import { Session } from '../entities/session'
 
 interface CreateSessionUseCaseRequest {

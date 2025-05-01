@@ -3,6 +3,9 @@ import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
 import { makeSession } from 'test/factories/make-session'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { SessionExpiredError } from './errors/session-expired-error'
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 
 let inMemorySessionsRepository:InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository
@@ -38,6 +41,16 @@ describe('Revoke Session', () => {
     expect(result.isRight()).toBe(true)
   })
 
+  it('should return ResourceNotFoundError if session is not found', async () => {
+    const result = await sut.execute({
+      recipientId: 'any-id',
+      accessToken: 'non-existent-token',
+    })
+  
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+  })
+
   it('should return error if session is expired', async () => {
     const user = makeUser()
 
@@ -57,7 +70,7 @@ describe('Revoke Session', () => {
     })
   
     expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(Error)
+    expect(result.value).toBeInstanceOf(SessionExpiredError)
   })
 
   it('should return error if recipientId does not match session owner', async () => {
@@ -78,6 +91,7 @@ describe('Revoke Session', () => {
     })
   
     expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('should return error if session is already revoked', async () => {
@@ -99,6 +113,7 @@ describe('Revoke Session', () => {
     })
   
     expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 
   it('should call revoke on sessionsRepository with correct session', async () => {

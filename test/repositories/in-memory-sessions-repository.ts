@@ -4,6 +4,10 @@ import { Session } from '@/domain/sessions/entities/session'
 export class InMemorySessionsRepository implements SessionsRepository {
   public items: Session[] = []
 
+  async create(session: Session): Promise<void> {
+    this.items.push(session)
+  }
+  
   async findByToken(token: string): Promise<Session | null> {
     const session = this.items.find((session) => session.token === token)
 
@@ -18,7 +22,8 @@ export class InMemorySessionsRepository implements SessionsRepository {
     }
   }
 
-  async create(session: Session): Promise<void> {
-    this.items.push(session)
+  async deleteExpiredSessions(): Promise<void> {
+    // Implementar um serviço agendado no repositório
+    throw new Error('Method not implemented.')
   }
 }

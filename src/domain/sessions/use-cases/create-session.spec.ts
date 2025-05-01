@@ -4,6 +4,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import { makeUser } from 'test/factories/make-user'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 let inMemorySessionsRepository:InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository
@@ -59,6 +60,7 @@ describe('Create Session', () => {
     })
 
     expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 
   it('should fail if password is wrong', async () => {
@@ -75,6 +77,7 @@ describe('Create Session', () => {
     })
 
     expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 
   it('should not create a new session with SQL injection string as email', async () => {
