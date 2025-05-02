@@ -1,11 +1,10 @@
 import { User } from '../entities/user'
 import { Injectable } from '@nestjs/common'
 import { Either, right, left } from '@/core/either'
-import { HashGenerator } from '../../../core/contracts/cryptography/hash-generator'
 import { UsersRepository } from '../repositories/users-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-export interface GetUserUseCaseRequest {
+interface GetUserUseCaseRequest {
   userId: string
 }
 
@@ -20,7 +19,6 @@ type GetUserUseCaseResponse = Either<
 export class GetUserUseCase {
   constructor(
     private usersRepository: UsersRepository,
-    private hashGenerator: HashGenerator,
   ) {}
 
   async execute({ userId }: GetUserUseCaseRequest): Promise<GetUserUseCaseResponse> {

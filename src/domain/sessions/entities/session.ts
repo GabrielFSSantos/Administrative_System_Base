@@ -7,7 +7,7 @@ export interface SessionProps {
   token: string
   createdAt: Date
   expiresAt: Date
-  revokedAt?: Date | null
+  revokedAt: Date | null
 }
 
 export class Session extends Entity<SessionProps> {
@@ -37,7 +37,7 @@ export class Session extends Entity<SessionProps> {
   }
 
   static create(
-    props: Optional<SessionProps, 'createdAt'>,
+    props: Optional<SessionProps, 'createdAt' | 'revokedAt'>,
     id?: UniqueEntityId,
   ) {
 
@@ -45,6 +45,7 @@ export class Session extends Entity<SessionProps> {
       {
         ...props,
         createdAt: props.createdAt ?? new Date(),
+        revokedAt: props.revokedAt ?? null,
       }, 
       id,
     )

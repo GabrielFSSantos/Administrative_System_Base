@@ -68,11 +68,17 @@ describe('Create User', () => {
     if (!user) {
       throw new Error('Expected user to be created, but got an error.')
     }
-    
-    expect(user.name).toBe('Test User')
-    expect(user.email).toBe('test@example.com')
-    expect(user.role).toBe('admin')
-    expect(user.password).not.toBe('secret123')
+
+    expect(inMemoryUsersRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'Test User',
+          email: 'test@example.com',
+          password: 'secret123-hashed',
+          role: 'admin',
+        }),
+      ]),
+    )
   })
   
 })

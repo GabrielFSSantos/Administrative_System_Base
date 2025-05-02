@@ -1,19 +1,16 @@
 import { GetUserUseCase } from './get-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
-import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let sut: GetUserUseCase
-let fakeHasher: FakeHasher
 
 describe('Get User', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
-    fakeHasher = new FakeHasher()
 
-    sut = new GetUserUseCase(inMemoryUsersRepository, fakeHasher)
+    sut = new GetUserUseCase(inMemoryUsersRepository)
   })
 
   it('should be able to get a user', async () => {

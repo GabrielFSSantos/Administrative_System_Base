@@ -5,7 +5,7 @@ import { HashGenerator } from '../../../core/contracts/cryptography/hash-generat
 import { UsersRepository } from '../repositories/users-repository'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
-export interface CreateUserUseCaseRequest {
+interface CreateUserUseCaseRequest {
   name: string
   email: string
   password: string

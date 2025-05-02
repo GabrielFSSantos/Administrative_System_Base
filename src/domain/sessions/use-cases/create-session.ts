@@ -38,6 +38,8 @@ export class CreateSessionUseCase {
       return left(new WrongCredentialsError())
     }
 
+    // Se a conta está ativada
+
     const isPasswordValid = await this.hashComparer.compare(
       password,
       account.password,

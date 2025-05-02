@@ -7,9 +7,9 @@ export interface UserProps {
   email: string
   password: string
   role: string
-  isActive: boolean
+  isActive: Date | null
   createdAt: Date
-  updatedAt?: Date | null
+  updatedAt: Date | null
 }
 
 export class User extends Entity<UserProps> {
@@ -66,14 +66,15 @@ export class User extends Entity<UserProps> {
   }
 
   static create(
-    props: Optional<UserProps, 'createdAt' | 'isActive'>,
+    props: Optional<UserProps, 'isActive' | 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
   ) {
     const user = new User(
       {
         ...props,
-        isActive: props.isActive ?? false,
+        isActive: props.isActive ?? null,
         createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? null,
       }, 
       id,
     )
