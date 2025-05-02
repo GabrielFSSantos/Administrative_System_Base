@@ -44,7 +44,9 @@ export class RevokeSessionUseCase {
       return left(new NotAllowedError())
     }
 
-    await this.sessionsRepository.revoke(session)
+    session.revoke()
+
+    await this.sessionsRepository.save(session)
 
     return right(null)
   }

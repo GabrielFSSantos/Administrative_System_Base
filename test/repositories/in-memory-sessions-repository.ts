@@ -3,10 +3,6 @@ import { Session } from '@/domain/sessions/entities/session'
 
 export class InMemorySessionsRepository implements SessionsRepository {
   public items: Session[] = []
-
-  async create(session: Session): Promise<void> {
-    this.items.push(session)
-  }
   
   async findByToken(token: string): Promise<Session | null> {
     const session = this.items.find((session) => session.token === token)
@@ -16,10 +12,14 @@ export class InMemorySessionsRepository implements SessionsRepository {
     return session
   }
 
-  async revoke(session: Session): Promise<void> {
-    if (session) {
-      session.revoke()
-    }
+  async create(session: Session): Promise<void> {
+    this.items.push(session)
+  }
+
+  async save(session: Session): Promise<void> {
+    const itemIndex = this.items.findIndex((item) => item.id === session.id)
+
+    this.items[itemIndex] = session
   }
 
   async deleteExpiredSessions(): Promise<void> {
