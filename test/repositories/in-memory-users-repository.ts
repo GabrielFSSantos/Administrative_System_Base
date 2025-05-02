@@ -1,8 +1,9 @@
 import { PaginationParams } from '@/core/repositories/pagination-params'
 import { UsersRepository } from '@/domain/users/repositories/users-repository'
 import { User } from '@/domain/users/entities/user'
+import { AccountsRepository } from '@/domain/sessions/repositories/accounts-repository'
 
-export class InMemoryUsersRepository implements UsersRepository {
+export class InMemoryUsersRepository implements UsersRepository, AccountsRepository {
   public items: User[] = []
 
   async findById(id: string): Promise<User | null> {
