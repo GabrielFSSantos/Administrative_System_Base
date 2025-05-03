@@ -1,7 +1,9 @@
-import { EditUserUseCase } from './edit-user'
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+
+import { EditUserUseCase } from './edit-user'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository

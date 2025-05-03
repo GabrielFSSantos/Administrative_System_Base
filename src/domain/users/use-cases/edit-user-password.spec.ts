@@ -1,9 +1,11 @@
-import { EditUserPasswordUseCase } from './edit-user-password'
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { makeUser } from 'test/factories/make-user'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
+
+import { EditUserPasswordUseCase } from './edit-user-password'
 import { SamePasswordError } from './errors/same-password-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
@@ -54,6 +56,7 @@ describe('Edit User Password', () => {
     const hashedPassword = await fakeHasher.generate('123456')
   
     const user = makeUser({ password: hashedPassword })
+
     await inMemoryUsersRepository.create(user)
   
     const result = await sut.execute({
@@ -69,6 +72,7 @@ describe('Edit User Password', () => {
     const hashedPassword = await fakeHasher.generate('123456')
   
     const user = makeUser({ password: hashedPassword })
+
     await inMemoryUsersRepository.create(user)
   
     const result = await sut.execute({
@@ -86,6 +90,7 @@ describe('Edit User Password', () => {
     const hashedPassword = await fakeHasher.generate(originalPassword)
   
     const user = makeUser({ password: hashedPassword })
+
     await inMemoryUsersRepository.create(user)
   
     await sut.execute({
@@ -95,6 +100,7 @@ describe('Edit User Password', () => {
     })
   
     const updatedUser = inMemoryUsersRepository.items.find((u) => u.id.equals(user.id))
+
     expect(updatedUser?.password).toBe(await fakeHasher.generate(newPassword))
   })
 
@@ -103,6 +109,7 @@ describe('Edit User Password', () => {
   
     const hashedPassword = await fakeHasher.generate('123456')
     const user = makeUser({ password: hashedPassword })
+
     await inMemoryUsersRepository.create(user)
   
     await sut.execute({

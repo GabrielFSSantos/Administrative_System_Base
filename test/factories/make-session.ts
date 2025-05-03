@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Session, SessionProps} from '@/domain/sessions/entities/session'
 

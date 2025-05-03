@@ -1,11 +1,13 @@
-import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
-import { SessionsRepository } from '../repositories/sessions-repository'
-import { AccountsRepository } from '../repositories/accounts-repository'
-import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
-import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
+
 import { Encrypter } from '@/core/contracts/cryptography/encrypter'
+import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
+import { Either, left, right } from '@/core/either'
+import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
+
 import { Session } from '../entities/session'
+import { AccountsRepository } from '../repositories/accounts-repository'
+import { SessionsRepository } from '../repositories/sessions-repository'
 
 interface CreateSessionUseCaseRequest {
   email: string
