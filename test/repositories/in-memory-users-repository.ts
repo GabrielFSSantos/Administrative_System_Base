@@ -2,6 +2,7 @@ import { UsersRepository } from '@/domain/users/repositories/users-repository'
 import { User } from '@/domain/users/entities/user'
 import { AccountsRepository } from '@/domain/sessions/repositories/accounts-repository'
 import { UserSearchParams } from '@/domain/users/dtos/user-search-params'
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 export class InMemoryUsersRepository implements UsersRepository, AccountsRepository {
   public items: User[] = []
@@ -59,8 +60,8 @@ export class InMemoryUsersRepository implements UsersRepository, AccountsReposit
     this.items[itemIndex] = user
   }
 
-  async delete(user: User): Promise<void> {
-    const itemIndex = this.items.findIndex((item) => item.id === user.id)
+  async delete(id: UniqueEntityId): Promise<void> {
+    const itemIndex = this.items.findIndex((item) => item.id.equals(id))
 
     this.items.splice(itemIndex, 1)
   }
