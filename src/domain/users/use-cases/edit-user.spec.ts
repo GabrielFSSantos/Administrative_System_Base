@@ -1,6 +1,8 @@
 import { EditUserUseCase } from './edit-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let sut: EditUserUseCase
@@ -128,5 +130,27 @@ describe('Edit User', () => {
     })
   
     expect(spy).toHaveBeenCalled()
+  })
+
+  it('should throw UserNotFoundError if user does not exist', async () => {
+    const result = await sut.execute({userId: 'non-existing-id'})
+  
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should not allow to edit a user with an existing email', async () => {
+    const user1 = makeUser({ email: 'email1@teste.com' })
+    const user2 = makeUser({ email: 'email2@teste.com' })
+
+    await inMemoryUsersRepository.create(user1)
+    await inMemoryUsersRepository.create(user2)
+    
+    const result = await sut.execute({
+      userId: user1.id.toString(),
+      email: user2.email,
+    })
+    
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 })
