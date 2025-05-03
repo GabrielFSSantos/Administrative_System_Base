@@ -5,7 +5,7 @@ export interface AccountProps {
   email: string
   password: string
   role: string
-  isActive: boolean
+  isActive: Date | null // Somente Date
 }
 
 export class Account extends Entity<AccountProps> {

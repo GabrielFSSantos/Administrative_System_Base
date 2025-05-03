@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User, UserProps} from '@/domain/users/entities/user'
 
@@ -11,7 +12,7 @@ export function makeUser(
       name: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      role: faker.lorem.sentence(6),
+      role: faker.lorem.sentence(1),
       ...override,
     },
     id,

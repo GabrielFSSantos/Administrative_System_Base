@@ -1,10 +1,12 @@
-import { CreateSessionUseCase } from './create-session'
+import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
+import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { makeUser } from 'test/factories/make-user'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { FakeHasher } from 'test/cryptography/fake-hasher'
-import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
-import { makeUser } from 'test/factories/make-user'
-import { WrongCredentialsError } from './errors/wrong-credentials-error'
+
+import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
+
+import { CreateSessionUseCase } from './create-session'
 
 let inMemorySessionsRepository:InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository

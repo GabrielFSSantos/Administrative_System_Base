@@ -1,9 +1,11 @@
-import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
-import { SessionsRepository } from '../repositories/sessions-repository'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { SessionExpiredError } from './errors/session-expired-error'
+
+import { Either, left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+
+import { SessionsRepository } from '../repositories/sessions-repository'
+import { SessionExpiredError } from './errors/session-expired-error'
 
 interface RevokeSessionUseCaseRequest {
   recipientId: string
