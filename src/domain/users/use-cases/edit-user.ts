@@ -59,7 +59,7 @@ export class EditUserUseCase {
     }
 
     if (isActive !== undefined) {
-      user.toggleActivation(isActive)
+      user.setActivationStatus(isActive)
     }
 
     await this.usersRepository.save(user)

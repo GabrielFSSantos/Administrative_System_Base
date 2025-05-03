@@ -53,7 +53,11 @@ export class User extends Entity<UserProps> {
     return this.props.isActive
   }
 
-  toggleActivation(isActive: boolean) {
+  isCurrentlyActive() {
+    return this.props.isActive !== null && this.props.isActive <= new Date()
+  }
+
+  setActivationStatus(isActive: boolean) {
     this.props.isActive = isActive ? new Date() : null
     this.touch()
   }
