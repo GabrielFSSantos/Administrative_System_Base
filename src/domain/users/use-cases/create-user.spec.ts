@@ -2,6 +2,7 @@ import { CreateUserUseCase } from './create-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let sut: CreateUserUseCase
@@ -50,7 +51,7 @@ describe('Create User', () => {
     const result = await sut.execute(userData)
   
     expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(Error)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
   
   it('should store name, email, role and hashed password', async () => {
@@ -61,17 +62,18 @@ describe('Create User', () => {
       role: 'admin',
     })
   
-    const result = await sut.execute(userData)
-    const user = 'user' in result.value ? result.value.user : null
+    await sut.execute(userData)
 
-    if (!user) {
-      throw new Error('Expected user to be created, but got an error.')
-    }
-    
-    expect(user.name).toBe('Test User')
-    expect(user.email).toBe('test@example.com')
-    expect(user.role).toBe('admin')
-    expect(user.password).not.toBe('secret123')
+    expect(inMemoryUsersRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'Test User',
+          email: 'test@example.com',
+          password: 'secret123-hashed',
+          role: 'admin',
+        }),
+      ]),
+    )
   })
   
 })

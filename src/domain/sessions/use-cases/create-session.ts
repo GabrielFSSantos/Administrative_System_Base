@@ -2,7 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
 import { SessionsRepository } from '../repositories/sessions-repository'
 import { AccountsRepository } from '../repositories/accounts-repository'
-import { WrongCredentialsError } from '@/domain/sessions/use-cases/errors/wrong-credentials-error'
+import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
 import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
 import { Encrypter } from '@/core/contracts/cryptography/encrypter'
 import { Session } from '../entities/session'
@@ -37,6 +37,8 @@ export class CreateSessionUseCase {
     if (!account) {
       return left(new WrongCredentialsError())
     }
+
+    // Se a conta está ativada
 
     const isPasswordValid = await this.hashComparer.compare(
       password,

@@ -7,9 +7,9 @@ export interface UserProps {
   email: string
   password: string
   role: string
-  isActive: boolean
+  isActive: Date | null
   createdAt: Date
-  updatedAt?: Date | null
+  updatedAt: Date | null
 }
 
 export class User extends Entity<UserProps> {
@@ -53,6 +53,15 @@ export class User extends Entity<UserProps> {
     return this.props.isActive
   }
 
+  isCurrentlyActive() {
+    return this.props.isActive !== null && this.props.isActive <= new Date()
+  }
+
+  setActivationStatus(isActive: boolean) {
+    this.props.isActive = isActive ? new Date() : null
+    this.touch()
+  }
+
   get createdAt() {
     return this.props.createdAt
   }
@@ -66,14 +75,15 @@ export class User extends Entity<UserProps> {
   }
 
   static create(
-    props: Optional<UserProps, 'createdAt' | 'isActive'>,
+    props: Optional<UserProps, 'isActive' | 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
   ) {
     const user = new User(
       {
         ...props,
-        isActive: props.isActive ?? false,
-        createdAt: props.createdAt ?? new Date(),
+        isActive: null,
+        createdAt: new Date(),
+        updatedAt: null,
       }, 
       id,
     )
