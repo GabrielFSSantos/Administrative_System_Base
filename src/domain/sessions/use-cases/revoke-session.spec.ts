@@ -1,11 +1,13 @@
-import { RevokeSessionUseCase } from './revoke-session'
+import { makeSession } from 'test/factories/make-session'
+import { makeUser } from 'test/factories/make-user'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { makeUser } from 'test/factories/make-user'
-import { makeSession } from 'test/factories/make-session'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { SessionExpiredError } from './errors/session-expired-error'
+
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+
+import { SessionExpiredError } from './errors/session-expired-error'
+import { RevokeSessionUseCase } from './revoke-session'
 
 let inMemorySessionsRepository:InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository

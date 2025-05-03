@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { Either, right, left } from '@/core/either'
-import { UsersRepository } from '../repositories/users-repository'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+
 import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
-import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
 import { HashGenerator } from '@/core/contracts/cryptography/hash-generator'
+import { Either, left,right } from '@/core/either'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
+
+import { UsersRepository } from '../repositories/users-repository'
 import { SamePasswordError } from './errors/same-password-error'
 
 interface EditUserPasswordUseCaseRequest {

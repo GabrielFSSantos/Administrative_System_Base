@@ -1,7 +1,8 @@
-import { CreateUserUseCase } from './create-user'
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { makeUser } from 'test/factories/make-user'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+
+import { CreateUserUseCase } from './create-user'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
@@ -38,9 +39,11 @@ describe('Create User', () => {
 
   it('should not store plain text password', async () => {
     const userData = makeUser({ password: 'plaintext' })
+
     await sut.execute(userData)
   
     const storedPassword = inMemoryUsersRepository.items[0].password
+
     expect(storedPassword).not.toBe('plaintext')
   })
 

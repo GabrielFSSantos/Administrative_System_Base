@@ -1,5 +1,6 @@
-import { User } from '@/domain/users/entities/user'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { User } from '@/domain/users/entities/user'
+
 import { UserSearchParams } from '../dtos/user-search-params'
 
 export abstract class UsersRepository {
