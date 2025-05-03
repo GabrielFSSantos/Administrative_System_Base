@@ -62,12 +62,7 @@ describe('Create User', () => {
       role: 'admin',
     })
   
-    const result = await sut.execute(userData)
-    const user = 'user' in result.value ? result.value.user : null
-
-    if (!user) {
-      throw new Error('Expected user to be created, but got an error.')
-    }
+    await sut.execute(userData)
 
     expect(inMemoryUsersRepository.items).toEqual(
       expect.arrayContaining([

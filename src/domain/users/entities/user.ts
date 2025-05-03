@@ -53,6 +53,11 @@ export class User extends Entity<UserProps> {
     return this.props.isActive
   }
 
+  toggleActivation(isActive: boolean) {
+    this.props.isActive = isActive ? new Date() : null
+    this.touch()
+  }
+
   get createdAt() {
     return this.props.createdAt
   }
@@ -72,9 +77,9 @@ export class User extends Entity<UserProps> {
     const user = new User(
       {
         ...props,
-        isActive: props.isActive ?? null,
-        createdAt: props.createdAt ?? new Date(),
-        updatedAt: props.updatedAt ?? null,
+        isActive: null,
+        createdAt: new Date(),
+        updatedAt: null,
       }, 
       id,
     )

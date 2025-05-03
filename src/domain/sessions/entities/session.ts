@@ -44,8 +44,8 @@ export class Session extends Entity<SessionProps> {
     const session = new Session(
       {
         ...props,
-        createdAt: props.createdAt ?? new Date(),
-        revokedAt: props.revokedAt ?? null,
+        createdAt: props.createdAt ?? new Date(), // Somente Date
+        revokedAt: props.revokedAt ?? null, // Somente null
       }, 
       id,
     )
