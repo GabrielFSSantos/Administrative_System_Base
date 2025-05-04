@@ -4,7 +4,7 @@ import { Optional } from '@/core/types/optional'
 
 export interface SessionProps {
   recipientId: UniqueEntityId
-  token: string
+  accessToken: string
   createdAt: Date
   expiresAt: Date
   revokedAt: Date | null
@@ -16,8 +16,8 @@ export class Session extends Entity<SessionProps> {
     return this.props.recipientId
   }
 
-  get token() {
-    return this.props.token
+  get accessToken() {
+    return this.props.accessToken
   }
 
   get createdAt() {

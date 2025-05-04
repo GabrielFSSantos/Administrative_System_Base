@@ -1,105 +1,90 @@
-import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
-import { FakeHasher } from 'test/cryptography/fake-hasher'
-import { makeUser } from 'test/factories/make-user'
+import { FakeEncrypter } from 'test/fakes/cryptography/fake-encrypter'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
-import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
+import { Session } from '../entities/session'
+import { ICreateSessionUseCase } from './contracts/create-session.interface'
 import { CreateSessionUseCase } from './create-session'
+import { SessionExpiredError } from './errors/session-expired-error'
 
-let inMemorySessionsRepository:InMemorySessionsRepository
-let inMemoryUsersRepository: InMemoryUsersRepository
-let fakeHasher: FakeHasher
+let inMemorySessionsRepository: InMemorySessionsRepository
 let fakeEncrypter: FakeEncrypter
-let sut: CreateSessionUseCase
+let sut: ICreateSessionUseCase
 
 describe('Create Session', () => {
   beforeEach(() => {
     inMemorySessionsRepository = new InMemorySessionsRepository()
-    inMemoryUsersRepository = new InMemoryUsersRepository()
-    fakeHasher = new FakeHasher()
     fakeEncrypter = new FakeEncrypter()
 
     sut = new CreateSessionUseCase(
       inMemorySessionsRepository,
-      inMemoryUsersRepository,
-      fakeHasher,
-      fakeEncrypter,
     )
   })
 
   it('should be able to create a new session', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
+    const recipientId = new UniqueEntityId().toString()
+
+    const {accessToken, expiresAt} = await fakeEncrypter.encrypt({
+      sub: recipientId.toString(),
     })
 
-    await inMemoryUsersRepository.create(user)
-
     const result = await sut.execute({
-      email: 'johndoe@exemple.com',
-      password: '123456',
+      recipientId,
+      accessToken,
+      expiresAt,
     })
 
     expect(result.isRight()).toBe(true)
-    expect(result.value).toEqual({
-      accessToken: expect.any(String),
-    })
   })
 
-  it('should not create a new session with malformed email', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
-    })
-
-    await inMemoryUsersRepository.create(user)
-
+  it('should not create session if expiresAt is in the past', async () => {
+    const recipientId = new UniqueEntityId().toString()
+  
     const result = await sut.execute({
-      email: 'invalid-email',
-      password: '123456',
+      recipientId,
+      accessToken: 'fake-token',
+      expiresAt: new Date(Date.now() - 1000),
     })
-
+  
     expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(WrongCredentialsError)
+    expect(result.value).toBeInstanceOf(SessionExpiredError)
   })
 
-  it('should fail if password is wrong', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
+  it('should store the session in the repository with correct values', async () => {
+    const recipientId = new UniqueEntityId()
+    const { accessToken, expiresAt } = await fakeEncrypter.encrypt({
+      sub: recipientId.toString(),
     })
-
-    await inMemoryUsersRepository.create(user)
-
-    const result = await sut.execute({
-      email: 'johndoe@exemple.com',
-      password: 'wrong-password',
+  
+    await sut.execute({
+      recipientId: recipientId.toString(),
+      accessToken,
+      expiresAt,
     })
-
-    expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(WrongCredentialsError)
+  
+    expect(inMemorySessionsRepository.items).toHaveLength(1)
+    const session = inMemorySessionsRepository.items[0]
+  
+    expect(session.recipientId.toString()).toBe(recipientId.toString())
+    expect(session.accessToken).toBe(accessToken)
+    expect(session.expiresAt.getTime()).toBe(expiresAt.getTime())
   })
 
-  it('should not create a new session with SQL injection string as email', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
+  it('should call isExpired before saving', async () => {
+    const recipientId = new UniqueEntityId()
+    const { accessToken, expiresAt } = await fakeEncrypter.encrypt({
+      sub: recipientId.toString(),
     })
-
-    await inMemoryUsersRepository.create(user)
-
-    const result = await sut.execute({
-      // eslint-disable-next-line quotes
-      email: "'; DROP TABLE users; --",
-      password: 'irrelevant',
+  
+    const spy = vi.spyOn(Session.prototype, 'isExpired')
+  
+    await sut.execute({
+      recipientId: recipientId.toString(),
+      accessToken,
+      expiresAt,
     })
-
-    expect(result.isLeft()).toBe(true)
+  
+    expect(spy).toHaveBeenCalled()
   })
 })

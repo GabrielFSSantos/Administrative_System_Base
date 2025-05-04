@@ -4,10 +4,10 @@ import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
 import { HashGenerator } from '@/core/contracts/cryptography/hash-generator'
 import { Either, left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
 
 import { UsersRepository } from '../repositories/users-repository'
 import { SamePasswordError } from './errors/same-password-error'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 interface EditUserPasswordUseCaseRequest {
   userId: string

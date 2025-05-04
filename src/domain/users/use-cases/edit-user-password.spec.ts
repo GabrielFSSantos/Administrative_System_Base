@@ -1,12 +1,12 @@
-import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
 
 import { EditUserPasswordUseCase } from './edit-user-password'
 import { SamePasswordError } from './errors/same-password-error'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
