@@ -13,15 +13,19 @@ export abstract class Entity<Props> {
     this._id = id ?? new UniqueEntityId()
   }
 
-  public equals(entity: Entity<unknown>) {
+  public equals(entity: Entity<unknown>): boolean {
+    if (entity === null || entity === undefined) {
+      return false
+    }
+  
     if (entity === this) {
       return true
     }
-
+  
     if (entity.id === this._id) {
       return true
     }
-
+  
     return false
   }
 }

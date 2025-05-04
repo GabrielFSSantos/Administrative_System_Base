@@ -1,11 +1,11 @@
-import { SessionsRepository } from '@/domain/sessions/repositories/sessions-repository'
 import { Session } from '@/domain/sessions/entities/session'
+import { SessionsRepository } from '@/domain/sessions/repositories/sessions-repository'
 
 export class InMemorySessionsRepository implements SessionsRepository {
   public items: Session[] = []
   
-  async findByToken(token: string): Promise<Session | null> {
-    const session = this.items.find((session) => session.token === token)
+  async findByToken(accessToken: string): Promise<Session | null> {
+    const session = this.items.find((session) => session.accessToken === accessToken)
 
     if (!session) return null
 

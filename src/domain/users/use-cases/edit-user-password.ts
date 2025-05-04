@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common'
-import { Either, right, left } from '@/core/either'
-import { UsersRepository } from '../repositories/users-repository'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+
 import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
-import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
 import { HashGenerator } from '@/core/contracts/cryptography/hash-generator'
+import { Either, left,right } from '@/core/either'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+
+import { UsersRepository } from '../repositories/users-repository'
 import { SamePasswordError } from './errors/same-password-error'
+import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 interface EditUserPasswordUseCaseRequest {
   userId: string
@@ -40,14 +42,14 @@ export class EditUserPasswordUseCase {
 
     const isPasswordValid = await this.hashComparer.compare(
       password,
-      user.password,
+      user.getHashedPassword(),
     )
 
     if (!isPasswordValid) {
       return left(new WrongCredentialsError())
     }
 
-    const isSamePassword = password === newPassword ? true : false
+    const isSamePassword = password === newPassword
 
     if (isSamePassword) {
       return left(new SamePasswordError())
@@ -55,7 +57,7 @@ export class EditUserPasswordUseCase {
 
     const hashPassword = await this.hashGenerator.generate(newPassword)
 
-    user.password = hashPassword
+    user.changePassword(hashPassword)
 
     await this.usersRepository.save(user)
 

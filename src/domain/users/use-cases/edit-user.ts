@@ -1,8 +1,10 @@
-import { User } from '../entities/user'
 import { Injectable } from '@nestjs/common'
-import { Either, right, left } from '@/core/either'
-import { UsersRepository } from '../repositories/users-repository'
+
+import { Either, left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+
+import { User } from '../entities/user'
+import { UsersRepository } from '../repositories/users-repository'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 interface EditUserUseCaseRequest {
@@ -58,8 +60,10 @@ export class EditUserUseCase {
       user.role = role
     }
 
-    if (isActive !== undefined) {
-      user.setActivationStatus(isActive)
+    if (isActive === true) {
+      user.activate()
+    } else if (isActive === false) {
+      user.deactivate()
     }
 
     await this.usersRepository.save(user)

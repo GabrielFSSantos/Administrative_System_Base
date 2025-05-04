@@ -1,9 +1,11 @@
-import { SetUserActivationStatusUseCase } from './set-user-activation-status'
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { makeUser } from 'test/factories/make-user'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+
 import { AlreadyActivatedError } from './errors/already-activated-error'
 import { AlreadyDeactivatedError } from './errors/already-deactivated-error'
+import { SetUserActivationStatusUseCase } from './set-user-activation-status'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let sut: SetUserActivationStatusUseCase
@@ -44,7 +46,7 @@ describe('Set User Activation Status', () => {
   
     await inMemoryUsersRepository.create(user)
 
-    user.setActivationStatus(true)
+    user.activate()
 
     await inMemoryUsersRepository.save(user)
   
@@ -80,6 +82,7 @@ describe('Set User Activation Status', () => {
     })
   
     const updatedUser = inMemoryUsersRepository.items.find((u) => u.id.equals(user.id))
+
     expect(updatedUser?.isActive).toBeInstanceOf(Date)
   })
 
@@ -94,11 +97,13 @@ describe('Set User Activation Status', () => {
     })
   
     const updatedUser = inMemoryUsersRepository.items.find((u) => u.id.equals(user.id))
+
     expect(updatedUser?.isActive).toBeNull()
   })
 
   it('should call repository.save with updated user', async () => {
     const user = makeUser({ isActive: null })
+
     await inMemoryUsersRepository.create(user)
   
     const spy = vi.spyOn(inMemoryUsersRepository, 'save')

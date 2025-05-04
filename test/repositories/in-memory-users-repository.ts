@@ -1,10 +1,9 @@
-import { UsersRepository } from '@/domain/users/repositories/users-repository'
-import { User } from '@/domain/users/entities/user'
-import { AccountsRepository } from '@/domain/sessions/repositories/accounts-repository'
-import { UserSearchParams } from '@/domain/users/dtos/user-search-params'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { UserSearchParams } from '@/domain/users/dtos/user-search-params'
+import { User } from '@/domain/users/entities/user'
+import { UsersRepository } from '@/domain/users/repositories/users-repository'
 
-export class InMemoryUsersRepository implements UsersRepository, AccountsRepository {
+export class InMemoryUsersRepository implements UsersRepository {
   public items: User[] = []
 
   async findById(id: string): Promise<User | null> {
@@ -33,6 +32,7 @@ export class InMemoryUsersRepository implements UsersRepository, AccountsReposit
   
     if (search) {
       const term = search.toLowerCase()
+
       results = results.filter((user) =>
         user.name.toLowerCase().includes(term) ||
         user.email.toLowerCase().includes(term),

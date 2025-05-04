@@ -1,8 +1,10 @@
-import { User } from '../entities/user'
 import { Injectable } from '@nestjs/common'
+
 import { Either, right } from '@/core/either'
-import { UsersRepository } from '../repositories/users-repository'
+
 import { UserSearchParams } from '../dtos/user-search-params'
+import { User } from '../entities/user'
+import { UsersRepository } from '../repositories/users-repository'
 
 type FetchManyUsersUseCaseRequest = UserSearchParams
 

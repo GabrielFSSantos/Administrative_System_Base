@@ -31,15 +31,6 @@ export class User extends Entity<UserProps> {
     this.touch()
   }
 
-  get password() {
-    return this.props.password
-  }
-  
-  set password(password: string) {
-    this.props.password = password
-    this.touch()
-  }
-
   get role() {
     return this.props.role
   }
@@ -51,15 +42,6 @@ export class User extends Entity<UserProps> {
 
   get isActive() {
     return this.props.isActive
-  }
-
-  isCurrentlyActive() {
-    return this.props.isActive !== null && this.props.isActive <= new Date()
-  }
-
-  setActivationStatus(isActive: boolean) {
-    this.props.isActive = isActive ? new Date() : null
-    this.touch()
   }
 
   get createdAt() {
@@ -74,6 +56,33 @@ export class User extends Entity<UserProps> {
     this.props.updatedAt = new Date()
   }
 
+  public isCurrentlyActive() {
+    return this.props.isActive !== null && this.props.isActive <= new Date()
+  }
+
+  public activate(): void {
+    if (!this.isCurrentlyActive()) {
+      this.props.isActive = new Date()
+      this.touch()
+    }
+  }
+
+  public deactivate(): void {
+    if (this.isCurrentlyActive()) {
+      this.props.isActive = null
+      this.touch()
+    }
+  }
+
+  public changePassword(newHashedPassword: string): void {
+    this.props.password = newHashedPassword
+    this.touch()
+  }
+
+  public getHashedPassword(): string {
+    return this.props.password
+  }
+
   static create(
     props: Optional<UserProps, 'isActive' | 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
@@ -81,9 +90,9 @@ export class User extends Entity<UserProps> {
     const user = new User(
       {
         ...props,
-        isActive: null,
-        createdAt: new Date(),
-        updatedAt: null,
+        isActive: props.isActive ?? null,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? null,
       }, 
       id,
     )
