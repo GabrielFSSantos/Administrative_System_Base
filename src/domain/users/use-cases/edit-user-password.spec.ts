@@ -99,9 +99,12 @@ describe('Edit User Password', () => {
       newPassword,
     })
   
-    const updatedUser = inMemoryUsersRepository.items.find((u) => u.id.equals(user.id))
+    const isPasswordCorrect = await fakeHasher.compare(
+      newPassword,
+      user.getHashedPassword(),
+    )
 
-    expect(updatedUser?.password).toBe(await fakeHasher.generate(newPassword))
+    expect(isPasswordCorrect).toBe(true)
   })
 
   it('should call repository.save with updated user', async () => {

@@ -42,14 +42,14 @@ export class EditUserPasswordUseCase {
 
     const isPasswordValid = await this.hashComparer.compare(
       password,
-      user.password,
+      user.getHashedPassword(),
     )
 
     if (!isPasswordValid) {
       return left(new WrongCredentialsError())
     }
 
-    const isSamePassword = password === newPassword ? true : false
+    const isSamePassword = password === newPassword
 
     if (isSamePassword) {
       return left(new SamePasswordError())
@@ -57,7 +57,7 @@ export class EditUserPasswordUseCase {
 
     const hashPassword = await this.hashGenerator.generate(newPassword)
 
-    user.password = hashPassword
+    user.changePassword(hashPassword)
 
     await this.usersRepository.save(user)
 

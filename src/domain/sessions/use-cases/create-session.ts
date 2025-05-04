@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { Encrypter } from '@/core/contracts/cryptography/encrypter'
 import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
 import { Either, left, right } from '@/core/either'
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { WrongCredentialsError } from '@/core/errors/wrong-credentials-error'
 
 import { Session } from '../entities/session'
@@ -15,7 +16,7 @@ interface CreateSessionUseCaseRequest {
 }
 
 type CreateSessionUseCaseResponse = Either<
-  WrongCredentialsError,
+  WrongCredentialsError | NotAllowedError,
   {
     accessToken: string
   }
@@ -40,11 +41,13 @@ export class CreateSessionUseCase {
       return left(new WrongCredentialsError())
     }
 
-    // Se a conta está ativada
+    if (!account.isCurrentlyActive()) {
+      return left(new NotAllowedError())
+    }
 
     const isPasswordValid = await this.hashComparer.compare(
       password,
-      account.password,
+      account.getHashedPassword(),
     )
 
     if (!isPasswordValid) {

@@ -5,7 +5,7 @@ export interface AccountProps {
   email: string
   password: string
   role: string
-  isActive: Date | null // Somente Date
+  isActive: Date | null
 }
 
 export class Account extends Entity<AccountProps> {
@@ -14,12 +14,20 @@ export class Account extends Entity<AccountProps> {
     return this.props.email
   }
 
-  get password() {
-    return this.props.password
-  }
-
   get role() {
     return this.props.role
+  }
+
+  get isActive() {
+    return this.props.isActive
+  }
+
+  public isCurrentlyActive() {
+    return this.props.isActive !== null && this.props.isActive <= new Date()
+  }
+
+  public getHashedPassword(): string {
+    return this.props.password
   }
 
   static create(props: AccountProps, id?: UniqueEntityId) {

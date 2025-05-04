@@ -42,7 +42,11 @@ export class SetUserActivationStatusUseCase {
       return left(new AlreadyDeactivatedError())
     }
 
-    user.setActivationStatus(isActive)
+    if (isActive === true) {
+      user.activate()
+    } else if (isActive === false) {
+      user.deactivate()
+    }
 
     await this.usersRepository.save(user)
 

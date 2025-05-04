@@ -32,8 +32,26 @@ export class Session extends Entity<SessionProps> {
     return this.props.revokedAt
   }
 
+  public belongsTo(recipientId: string) {
+    return this.props.recipientId.toString() !== recipientId
+  }
+
+  public isRevoked() {
+    return this.props.revokedAt !== null
+  }
+
+  public isExpired(): boolean {
+    return this.props.expiresAt < new Date()
+  }
+
+  public isValid(): boolean {
+    return !this.isRevoked() && !this.isExpired()
+  }
+
   public revoke() {
-    this.props.revokedAt = new Date()
+    if (!this.isRevoked()) {
+      this.props.revokedAt = new Date()
+    }
   }
 
   static create(
@@ -44,8 +62,8 @@ export class Session extends Entity<SessionProps> {
     const session = new Session(
       {
         ...props,
-        createdAt: props.createdAt ?? new Date(), // Somente Date
-        revokedAt: props.revokedAt ?? null, // Somente null
+        createdAt: props.createdAt ?? new Date(),
+        revokedAt: props.revokedAt ?? null,
       }, 
       id,
     )

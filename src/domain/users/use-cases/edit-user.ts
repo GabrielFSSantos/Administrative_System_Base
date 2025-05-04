@@ -60,8 +60,10 @@ export class EditUserUseCase {
       user.role = role
     }
 
-    if (isActive !== undefined) {
-      user.setActivationStatus(isActive)
+    if (isActive === true) {
+      user.activate()
+    } else if (isActive === false) {
+      user.deactivate()
     }
 
     await this.usersRepository.save(user)

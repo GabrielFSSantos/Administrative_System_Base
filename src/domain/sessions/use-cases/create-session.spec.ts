@@ -33,6 +33,7 @@ describe('Create Session', () => {
     const user = makeUser({
       email: 'johndoe@exemple.com',
       password: await fakeHasher.generate('123456'),
+      isActive: new Date(),
     })
 
     await inMemoryUsersRepository.create(user)
@@ -52,6 +53,7 @@ describe('Create Session', () => {
     const user = makeUser({
       email: 'johndoe@exemple.com',
       password: await fakeHasher.generate('123456'),
+      isActive: new Date(),
     })
 
     await inMemoryUsersRepository.create(user)
@@ -69,6 +71,7 @@ describe('Create Session', () => {
     const user = makeUser({
       email: 'johndoe@exemple.com',
       password: await fakeHasher.generate('123456'),
+      isActive: new Date(),
     })
 
     await inMemoryUsersRepository.create(user)
@@ -86,6 +89,7 @@ describe('Create Session', () => {
     const user = makeUser({
       email: 'johndoe@exemple.com',
       password: await fakeHasher.generate('123456'),
+      isActive: new Date(),
     })
 
     await inMemoryUsersRepository.create(user)
