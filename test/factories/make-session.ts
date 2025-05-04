@@ -10,7 +10,7 @@ export function makeSession(
   const session = Session.create(
     {
       recipientId: new UniqueEntityId(),
-      token: faker.string.uuid(),
+      accessToken: faker.string.uuid(),
       expiresAt: faker.date.future(),
       ...override,
     },

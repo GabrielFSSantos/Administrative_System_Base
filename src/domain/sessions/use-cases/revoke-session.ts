@@ -34,15 +34,15 @@ export class RevokeSessionUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    if (session.expiresAt < new Date()) {
+    if (session.isExpired()) {
       return left(new SessionExpiredError())
     }
 
-    if(session.recipientId.toString() !== recipientId) {
+    if(session.belongsTo(recipientId)) {
       return left(new NotAllowedError())
     }
 
-    if(session.revokedAt) {
+    if(session.isRevoked()) {
       return left(new NotAllowedError())
     }
 
