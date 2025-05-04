@@ -1,7 +1,7 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { UserSearchParams } from '@/domain/users/dtos/user-search-params'
 import { User } from '@/domain/users/entities/user'
 import { UsersRepository } from '@/domain/users/repositories/users-repository'
+import { IFetchManyUsersUseCaseRequest } from '@/domain/users/use-cases/contracts/fetch-many-users.interface'
 
 export class InMemoryUsersRepository implements UsersRepository {
   public items: User[] = []
@@ -26,7 +26,7 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user
   }
 
-  async findMany({ page, pageSize, search, role, isActive }: UserSearchParams): Promise<User[]> {
+  async findMany({ page, pageSize, search, role, isActive }: IFetchManyUsersUseCaseRequest): Promise<User[]> {
   
     let results = this.items
   
