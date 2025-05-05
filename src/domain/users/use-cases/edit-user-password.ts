@@ -2,23 +2,16 @@ import { Injectable } from '@nestjs/common'
 
 import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
 import { HashGenerator } from '@/core/contracts/cryptography/hash-generator'
-import { Either, left,right } from '@/core/either'
+import { left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 import { UsersRepository } from '../repositories/users-repository'
+import { 
+  IEditUserPasswordUseCaseRequest, 
+  IEditUserPasswordUseCaseResponse, 
+} from './contracts/edit-user-password.interface'
 import { SamePasswordError } from './errors/same-password-error'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
-
-interface EditUserPasswordUseCaseRequest {
-  userId: string
-  password: string
-  newPassword: string
-}
-
-type EditUserPasswordUseCaseResponse = Either<
-  ResourceNotFoundError | WrongCredentialsError | SamePasswordError,
-  null
->
 
 @Injectable()
 export class EditUserPasswordUseCase {
@@ -32,7 +25,7 @@ export class EditUserPasswordUseCase {
     userId,
     password,
     newPassword,
-  }: EditUserPasswordUseCaseRequest): Promise<EditUserPasswordUseCaseResponse> {
+  }: IEditUserPasswordUseCaseRequest): Promise<IEditUserPasswordUseCaseResponse> {
 
     const user =  await this.usersRepository.findById(userId)
 

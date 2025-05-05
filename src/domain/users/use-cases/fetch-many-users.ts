@@ -1,19 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
-import { Either, right } from '@/core/either'
+import { right } from '@/core/either'
 
-import { UserSearchParams } from '../dtos/user-search-params'
-import { User } from '../entities/user'
 import { UsersRepository } from '../repositories/users-repository'
-
-type FetchManyUsersUseCaseRequest = UserSearchParams
-
-type FetchManyUsersUseCaseResponse = Either<
-  null,
-  {
-    users: User[]
-  }
->
+import { IFetchManyUsersUseCaseRequest, IFetchManyUsersUseCaseResponse } from './contracts/fetch-many-users.interface'
 
 @Injectable()
 export class FetchManyUsersUseCase {
@@ -21,9 +11,10 @@ export class FetchManyUsersUseCase {
     private usersRepository: UsersRepository,
   ) {}
 
-  async execute({ page, pageSize, search, role, isActive }: FetchManyUsersUseCaseRequest): Promise<FetchManyUsersUseCaseResponse> {
+  async execute({ page, pageSize, search, roleId, isActive }: IFetchManyUsersUseCaseRequest): 
+  Promise<IFetchManyUsersUseCaseResponse> {
 
-    const users = await this.usersRepository.findMany({ page, pageSize, search, role, isActive })
+    const users = await this.usersRepository.findMany({ page, pageSize, search, roleId, isActive })
 
     return right({
       users,

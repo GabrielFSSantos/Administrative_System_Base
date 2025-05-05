@@ -1,6 +1,7 @@
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 import { EditUserUseCase } from './edit-user'
@@ -25,7 +26,7 @@ describe('Edit User', () => {
       userId: user.id.toString(),
       email: 'email@teste.com.br',
       name: 'name teste',
-      role: 'TESTE',
+      roleId: 'TESTE',
       isActive: false,
     })
 
@@ -35,7 +36,7 @@ describe('Edit User', () => {
         expect.objectContaining({
           email: 'email@teste.com.br',
           name: 'name teste',
-          role: 'TESTE',
+          roleId: new UniqueEntityId('TESTE'),
           isActive: null,
         }),
       ]),

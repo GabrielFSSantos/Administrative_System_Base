@@ -6,7 +6,7 @@ export interface UserProps {
   name: string
   email: string
   password: string
-  role: string
+  roleId: UniqueEntityId
   isActive: Date | null
   createdAt: Date
   updatedAt: Date | null
@@ -31,12 +31,12 @@ export class User extends Entity<UserProps> {
     this.touch()
   }
 
-  get role() {
-    return this.props.role
+  get roleId() {
+    return this.props.roleId
   }
   
-  set role(role: string) {
-    this.props.role = role
+  set roleId(roleId: UniqueEntityId) {
+    this.props.roleId = roleId
     this.touch()
   }
 

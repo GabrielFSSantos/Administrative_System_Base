@@ -1,21 +1,15 @@
 import { Injectable } from '@nestjs/common'
 
-import { Either, left,right } from '@/core/either'
+import { left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 import { UsersRepository } from '../repositories/users-repository'
+import { 
+  ISetUserActivationStatusUseCaseRequest, 
+  ISetUserActivationStatusUseCaseResponse, 
+} from './contracts/set-user-activation-status.interface'
 import { AlreadyActivatedError } from './errors/already-activated-error'
 import { AlreadyDeactivatedError } from './errors/already-deactivated-error'
-
-interface SetUserActivationStatusUseCaseRequest {
-  userId: string
-  isActive: boolean
-} 
-
-type SetUserActivationStatusUseCaseResponse = Either<
-  ResourceNotFoundError | AlreadyActivatedError | AlreadyDeactivatedError,
-  null
->
 
 @Injectable()
 export class SetUserActivationStatusUseCase {
@@ -26,7 +20,8 @@ export class SetUserActivationStatusUseCase {
   async execute({
     userId,
     isActive,
-  }: SetUserActivationStatusUseCaseRequest): Promise<SetUserActivationStatusUseCaseResponse> {
+  }: ISetUserActivationStatusUseCaseRequest): 
+  Promise<ISetUserActivationStatusUseCaseResponse> {
 
     const user =  await this.usersRepository.findById(userId)
 
