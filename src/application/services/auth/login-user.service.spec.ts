@@ -3,10 +3,11 @@ import { FakeAuthenticateUserUseCase } from 'test/fakes/users/fake-authenticate-
 
 import { WrongCredentialsError } from '@/domain/users/use-cases/errors/wrong-credentials-error'
 
+import { ILoginUserService } from './contracts/login-user-service.interface'
 import { LoginUserService } from './login-user.service'
 
-describe('LoginUserService', () => {
-  let service: LoginUserService
+describe('Login User Service', () => {
+  let service: ILoginUserService
   let authenticateUser: FakeAuthenticateUserUseCase 
   let createSession: FakeCreateSessionUseCase
 

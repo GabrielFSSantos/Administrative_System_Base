@@ -6,12 +6,13 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
+import { IRevokeSessionUseCase } from './contracts/revoke-session.interface'
 import { SessionExpiredError } from './errors/session-expired-error'
 import { RevokeSessionUseCase } from './revoke-session'
 
-let inMemorySessionsRepository:InMemorySessionsRepository
+let inMemorySessionsRepository: InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository
-let sut: RevokeSessionUseCase
+let sut: IRevokeSessionUseCase
 
 describe('Revoke Session', () => {
   beforeEach(() => {
