@@ -1,23 +1,10 @@
 import { Injectable } from '@nestjs/common'
 
-import { Either, right } from '@/core/either'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
+import { right } from '@/core/either'
 import { ICreateSessionUseCase } from '@/domain/sessions/use-cases/contracts/create-session.interface'
-import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
 import { IAuthenticateUserUseCase } from '@/domain/users/use-cases/contracts/authenticate-user.interface'
-import { WrongCredentialsError } from '@/domain/users/use-cases/errors/wrong-credentials-error'
 
-interface LoginUserRequest {
-  email: string
-  password: string
-}
-
-type LoginUserResponse = Either<
-  WrongCredentialsError | NotAllowedError | SessionExpiredError,
-  {
-    accessToken: string
-  }
->
+import { ILoginUserServiceRequest, ILoginUserServiceResponse } from './contracts/login-user-service.interface'
 
 @Injectable()
 export class LoginUserService  {
@@ -26,7 +13,8 @@ export class LoginUserService  {
     private readonly createSession: ICreateSessionUseCase,
   ) {}
 
-  async execute({email, password}: LoginUserRequest): Promise<LoginUserResponse> {
+  async execute({email, password}: ILoginUserServiceRequest): 
+  Promise<ILoginUserServiceResponse> {
     const result = await this.authenticateUser.execute({email, password})
 
     if (result.isLeft()) {
