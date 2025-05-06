@@ -1,9 +1,9 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User } from '@/domain/users/entities/user'
 
-import { IFetchManyUsersUseCaseRequest } from '../use-cases/contracts/fetch-many-users.interface'
+import { IFetchManyUsersUseCaseRequest } from '../../use-cases/contracts/fetch-many-users-contract'
 
-export abstract class UsersRepository {
+export abstract class UsersRepositoryContract {
   abstract findById(id: string): Promise<User | null>
   abstract findByEmail(email: string): Promise<User | null>
   abstract findMany(parms: IFetchManyUsersUseCaseRequest): Promise<User[]>

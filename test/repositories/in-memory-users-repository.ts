@@ -1,9 +1,9 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User } from '@/domain/users/entities/user'
-import { UsersRepository } from '@/domain/users/repositories/users-repository'
+import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
 import { IFetchManyUsersUseCaseRequest } from '@/domain/users/use-cases/contracts/fetch-many-users-contract'
 
-export class InMemoryUsersRepository implements UsersRepository {
+export class InMemoryUsersRepository implements UsersRepositoryContract {
   public items: User[] = []
 
   async findById(id: string): Promise<User | null> {

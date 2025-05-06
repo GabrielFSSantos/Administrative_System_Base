@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-import { UsersRepository } from '../repositories/users-repository'
+import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   DeleteUserContract,
   IDeleteUserUseCaseRequest, 
@@ -13,7 +13,7 @@ import {
 @Injectable()
 export class DeleteUserUseCase implements DeleteUserContract {
   constructor(
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersRepositoryContract,
   ) {}
 
   async execute({ userId }: IDeleteUserUseCaseRequest): Promise<IDeleteUserUseCaseResponse> {

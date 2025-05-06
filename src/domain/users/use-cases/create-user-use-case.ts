@@ -5,7 +5,7 @@ import { left,right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 import { User } from '../entities/user'
-import { UsersRepository } from '../repositories/users-repository'
+import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   CreateUserContract, 
   ICreateUserUseCaseRequest, 
@@ -16,7 +16,7 @@ import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 @Injectable()
 export class CreateUserUseCase implements CreateUserContract {
   constructor(
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersRepositoryContract,
     private hashGenerator: HashGeneratorContract,
   ) {}
 

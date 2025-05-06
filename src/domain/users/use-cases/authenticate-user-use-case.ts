@@ -5,7 +5,7 @@ import { HashComparerContract } from '@/core/contracts/cryptography/hash-compare
 import { left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 
-import { UsersRepository } from '../repositories/users-repository'
+import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import { AuthenticateUserContract, 
   IAuthenticateUserUseCaseRequest, 
   IAuthenticateUserUseCaseResponse, 
@@ -15,7 +15,7 @@ import { WrongCredentialsError } from './errors/wrong-credentials-error'
 @Injectable()
 export class AuthenticateUserUseCase implements AuthenticateUserContract {
   constructor(
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersRepositoryContract,
     private hashComparer: HashComparerContract,
     private encrypter: EncrypterContract,
   ) {}
