@@ -3,13 +3,13 @@ import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Session } from '@/domain/sessions/entities/session'
 import { 
-  IRevokeSessionUseCase, 
   IRevokeSessionUseCaseRequest, 
   IRevokeSessionUseCaseResponse, 
-} from '@/domain/sessions/use-cases/contracts/revoke-session.interface'
+  RevokeSessionContract, 
+} from '@/domain/sessions/use-cases/contracts/revoke-session-contract'
 import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
 
-export class FakeRevokeSessionUseCase implements IRevokeSessionUseCase {
+export class FakeRevokeSessionUseCase implements RevokeSessionContract {
   public session: Session | null = null
   public shouldReturnExpired = false
   public shouldReturnNotAllowed = false
