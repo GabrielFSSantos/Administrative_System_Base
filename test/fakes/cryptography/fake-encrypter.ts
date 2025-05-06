@@ -1,6 +1,6 @@
-import { Encrypter, EncrypterResponse } from '@/core/contracts/cryptography/encrypter'
+import { EncrypterContract, EncrypterResponse } from '@/core/contracts/cryptography/encrypter-contract'
 
-export class FakeEncrypter implements Encrypter {
+export class FakeEncrypter implements EncrypterContract {
   async encrypt(payload: Record<string, unknown>): Promise<EncrypterResponse> {
     return {
       accessToken: JSON.stringify(payload),

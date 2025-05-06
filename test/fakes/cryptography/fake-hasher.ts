@@ -1,7 +1,7 @@
-import { HashComparer } from '@/core/contracts/cryptography/hash-comparer'
-import { HashGenerator } from '@/core/contracts/cryptography/hash-generator'
+import { HashComparerContract } from '@/core/contracts/cryptography/hash-comparer-contract'
+import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-generator-contract'
 
-export class FakeHasher implements HashGenerator, HashComparer {
+export class FakeHasher implements HashGeneratorContract, HashComparerContract {
   async generate(plain: string): Promise<string> {
     return plain.concat('-hashed')
   }
