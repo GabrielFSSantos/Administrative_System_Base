@@ -7,7 +7,7 @@ export interface IFetchManyUsersUseCaseRequest {
   page: number
   pageSize: number
   search?: string
-  role?: string
+  roleId?: string
   isActive?: Date
 }
 

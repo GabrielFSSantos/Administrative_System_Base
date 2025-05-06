@@ -9,7 +9,7 @@ export interface IEditUserUseCaseRequest {
   userId: string
   name?: string
   email?: string
-  role?: string
+  roleId?: string
   isActive?: boolean
 }
 

@@ -8,7 +8,7 @@ export interface ICreateUserUseCaseRequest {
   name: string
   email: string
   password: string
-  role: string
+  roleId: string
 }
 
 export type ICreateUserUseCaseResponse = Either<

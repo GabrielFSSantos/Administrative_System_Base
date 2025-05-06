@@ -1,18 +1,13 @@
 import { Injectable } from '@nestjs/common'
 
-import { Either, left,right } from '@/core/either'
+import { left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 import { UsersRepository } from '../repositories/users-repository'
-
-interface DeleteUserUseCaseRequest {
-  userId: string
-}
-
-type DeleteUserUseCaseResponse = Either<
-  ResourceNotFoundError,
-  null
->
+import { 
+  IDeleteUserUseCaseRequest, 
+  IDeleteUserUseCaseResponse, 
+} from './contracts/delete-user.interface'
 
 @Injectable()
 export class DeleteUserUseCase {
@@ -20,7 +15,7 @@ export class DeleteUserUseCase {
     private usersRepository: UsersRepository,
   ) {}
 
-  async execute({ userId }: DeleteUserUseCaseRequest): Promise<DeleteUserUseCaseResponse> {
+  async execute({ userId }: IDeleteUserUseCaseRequest): Promise<IDeleteUserUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {

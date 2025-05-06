@@ -1,11 +1,14 @@
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+
+import { ICreateUserUseCase } from './contracts/create-user.interface'
 import { CreateUserUseCase } from './create-user'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
-let sut: CreateUserUseCase
+let sut: ICreateUserUseCase
 let fakeHasher: FakeHasher
 
 describe('Create User', () => {
@@ -21,7 +24,7 @@ describe('Create User', () => {
       name: 'Test User',
       email: 'test@example.com',
       password: 'secret123',
-      role: 'admin',
+      roleId: 'admin',
     })
 
     expect(result.isRight()).toBe(true)
@@ -35,7 +38,7 @@ describe('Create User', () => {
       name: 'Test User',
       email: 'test@example.com',
       password: '123456',
-      role: 'admin',
+      roleId: 'admin',
     })
 
     const user = inMemoryUsersRepository.items[0]
@@ -54,7 +57,7 @@ describe('Create User', () => {
       name: 'Test User',
       email: 'test@example.com',
       password: 'plaintext',
-      role: 'admin',
+      roleId: 'admin',
     })
     
     const user = inMemoryUsersRepository.items[0]
@@ -72,7 +75,7 @@ describe('Create User', () => {
       name: 'Test User',
       email: 'test@example.com',
       password: '123456',
-      role: 'admin',
+      roleId: 'admin',
     }
   
     await sut.execute(userData)
@@ -82,12 +85,12 @@ describe('Create User', () => {
     expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
   
-  it('should store name, email, role and hashed password', async () => {
+  it('should store name, email, roleId and hashed password', async () => {
     await sut.execute({
       name: 'Test User',
       email: 'test@example.com',
       password: 'secret123',
-      role: 'admin',
+      roleId: 'admin',
     })
 
     const createdUser = inMemoryUsersRepository.items[0]
@@ -97,7 +100,7 @@ describe('Create User', () => {
         name: 'Test User',
         email: 'test@example.com',
         password: 'secret123-hashed',
-        role: 'admin',
+        roleId: new UniqueEntityId('admin'),
       }),
     })
   })
