@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
+import { HashGenerator } from '@/core/contracts/cryptography/hash-generator'
 import { left,right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
-import { HashGenerator } from '../../../core/contracts/cryptography/hash-generator'
 import { User } from '../entities/user'
 import { UsersRepository } from '../repositories/users-repository'
 import { 
