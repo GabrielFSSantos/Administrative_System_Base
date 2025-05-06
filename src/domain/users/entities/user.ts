@@ -3,10 +3,11 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
 export interface UserProps {
+  // cpf: string // Passar para Value Object
   name: string
-  email: string
-  password: string
-  role: string
+  email: string // Passar para Value Object
+  password: string //passwordHash
+  roleId: UniqueEntityId
   isActive: Date | null
   createdAt: Date
   updatedAt: Date | null
@@ -31,35 +32,17 @@ export class User extends Entity<UserProps> {
     this.touch()
   }
 
-  get password() {
-    return this.props.password
+  get roleId() {
+    return this.props.roleId
   }
   
-  set password(password: string) {
-    this.props.password = password
-    this.touch()
-  }
-
-  get role() {
-    return this.props.role
-  }
-  
-  set role(role: string) {
-    this.props.role = role
+  set roleId(roleId: UniqueEntityId) {
+    this.props.roleId = roleId
     this.touch()
   }
 
   get isActive() {
     return this.props.isActive
-  }
-
-  isCurrentlyActive() {
-    return this.props.isActive !== null && this.props.isActive <= new Date()
-  }
-
-  setActivationStatus(isActive: boolean) {
-    this.props.isActive = isActive ? new Date() : null
-    this.touch()
   }
 
   get createdAt() {
@@ -74,6 +57,33 @@ export class User extends Entity<UserProps> {
     this.props.updatedAt = new Date()
   }
 
+  public isCurrentlyActive() {
+    return this.props.isActive !== null && this.props.isActive <= new Date()
+  }
+
+  public activate(): void {
+    if (!this.isCurrentlyActive()) {
+      this.props.isActive = new Date()
+      this.touch()
+    }
+  }
+
+  public deactivate(): void {
+    if (this.isCurrentlyActive()) {
+      this.props.isActive = null
+      this.touch()
+    }
+  }
+
+  public changePassword(newHashedPassword: string): void {
+    this.props.password = newHashedPassword
+    this.touch()
+  }
+
+  public getHashedPassword(): string {
+    return this.props.password
+  }
+
   static create(
     props: Optional<UserProps, 'isActive' | 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
@@ -81,9 +91,9 @@ export class User extends Entity<UserProps> {
     const user = new User(
       {
         ...props,
-        isActive: null,
-        createdAt: new Date(),
-        updatedAt: null,
+        isActive: props.isActive ?? null,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? null,
       }, 
       id,
     )

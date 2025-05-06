@@ -1,26 +1,12 @@
 import { Injectable } from '@nestjs/common'
 
-import { Either, left,right } from '@/core/either'
+import { left,right } from '@/core/either'
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-import { User } from '../entities/user'
 import { UsersRepository } from '../repositories/users-repository'
+import { IEditUserUseCaseRequest, IEditUserUseCaseResponse } from './contracts/edit-user.interface'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
-
-interface EditUserUseCaseRequest {
-  userId: string
-  name?: string
-  email?: string
-  role?: string
-  isActive?: boolean
-}
-
-type EditUserUseCaseResponse = Either<
-  ResourceNotFoundError | UserAlreadyExistsError,
-  {
-    user: User
-  }
->
 
 @Injectable()
 export class EditUserUseCase {
@@ -32,9 +18,9 @@ export class EditUserUseCase {
     userId,
     name,
     email,
-    role,
+    roleId,
     isActive,
-  }: EditUserUseCaseRequest): Promise<EditUserUseCaseResponse> {
+  }: IEditUserUseCaseRequest): Promise<IEditUserUseCaseResponse> {
 
     const user =  await this.usersRepository.findById(userId)
 
@@ -56,12 +42,14 @@ export class EditUserUseCase {
       user.name = name
     }
 
-    if (role) {
-      user.role = role
+    if (roleId) {
+      user.roleId = new UniqueEntityId(roleId)
     }
 
-    if (isActive !== undefined) {
-      user.setActivationStatus(isActive)
+    if (isActive === true) {
+      user.activate()
+    } else if (isActive === false) {
+      user.deactivate()
     }
 
     await this.usersRepository.save(user)

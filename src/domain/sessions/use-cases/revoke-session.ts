@@ -1,21 +1,12 @@
 import { Injectable } from '@nestjs/common'
 
-import { Either, left, right } from '@/core/either'
+import { left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 import { SessionsRepository } from '../repositories/sessions-repository'
+import { IRevokeSessionUseCaseRequest, IRevokeSessionUseCaseResponse } from './contracts/revoke-session.interface'
 import { SessionExpiredError } from './errors/session-expired-error'
-
-interface RevokeSessionUseCaseRequest {
-  recipientId: string
-  accessToken: string
-}
-
-type RevokeSessionUseCaseResponse = Either<
-  ResourceNotFoundError | SessionExpiredError | NotAllowedError,
-  null
->
 
 @Injectable()
 export class RevokeSessionUseCase {
@@ -26,7 +17,7 @@ export class RevokeSessionUseCase {
   async execute({
     recipientId,
     accessToken,
-  }: RevokeSessionUseCaseRequest): Promise<RevokeSessionUseCaseResponse> {
+  }: IRevokeSessionUseCaseRequest): Promise<IRevokeSessionUseCaseResponse> {
 
     const session = await this.sessionsRepository.findByToken(accessToken)
 
@@ -34,15 +25,15 @@ export class RevokeSessionUseCase {
       return left(new ResourceNotFoundError())
     }
 
-    if (session.expiresAt < new Date()) {
+    if (session.isExpired()) {
       return left(new SessionExpiredError())
     }
 
-    if(session.recipientId.toString() !== recipientId) {
+    if(session.belongsTo(recipientId)) {
       return left(new NotAllowedError())
     }
 
-    if(session.revokedAt) {
+    if(session.isRevoked()) {
       return left(new NotAllowedError())
     }
 

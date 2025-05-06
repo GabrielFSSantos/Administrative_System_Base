@@ -4,8 +4,8 @@ import { SessionsRepository } from '@/domain/sessions/repositories/sessions-repo
 export class InMemorySessionsRepository implements SessionsRepository {
   public items: Session[] = []
   
-  async findByToken(token: string): Promise<Session | null> {
-    const session = this.items.find((session) => session.token === token)
+  async findByToken(accessToken: string): Promise<Session | null> {
+    const session = this.items.find((session) => session.accessToken === accessToken)
 
     if (!session) return null
 

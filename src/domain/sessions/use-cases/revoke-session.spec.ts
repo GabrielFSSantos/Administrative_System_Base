@@ -6,12 +6,13 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
+import { IRevokeSessionUseCase } from './contracts/revoke-session.interface'
 import { SessionExpiredError } from './errors/session-expired-error'
 import { RevokeSessionUseCase } from './revoke-session'
 
-let inMemorySessionsRepository:InMemorySessionsRepository
+let inMemorySessionsRepository: InMemorySessionsRepository
 let inMemoryUsersRepository: InMemoryUsersRepository
-let sut: RevokeSessionUseCase
+let sut: IRevokeSessionUseCase
 
 describe('Revoke Session', () => {
   beforeEach(() => {
@@ -30,14 +31,14 @@ describe('Revoke Session', () => {
 
     const session = makeSession({
       recipientId: user.id,
-      token: 'new-token',
+      accessToken: 'new-accessToken',
     })
 
     await inMemorySessionsRepository.create(session)
 
     const result = await sut.execute({
       recipientId: user.id.toString(),
-      accessToken: 'new-token',
+      accessToken: 'new-accessToken',
     })
 
     expect(result.isRight()).toBe(true)
@@ -60,7 +61,7 @@ describe('Revoke Session', () => {
 
     const session = makeSession({
       recipientId: user.id,
-      token: 'expired-token',
+      accessToken: 'expired-accessToken',
       expiresAt: new Date(Date.now() - 1000),
     })
 
@@ -68,7 +69,7 @@ describe('Revoke Session', () => {
 
     const result = await sut.execute({
       recipientId: user.id.toString(),
-      accessToken: session.token,
+      accessToken: session.accessToken,
     })
   
     expect(result.isLeft()).toBe(true)
@@ -82,14 +83,14 @@ describe('Revoke Session', () => {
   
     const session = makeSession({
       recipientId: user.id,
-      token: 'token-mismatch',
+      accessToken: 'token-mismatch',
     })
   
     await inMemorySessionsRepository.create(session)
   
     const result = await sut.execute({
       recipientId: 'wrong-id',
-      accessToken: session.token,
+      accessToken: session.accessToken,
     })
   
     expect(result.isLeft()).toBe(true)
@@ -103,7 +104,7 @@ describe('Revoke Session', () => {
   
     const session = makeSession({
       recipientId: user.id,
-      token: 'revoked-token',
+      accessToken: 'revoked-accessToken',
       revokedAt: new Date(),
     })
   
@@ -111,7 +112,7 @@ describe('Revoke Session', () => {
   
     const result = await sut.execute({
       recipientId: user.id.toString(),
-      accessToken: session.token,
+      accessToken: session.accessToken,
     })
   
     expect(result.isLeft()).toBe(true)
@@ -125,20 +126,20 @@ describe('Revoke Session', () => {
   
     const session = makeSession({
       recipientId: user.id,
-      token: 'valid-token',
+      accessToken: 'valid-accessToken',
     })
   
     await inMemorySessionsRepository.create(session)
   
     await sut.execute({
       recipientId: user.id.toString(),
-      accessToken: session.token,
+      accessToken: session.accessToken,
     })
 
     expect(inMemorySessionsRepository.items).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          token: 'valid-token',
+          accessToken: 'valid-accessToken',
         }),
       ]),
     )

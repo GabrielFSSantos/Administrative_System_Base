@@ -1,12 +1,14 @@
-import { FakeHasher } from 'test/cryptography/fake-hasher'
-import { makeUser } from 'test/factories/make-user'
+import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+
+import { ICreateUserUseCase } from './contracts/create-user.interface'
 import { CreateUserUseCase } from './create-user'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
-let sut: CreateUserUseCase
+let sut: ICreateUserUseCase
 let fakeHasher: FakeHasher
 
 describe('Create User', () => {
@@ -18,7 +20,12 @@ describe('Create User', () => {
   })
 
   it('should be able to create a user', async () => {
-    const result = await sut.execute(makeUser())
+    const result = await sut.execute({
+      name: 'Test User',
+      email: 'test@example.com',
+      password: 'secret123',
+      roleId: 'admin',
+    })
 
     expect(result.isRight()).toBe(true)
     expect(result.value).toEqual({
@@ -27,28 +34,49 @@ describe('Create User', () => {
   })
 
   it('should hash user password upon registration', async () => {
-    const result = await sut.execute(makeUser({
+    const result = await sut.execute({
+      name: 'Test User',
+      email: 'test@example.com',
       password: '123456',
-    }))
+      roleId: 'admin',
+    })
 
-    const hashedPassword = await fakeHasher.generate('123456')
+    const user = inMemoryUsersRepository.items[0]
+
+    const isPasswordCorrect = await fakeHasher.compare(
+      '123456',
+      user.getHashedPassword(),
+    )
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryUsersRepository.items[0].password).toEqual(hashedPassword)
+    expect(isPasswordCorrect).toBe(true)
   })
 
   it('should not store plain text password', async () => {
-    const userData = makeUser({ password: 'plaintext' })
+    await sut.execute({
+      name: 'Test User',
+      email: 'test@example.com',
+      password: 'plaintext',
+      roleId: 'admin',
+    })
+    
+    const user = inMemoryUsersRepository.items[0]
 
-    await sut.execute(userData)
-  
-    const storedPassword = inMemoryUsersRepository.items[0].password
+    const storedPassword = await fakeHasher.compare(
+      'plaintext',
+      user.getHashedPassword(),
+    )
 
     expect(storedPassword).not.toBe('plaintext')
   })
 
   it('should not allow to create a user with an existing email', async () => {
-    const userData = makeUser({ email: 'duplicate@example.com' })
+    const userData = {
+      name: 'Test User',
+      email: 'test@example.com',
+      password: '123456',
+      roleId: 'admin',
+    }
   
     await sut.execute(userData)
     const result = await sut.execute(userData)
@@ -57,26 +85,24 @@ describe('Create User', () => {
     expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
   
-  it('should store name, email, role and hashed password', async () => {
-    const userData = makeUser({
+  it('should store name, email, roleId and hashed password', async () => {
+    await sut.execute({
       name: 'Test User',
       email: 'test@example.com',
       password: 'secret123',
-      role: 'admin',
+      roleId: 'admin',
     })
-  
-    await sut.execute(userData)
 
-    expect(inMemoryUsersRepository.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          name: 'Test User',
-          email: 'test@example.com',
-          password: 'secret123-hashed',
-          role: 'admin',
-        }),
-      ]),
-    )
+    const createdUser = inMemoryUsersRepository.items[0]
+
+    expect(createdUser).toMatchObject({
+      props: expect.objectContaining({
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'secret123-hashed',
+        roleId: new UniqueEntityId('admin'),
+      }),
+    })
   })
   
 })

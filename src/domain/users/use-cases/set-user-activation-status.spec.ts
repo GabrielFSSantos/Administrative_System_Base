@@ -46,7 +46,7 @@ describe('Set User Activation Status', () => {
   
     await inMemoryUsersRepository.create(user)
 
-    user.setActivationStatus(true)
+    user.activate()
 
     await inMemoryUsersRepository.save(user)
   
