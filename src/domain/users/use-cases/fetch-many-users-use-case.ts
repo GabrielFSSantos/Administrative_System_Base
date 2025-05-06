@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { right } from '@/core/either'
 
-import { UsersRepository } from '../repositories/users-repository'
+import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import { 
   FetchManyUsersContract,
   IFetchManyUsersUseCaseRequest, 
@@ -12,7 +12,7 @@ import {
 @Injectable()
 export class FetchManyUsersUseCase implements FetchManyUsersContract{
   constructor(
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersRepositoryContract,
   ) {}
 
   async execute({ page, pageSize, search, roleId, isActive }: IFetchManyUsersUseCaseRequest): 

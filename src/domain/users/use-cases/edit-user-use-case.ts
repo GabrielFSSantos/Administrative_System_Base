@@ -4,7 +4,7 @@ import { left,right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-import { UsersRepository } from '../repositories/users-repository'
+import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   EditUserContract,
   IEditUserUseCaseRequest, 
@@ -15,7 +15,7 @@ import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 @Injectable()
 export class EditUserUseCase implements EditUserContract{
   constructor(
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersRepositoryContract,
   ) {}
 
   async execute({

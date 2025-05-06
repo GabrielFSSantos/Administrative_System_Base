@@ -1,7 +1,7 @@
 import { Session } from '@/domain/sessions/entities/session'
-import { SessionsRepository } from '@/domain/sessions/repositories/sessions-repository'
+import { SessionsRepositoryContract } from '@/domain/sessions/repositories/contracts/sessions-repository-contract'
 
-export class InMemorySessionsRepository implements SessionsRepository {
+export class InMemorySessionsRepository implements SessionsRepositoryContract {
   public items: Session[] = []
   
   async findByToken(accessToken: string): Promise<Session | null> {

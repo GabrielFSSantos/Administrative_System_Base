@@ -5,7 +5,7 @@ import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-genera
 import { left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-import { UsersRepository } from '../repositories/users-repository'
+import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   EditUserPasswordContract,
   IEditUserPasswordUseCaseRequest, 
@@ -17,7 +17,7 @@ import { WrongCredentialsError } from './errors/wrong-credentials-error'
 @Injectable()
 export class EditUserPasswordUseCase implements EditUserPasswordContract{
   constructor(
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersRepositoryContract,
     private hashComparer: HashComparerContract,
     private hashGenerator: HashGeneratorContract,
   ) {}

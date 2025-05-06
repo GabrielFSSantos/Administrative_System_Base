@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-import { UsersRepository } from '../repositories/users-repository'
+import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   ISetUserActivationStatusUseCaseRequest, 
   ISetUserActivationStatusUseCaseResponse, 
@@ -15,7 +15,7 @@ import { AlreadyDeactivatedError } from './errors/already-deactivated-error'
 @Injectable()
 export class SetUserActivationStatusUseCase implements SetUserActivationStatusContract{
   constructor(
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersRepositoryContract,
   ) {}
 
   async execute({
