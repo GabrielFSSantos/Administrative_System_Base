@@ -4,7 +4,7 @@ import { left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-import { SessionsRepository } from '../repositories/sessions-repository'
+import { SessionsRepositoryContract } from '../repositories/contracts/sessions-repository-contract'
 import { 
   IRevokeSessionUseCaseRequest, 
   IRevokeSessionUseCaseResponse, 
@@ -15,7 +15,7 @@ import { SessionExpiredError } from './errors/session-expired-error'
 @Injectable()
 export class RevokeSessionUseCase implements RevokeSessionContract {
   constructor(
-    private sessionsRepository: SessionsRepository,
+    private sessionsRepository: SessionsRepositoryContract,
   ) {}
 
   async execute({

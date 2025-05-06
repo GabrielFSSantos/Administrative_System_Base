@@ -4,7 +4,7 @@ import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 import { Session } from '../entities/session'
-import { SessionsRepository } from '../repositories/sessions-repository'
+import { SessionsRepositoryContract } from '../repositories/contracts/sessions-repository-contract'
 import { CreateSessionContract, 
   ICreateSessionUseCaseRequest, 
   ICreateSessionUseCaseResponse, 
@@ -14,7 +14,7 @@ import { SessionExpiredError } from './errors/session-expired-error'
 @Injectable()
 export class CreateSessionUseCase implements CreateSessionContract {
   constructor(
-    private sessionsRepository: SessionsRepository,
+    private sessionsRepository: SessionsRepositoryContract,
   ) {}
 
   async execute({
