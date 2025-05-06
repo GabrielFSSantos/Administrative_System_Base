@@ -1,17 +1,21 @@
 import { Injectable } from '@nestjs/common'
 
-import { IRevokeSessionUseCase } from '@/domain/sessions/use-cases/contracts/revoke-session.interface'
+import { RevokeSessionContract } from '@/domain/sessions/use-cases/contracts/revoke-session-contract'
 
-import { ILogoutUserServiceUseCaseRequest, ILogoutUserServiceUseCaseResponse } from './contracts/logout-user-service.interface'
+import {
+  ILogoutUserRequest, 
+  ILogoutUserResponse, 
+  LogoutUserContract,
+} from './contracts/logout-user-contract'
 
 @Injectable()
-export class LogoutUserService {
+export class LogoutUserService implements LogoutUserContract{
   constructor(
-    private readonly revokeSession: IRevokeSessionUseCase,
+    private readonly revokeSession: RevokeSessionContract,
   ) {}
 
-  async execute({recipientId, accessToken }: ILogoutUserServiceUseCaseRequest): 
-  Promise<ILogoutUserServiceUseCaseResponse> {
+  async execute({recipientId, accessToken }: ILogoutUserRequest): 
+  Promise<ILogoutUserResponse> {
     return this.revokeSession.execute({ recipientId, accessToken })
   }
 }

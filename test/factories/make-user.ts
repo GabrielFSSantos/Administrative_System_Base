@@ -12,7 +12,7 @@ export function makeUser(
       name: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      role: faker.lorem.sentence(1),
+      roleId: new UniqueEntityId(faker.lorem.sentence(1)),
       ...override,
     },
     id,
