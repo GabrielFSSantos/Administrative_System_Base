@@ -4,7 +4,7 @@ import { PermissionName } from './value-objects/permission-name'
 
 export class RolePermissions extends WatchedList<PermissionName> {
   public compareItems(a: PermissionName, b: PermissionName): boolean {
-    return a.value === b.value
+    return a.equals(b)
   }
 
   public has(permission: PermissionName): boolean {

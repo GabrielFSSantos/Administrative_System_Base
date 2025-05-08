@@ -14,8 +14,8 @@ export class Role extends Entity<RoleProps> {
     return this.props.name
   }
 
-  get permissions(): ReadonlyArray<PermissionName> {
-    return this.props.permissions.getItems()
+  public get permissionValues(): string[] {
+    return this.props.permissions.getItems().map((p) => p.value)
   }
 
   public addPermission(permissionName: PermissionName): void {
