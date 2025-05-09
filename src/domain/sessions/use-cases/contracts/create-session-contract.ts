@@ -14,5 +14,6 @@ export type ICreateSessionUseCaseResponse = Either<
 >
 
 export abstract class CreateSessionContract {
-  abstract execute(input: ICreateSessionUseCaseRequest): Promise<ICreateSessionUseCaseResponse>
+  abstract execute(input: ICreateSessionUseCaseRequest): 
+  Promise<ICreateSessionUseCaseResponse>
 }

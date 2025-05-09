@@ -6,9 +6,11 @@ import { Role } from '@/domain/roles/entities/role'
 import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { DeleteRoleUseCase } from '@/domain/roles/use-cases/delete-role-use-case'
 
+import { DeleteRoleContract } from './contracts/delete-role-contract'
+
 describe('Delete Role Test', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
-  let sut: DeleteRoleUseCase
+  let sut: DeleteRoleContract
 
   beforeEach(() => {
     inMemoryRolesRepository = new InMemoryRolesRepository()

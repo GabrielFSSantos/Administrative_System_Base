@@ -18,5 +18,6 @@ export type IEditRoleUseCaseResponse = Either<
 >
 
 export abstract class EditRoleContract {
-  abstract execute(input: IEditRoleUseCaseRequest): Promise<IEditRoleUseCaseResponse>
+  abstract execute(input: IEditRoleUseCaseRequest): 
+  Promise<IEditRoleUseCaseResponse>
 }

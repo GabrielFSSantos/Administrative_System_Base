@@ -6,9 +6,11 @@ import { Role } from '@/domain/roles/entities/role'
 import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { GetRoleUseCase } from '@/domain/roles/use-cases/get-role-use-case'
 
+import { GetRoleContract } from './contracts/get-role-contract'
+
 describe('Get Role Test', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
-  let sut: GetRoleUseCase
+  let sut: GetRoleContract
 
   beforeEach(() => {
     inMemoryRolesRepository = new InMemoryRolesRepository()
