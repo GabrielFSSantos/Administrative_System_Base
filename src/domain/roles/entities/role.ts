@@ -1,12 +1,12 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
-import { RolePermissions } from './role-permissions'
+import { RolePermissionList } from './role-permission-list'
 import { PermissionName } from './value-objects/permission-name'
 
 interface RoleProps {
   name: string
-  permissions: RolePermissions
+  permissions: RolePermissionList
 }
 
 export class Role extends Entity<RoleProps> {
@@ -14,28 +14,34 @@ export class Role extends Entity<RoleProps> {
     return this.props.name
   }
 
-  get permissions(): ReadonlyArray<PermissionName> {
-    return this.props.permissions.getItems()
-  }
-
-  public addPermission(permissionName: PermissionName): void {
-    this.props.permissions.add(permissionName)
-  }
-
-  public removePermission(permissionName: PermissionName): void {
-    this.props.permissions.remove(permissionName)
+  public get permissionValues(): string[] {
+    return this.props.permissions.getItems().map((p) => p.value)
   }
 
   public hasPermission(permissionName: PermissionName): boolean {
     return this.props.permissions.has(permissionName)
   }
 
+  public updateName(name: string): void {
+    this.props.name = name
+  }
+
+  public updatePermissions(permissions: PermissionName[]): void {
+    this.props.permissions.update(permissions)
+  }
+
   static create(
     props: { name: string; permissions: PermissionName[] },
     id?: UniqueEntityId,
   ): Role {
-    const permissions = new RolePermissions(props.permissions)
-
-    return new Role({ name: props.name, permissions }, id)
+    const permissionList = new RolePermissionList(props.permissions)
+  
+    return new Role(
+      { 
+        name: props.name, 
+        permissions: permissionList, 
+      }, 
+      id,
+    )
   }
 }
