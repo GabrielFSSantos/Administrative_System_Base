@@ -1,5 +1,6 @@
 import { Either } from '@/core/either'
 
+import { Role } from '../../entities/role'
 import { InvalidPermissionError } from '../errors/invalid-permission-error'
 
 export interface ICreateRoleUseCaseRequest {
@@ -9,7 +10,9 @@ export interface ICreateRoleUseCaseRequest {
 
 export type ICreateRoleUseCaseResponse = Either<
   InvalidPermissionError,
-  null
+  { 
+    role: Role
+   }
 >
 
 export abstract class CreateRoleContract {
