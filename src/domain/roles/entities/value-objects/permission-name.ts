@@ -6,23 +6,20 @@ interface PermissionNameProps {
 }
 
 export class PermissionName extends ValueObject<PermissionNameProps> {
-  private constructor(props: PermissionNameProps) {
-    super(props)
-  }
 
   get value(): string {
     return this.props.value
   }
 
-  static parse(value: string): PermissionName {
-    const normalized = value.trim().toLowerCase().replace(/\s+/g, '_')
+  private static normalize(value: string): string {
+    return value.trim().toLowerCase().replace(/\s+/g, '_')
+  }
 
-    return new PermissionName({ value: normalized })
+  static parse(value: string): PermissionName {
+    return new PermissionName({ value: this.normalize(value) })
   }
 
   static verify(value: string): boolean {
-    const normalized = value.trim().toLowerCase().replace(/\s+/g, '_')
-  
-    return (ALL_PERMISSIONS as readonly string[]).includes(normalized)
+    return (ALL_PERMISSIONS as readonly string[]).includes(this.normalize(value))
   }
 }
