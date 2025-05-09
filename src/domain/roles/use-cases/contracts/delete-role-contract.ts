@@ -11,5 +11,6 @@ export type IDeleteRoleUseCaseResponse = Either<
 >
 
 export abstract class DeleteRoleContract {
-  abstract execute(input: IDeleteRoleUseCaseRequest): Promise<IDeleteRoleUseCaseResponse>
+  abstract execute(input: IDeleteRoleUseCaseRequest): 
+  Promise<IDeleteRoleUseCaseResponse>
 }

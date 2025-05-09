@@ -13,5 +13,6 @@ export type ICreateRoleUseCaseResponse = Either<
 >
 
 export abstract class CreateRoleContract {
-  abstract execute(input: ICreateRoleUseCaseRequest): Promise<ICreateRoleUseCaseResponse>
+  abstract execute(input: ICreateRoleUseCaseRequest): 
+  Promise<ICreateRoleUseCaseResponse>
 }

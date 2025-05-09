@@ -16,5 +16,6 @@ export type IRevokeSessionUseCaseResponse = Either<
 >
 
 export abstract class RevokeSessionContract {
-  abstract execute(input: IRevokeSessionUseCaseRequest): Promise<IRevokeSessionUseCaseResponse> 
+  abstract execute(input: IRevokeSessionUseCaseRequest): 
+  Promise<IRevokeSessionUseCaseResponse> 
 }
