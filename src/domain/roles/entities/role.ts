@@ -1,6 +1,7 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
+import { InvalidRoleNameError } from './errors/invalid-role-name-error'
 import { RolePermissionList } from './role-permission-list'
 import { PermissionName } from './value-objects/permission-name'
 
@@ -14,7 +15,7 @@ export class Role extends Entity<RoleProps> {
     return this.props.name
   }
 
-  public get permissionValues(): string[] {
+  get permissionValues(): string[] {
     return this.props.permissions.getItems().map((p) => p.value)
   }
 
@@ -23,6 +24,10 @@ export class Role extends Entity<RoleProps> {
   }
 
   public updateName(name: string): void {
+    if (!Role.isValidName(name)) {
+      throw new InvalidRoleNameError(name)
+    }
+
     this.props.name = name
   }
 
@@ -30,10 +35,18 @@ export class Role extends Entity<RoleProps> {
     this.props.permissions.update(permissions)
   }
 
+  static isValidName(name: string): boolean {
+    return !!name && name.trim().length > 0
+  }
+
   static create(
     props: { name: string; permissions: PermissionName[] },
     id?: UniqueEntityId,
   ): Role {
+    if (!Role.isValidName(props.name)) {
+      throw new InvalidRoleNameError(props.name)
+    }
+
     const permissionList = new RolePermissionList(props.permissions)
   
     return new Role(

@@ -3,14 +3,13 @@ import { Injectable } from '@nestjs/common'
 import { left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-import { PermissionName } from '../entities/value-objects/permission-name'
+import { validateAndParsePermissions } from '../helpers/validate-and-parse-permissions-helper'
 import { RolesRepositoryContract } from '../repositories/contracts/roles-repository-contract'
 import {
   EditRoleContract,
   IEditRoleUseCaseRequest,
   IEditRoleUseCaseResponse,
 } from './contracts/edit-role-contract'
-import { InvalidPermissionError } from './errors/invalid-permission-error'
 
 @Injectable()
 export class EditRoleUseCase implements EditRoleContract {
@@ -34,15 +33,13 @@ export class EditRoleUseCase implements EditRoleContract {
     }
 
     if (permissionValues) {
-      const invalidPermissions = permissionValues.filter(
-        (value) => !PermissionName.verify(value),
-      )
+      const result = validateAndParsePermissions(permissionValues)
 
-      if (invalidPermissions.length > 0) {
-        return left(new InvalidPermissionError(invalidPermissions))
+      if (result.isLeft()) {
+        return left(result.value)
       }
-
-      const permissionNames = permissionValues.map(PermissionName.parse)
+    
+      const permissionNames = result.value
 
       role.updatePermissions(permissionNames)
     }

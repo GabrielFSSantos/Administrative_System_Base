@@ -15,4 +15,4 @@ type DeepValueOf<T> = T extends object ? DeepValueOf<T[keyof T]> : T
 export type PermissionValue = DeepValueOf<typeof Permissions>
 
 export const ALL_PERMISSIONS: PermissionValue[] = Object.values(Permissions)
-  .flatMap((group) => Object.values(group))
+  .flatMap((domainPermissions) => Object.values(domainPermissions))
