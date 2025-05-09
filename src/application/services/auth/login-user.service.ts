@@ -1,20 +1,24 @@
 import { Injectable } from '@nestjs/common'
 
 import { right } from '@/core/either'
-import { ICreateSessionUseCase } from '@/domain/sessions/use-cases/contracts/create-session.interface'
-import { IAuthenticateUserUseCase } from '@/domain/users/use-cases/contracts/authenticate-user.interface'
+import { CreateSessionContract } from '@/domain/sessions/use-cases/contracts/create-session-contract'
+import { AuthenticateUserContract } from '@/domain/users/use-cases/contracts/authenticate-user-contract'
 
-import { ILoginUserServiceRequest, ILoginUserServiceResponse } from './contracts/login-user-service.interface'
+import { 
+  ILoginUserRequest, 
+  ILoginUserResponse, 
+  LoginUserContract,
+} from './contracts/login-user-contract'
 
 @Injectable()
-export class LoginUserService  {
+export class LoginUserService implements LoginUserContract{
   constructor(
-    private readonly authenticateUser: IAuthenticateUserUseCase,
-    private readonly createSession: ICreateSessionUseCase,
+    private readonly authenticateUser: AuthenticateUserContract,
+    private readonly createSession: CreateSessionContract,
   ) {}
 
-  async execute({email, password}: ILoginUserServiceRequest): 
-  Promise<ILoginUserServiceResponse> {
+  async execute({email, password}: ILoginUserRequest): 
+  Promise<ILoginUserResponse> {
     const result = await this.authenticateUser.execute({email, password})
 
     if (result.isLeft()) {

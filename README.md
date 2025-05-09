@@ -1,50 +1,83 @@
 # 🏗️ Administrative System Base
 
-**Administrative System Base** é uma fundação reutilizável para o desenvolvimento de sistemas administrativos no modelo **SaaS (Software as a Service)**, desenvolvida com o framework **NestJS**. O objetivo principal é fornecer uma estrutura sólida, extensível e bem arquitetada, que sirva como ponto de partida para a criação de novos sistemas administrativos, reduzindo retrabalho e garantindo padrões de qualidade.
+O **Administrative System Base** é um projeto que visa fornecer uma base sólida, escalável e reutilizável para sistemas administrativos no modelo **SaaS (Software as a Service)**, utilizando o framework **NestJS** como tecnologia principal no backend.
+
+Este repositório tem como objetivo acelerar o desenvolvimento de novos sistemas ao disponibilizar uma estrutura genérica com funcionalidades essenciais, seguindo rigorosamente boas práticas de arquitetura de software, princípios SOLID, regras de Object Calisthenics e os fundamentos de Domain-Driven Design (DDD).
+
+---
 
 ## 🎯 Objetivo
 
-O projeto tem como propósito acelerar o desenvolvimento de sistemas administrativos ao disponibilizar uma base pronta com funcionalidades essenciais, seguindo boas práticas de engenharia de software. Com isso, os desenvolvedores poderão se concentrar nas regras de negócio específicas de cada aplicação, sem a necessidade de reescrever componentes fundamentais.
+Criar um sistema administrativo genérico, extensível e de alta qualidade, que sirva como ponto de partida para novos projetos, permitindo:
+
+- Redução de retrabalho;
+- Melhoria na padronização dos sistemas;
+- Adoção de arquitetura limpa e sustentável;
+- Foco no desenvolvimento de regras de negócio específicas de cada aplicação.
+
+---
 
 ## ⚙️ Funcionalidades Principais
 
-A base inclui os recursos indispensáveis para sistemas administrativos modernos:
+Este projeto contempla as seguintes funcionalidades básicas:
 
-- ✅ **CRUD completo** (Create, Read, Update, Delete) para entidades principais;
-- 🔐 **Autenticação de usuários**, com login seguro e gerenciamento de sessões;
-- 🛡️ **Autorização baseada em papéis (roles) e permissões**, com controle de acesso detalhado;
-- 🧱 Código estruturado com os princípios do **SOLID**, garantindo manutenibilidade e escalabilidade;
-- 🧠 Aplicação de **Domain-Driven Design (DDD)** para uma separação clara entre domínio, aplicação, infraestrutura e interfaces.
+- ✅ CRUD completo (Create, Read, Update, Delete) para entidades do sistema;
+- 🔐 Autenticação segura de usuários, com gestão de credenciais e sessões;
+- 🛡️ Autorização baseada em papéis (roles) e permissões granulares;
+- ⚠️ Validação robusta de dados e tratamento uniforme de erros.
 
-## 🧩 Arquitetura
+---
 
-O projeto adota uma abordagem de arquitetura limpa e modular, respeitando os seguintes pilares:
+## 🧱 Arquitetura e Práticas
 
-- **Separação de responsabilidades** entre as camadas;
-- **Facilidade de extensão** para novos domínios e regras de negócio;
-- **Reuso de código** em diversos projetos sem necessidade de refatorações estruturais;
-- **Adoção de padrões e boas práticas** amplamente reconhecidos na comunidade.
+### 🧠 Domain-Driven Design (DDD)
+Organização do sistema em camadas bem definidas:
+- **Domínio**: entidades, agregados e regras de negócio;
+- **Aplicação**: orquestração de casos de uso;
+- **Infraestrutura**: persistência, serviços externos e repositórios;
+
+### 🧩 SOLID
+Aplicação dos princípios SOLID para garantir manutenibilidade:
+- Responsabilidade única;
+- Extensibilidade sem modificação;
+- Substituição de implementações com segurança;
+- Interfaces específicas;
+- Inversão de dependências.
+
+### 🧼 Object Calisthenics
+Adoção disciplinada de práticas para qualidade de código:
+- Uma instrução por linha;
+- Um nível de indentação por método;
+- Evitar uso de `else`;
+- Envolver primitivos em objetos;
+- Coleções encapsuladas em classes específicas;
+- Sem getters/setters expostos diretamente;
+- Apenas um ponto por linha (`obj.metodo()` ao invés de `obj.prop.metodo()`);
+- Preferência por composição em vez de herança;
+- Objetos com poucos parâmetros (uso de VOs/DTOs).
+
+---
 
 ## 🚀 Benefícios
 
-- Mais **agilidade** no desenvolvimento de novos sistemas;
-- **Padronização** na estrutura e nos processos de codificação;
-- Redução de **erros recorrentes** em implementações comuns;
-- Base robusta para sistemas escaláveis e seguros.
+- ⚡ Aceleração no início de novos projetos;
+- 🧱 Base sólida e padronizada;
+- 🧩 Facilidade para adicionar novos domínios;
+- 🔍 Código mais expressivo, legível e fácil de testar;
+- 🛠️ Baixo acoplamento e alta coesão.
+
+---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- [NestJS](https://nestjs.com/) — Framework Node.js baseado em TypeScript
-- [TypeORM / Prisma] — ORM para abstração de banco de dados (dependente da implementação)
-- [JWT / Passport] — Gerenciamento de autenticação
-- [Docker (opcional)] — Contêineres para facilitar a implantação
+- [NestJS](https://nestjs.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Docker (opcional)](https://www.docker.com/)
+- [JWT / Passport](https://docs.nestjs.com/security/authentication)
+- [Prisma ORM] (dependendo da implementação)
+- [ESLint] para padronização de código
 
-## 📦 Próximos Passos
-
-- 🔄 Modularização de funcionalidades por domínio
-- 🧪 Integração de testes automatizados
-- 📊 Dashboard administrativo inicial
-- 📁 Documentação com Swagger
+---
 
 ## 📄 Licença
 
