@@ -8,9 +8,11 @@ import { EditRoleUseCase } from '@/domain/roles/use-cases/edit-role-use-case'
 import { InvalidPermissionError } from '@/domain/roles/use-cases/errors/invalid-permission-error'
 import { Permissions } from '@/shared/permissions'
 
+import { EditRoleContract } from './contracts/edit-role-contract'
+
 describe('Edit Role Test', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
-  let sut: EditRoleUseCase
+  let sut: EditRoleContract
 
   beforeEach(() => {
     inMemoryRolesRepository = new InMemoryRolesRepository()
