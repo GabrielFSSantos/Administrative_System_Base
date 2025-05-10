@@ -1,5 +1,6 @@
 import { Role } from '@/domain/roles/entities/role'
 import { RolesRepositoryContract } from '@/domain/roles/repositories/contracts/roles-repository-contract'
+import { IFetchManyRolesByRecipientIdRequest } from '@/domain/roles/use-cases/contracts/fetch-many-roles-by-recipient-id-contract'
 
 export class InMemoryRolesRepository implements RolesRepositoryContract {
   public items: Role[] = []
@@ -12,6 +13,21 @@ export class InMemoryRolesRepository implements RolesRepositoryContract {
     }
 
     return role
+  }
+
+  async findManyByRecipientId({
+    recipientId,
+    page,
+    pageSize,
+  }: IFetchManyRolesByRecipientIdRequest): Promise<Role[]> {
+    const filtered = this.items.filter((item) =>
+      item.recipientId.toString() === recipientId,
+    )
+  
+    const start = (page - 1) * pageSize
+    const end = start + pageSize
+  
+    return filtered.slice(start, end)
   }
 
   async create(role: Role): Promise<void> {

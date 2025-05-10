@@ -21,6 +21,7 @@ describe('Edit Role Test', () => {
 
   it('should be able to edit a role name and permissions', async () => {
     const role = Role.create({
+      recipientId: new UniqueEntityId('company-1'),
       name: 'Old Name',
       permissions: [
         PermissionName.parse(Permissions.USERS.CREATE),
@@ -61,6 +62,7 @@ describe('Edit Role Test', () => {
 
   it('should return error if permissions are invalid', async () => {
     const role = Role.create({
+      recipientId: new UniqueEntityId('company-1'),
       name: 'Editor',
       permissions: [PermissionName.parse(Permissions.USERS.VIEW)],
     })
@@ -79,6 +81,7 @@ describe('Edit Role Test', () => {
 
   it('should update only name if permissions remain the same', async () => {
     const role = Role.create({
+      recipientId: new UniqueEntityId('company-1'),
       name: 'Manager',
       permissions: [
         PermissionName.parse(Permissions.SESSIONS.CREATE),
@@ -109,6 +112,7 @@ describe('Edit Role Test', () => {
   
   it('should update only permissions if name is not provided', async () => {
     const role = Role.create({
+      recipientId: new UniqueEntityId('company-1'),
       name: 'Unchanged Name',
       permissions: [
         PermissionName.parse(Permissions.USERS.CREATE),
@@ -137,6 +141,7 @@ describe('Edit Role Test', () => {
 
   it('should not update anything if no name or permissions are provided', async () => {
     const role = Role.create({
+      recipientId: new UniqueEntityId('company-1'),
       name: 'No Change',
       permissions: [
         PermissionName.parse(Permissions.USERS.DELETE),
@@ -157,4 +162,22 @@ describe('Edit Role Test', () => {
     }
   })
   
+  it('should throw if name is invalid', async () => {
+    const role = Role.create({
+      recipientId: new UniqueEntityId('company-1'),
+      name: 'Valid Name',
+      permissions: [
+        PermissionName.parse(Permissions.USERS.CREATE),
+      ],
+    })
+  
+    await inMemoryRolesRepository.create(role)
+  
+    await expect(() =>
+      sut.execute({
+        roleId: role.id.toString(),
+        name: '   ',
+      }),
+    ).rejects.toThrow()
+  })
 })

@@ -4,6 +4,7 @@ import { Role } from '../../entities/role'
 import { InvalidPermissionError } from '../errors/invalid-permission-error'
 
 export interface ICreateRoleUseCaseRequest {
+  recipientId: string
   name: string
   permissionValues: string[]
 }

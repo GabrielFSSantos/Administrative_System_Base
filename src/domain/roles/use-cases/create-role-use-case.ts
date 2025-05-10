@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
+import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 import { Role } from '../entities/role'
 import { validateAndParsePermissions } from '../helpers/validate-and-parse-permissions-helper'
@@ -18,6 +19,7 @@ export class CreateRoleUseCase implements CreateRoleContract {
   ) {}
 
   async execute({
+    recipientId,
     name,
     permissionValues,
   }: ICreateRoleUseCaseRequest): Promise<ICreateRoleUseCaseResponse> {
@@ -31,6 +33,7 @@ export class CreateRoleUseCase implements CreateRoleContract {
     const permissions = result.value
 
     const role = Role.create({
+      recipientId: new UniqueEntityId(recipientId),
       name,
       permissions,
     })
