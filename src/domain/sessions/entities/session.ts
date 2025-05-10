@@ -26,10 +26,6 @@ export class Session extends Entity<SessionProps> {
   get createdAt(): Date {
     return this.props.createdAt
   }
-
-  get expiresAt(): Date {
-    return this.props.expiresAt
-  }
   
   public belongsTo(recipientId: string) {
     return this.props.recipientId.toString() === recipientId

@@ -9,14 +9,13 @@ import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-
 import { LogoutUserContract } from './contracts/logout-user-contract'
 import { LogoutUserService } from './logout-user.service'
 
+const now = () => new Date()
+const inFuture = (minutes: number) => new Date(Date.now() + 1000 * 60 * minutes)
+const inPast = (minutes: number) => new Date(Date.now() - 1000 * 60 * minutes)
+
 describe('LogoutUserService', () => {
   let service: LogoutUserContract
   let revokeSession: FakeRevokeSessionUseCase
-
-  const createdAt = new Date('2025-05-10T16:38:07.310Z')
-  const expiresAtFuture = new Date('2025-05-10T17:40:07.310Z')
-  const expiresAtPast = new Date('2025-05-10T16:39:07.310Z')
-  const revokedAtFuture = new Date('2025-05-10T16:40:12.310Z')
 
   beforeEach(() => {
     revokeSession = new FakeRevokeSessionUseCase()
@@ -24,11 +23,13 @@ describe('LogoutUserService', () => {
   })
 
   it('should successfully revoke a session', async () => {
+    const recipientId = new UniqueEntityId('user-1')
+
     revokeSession.session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId,
       accessToken: 'valid-token',
-      createdAt,
-      expiresAt: expiresAtFuture,
+      createdAt: now(),
+      expiresAt: inFuture(5), // 5 minutos no futuro
     })
 
     const result = await service.execute({
@@ -54,8 +55,8 @@ describe('LogoutUserService', () => {
   it('should return SessionExpiredError if session is expired', async () => {
     revokeSession.session = makeSession({
       recipientId: new UniqueEntityId('user-1'),
-      createdAt,
-      expiresAt: expiresAtPast,
+      createdAt: inPast(10),
+      expiresAt: inPast(5),
     })
 
     const result = await service.execute({
@@ -70,8 +71,8 @@ describe('LogoutUserService', () => {
   it('should return NotAllowedError if session belongs to another user', async () => {
     revokeSession.session = makeSession({
       recipientId: new UniqueEntityId('user-x'),
-      createdAt,
-      expiresAt: expiresAtFuture,
+      createdAt: now(),
+      expiresAt: inFuture(10),
     })
 
     const result = await service.execute({
@@ -86,9 +87,9 @@ describe('LogoutUserService', () => {
   it('should return NotAllowedError if session is already revoked', async () => {
     revokeSession.session = makeSession({
       recipientId: new UniqueEntityId('user-1'),
-      createdAt,
-      expiresAt: expiresAtFuture,
-      revokedAt: revokedAtFuture,
+      createdAt: inPast(10),
+      expiresAt: inFuture(10),
+      revokedAt: now(),
     })
 
     revokeSession.shouldReturnAlreadyRevoked = true

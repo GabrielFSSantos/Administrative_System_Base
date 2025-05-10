@@ -56,6 +56,5 @@ describe('Create Session Test', () => {
 
     expect(stored.recipientId.toString()).toBe(recipientId.toString())
     expect(stored.accessToken).toBe(accessToken)
-    expect(stored.expiresAt.getTime()).toBe(expiresAt.getTime())
   })
 })
