@@ -2,6 +2,10 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
+import { InvalidSessionDateExpiredError } from './errors/invalid-session-date-expired-error-error'
+import { InvalidSessionDateRevokedError } from './errors/invalid-session-date-revoked-error-error'
+import { SessionAlreadyRevokedError } from './errors/session-already-revoked-error'
+
 export interface SessionProps {
   recipientId: UniqueEntityId
   accessToken: string
@@ -11,29 +15,24 @@ export interface SessionProps {
 }
 
 export class Session extends Entity<SessionProps> {
-
-  get recipientId() {
+  get recipientId(): UniqueEntityId {
     return this.props.recipientId
   }
 
-  get accessToken() {
+  get accessToken(): string {
     return this.props.accessToken
   }
 
-  get createdAt() {
+  get createdAt(): Date {
     return this.props.createdAt
   }
 
-  get expiresAt() {
+  get expiresAt(): Date {
     return this.props.expiresAt
   }
-
-  get revokedAt() {
-    return this.props.revokedAt
-  }
-
+  
   public belongsTo(recipientId: string) {
-    return this.props.recipientId.toString() !== recipientId
+    return this.props.recipientId.toString() === recipientId
   }
 
   public isRevoked() {
@@ -48,10 +47,12 @@ export class Session extends Entity<SessionProps> {
     return !this.isRevoked() && !this.isExpired()
   }
 
-  public revoke() {
-    if (!this.isRevoked()) {
-      this.props.revokedAt = new Date()
+  public revoke(): void {
+    if (this.isRevoked()) {
+      throw new SessionAlreadyRevokedError()
     }
+  
+    this.props.revokedAt = new Date()
   }
 
   static create(
@@ -59,11 +60,22 @@ export class Session extends Entity<SessionProps> {
     id?: UniqueEntityId,
   ) {
 
+    const createdAt = props.createdAt ?? new Date()
+    const revokedAt = props.revokedAt ?? null
+  
+    if (props.expiresAt < createdAt) {
+      throw new InvalidSessionDateExpiredError()
+    }
+
+    if (revokedAt && revokedAt < createdAt) {
+      throw new InvalidSessionDateRevokedError()
+    }    
+  
     const session = new Session(
       {
         ...props,
-        createdAt: props.createdAt ?? new Date(),
-        revokedAt: props.revokedAt ?? null,
+        createdAt,
+        revokedAt,
       }, 
       id,
     )

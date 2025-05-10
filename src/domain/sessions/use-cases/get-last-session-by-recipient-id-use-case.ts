@@ -27,6 +27,8 @@ implements GetLastSessionByRecipientIdContract {
       return left(new ResourceNotFoundError())
     }
 
-    return right({ session })
+    return right({
+      session,
+    })
   }
 }

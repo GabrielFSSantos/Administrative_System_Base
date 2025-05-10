@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { left, right } from '@/core/either'
+import { right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 import { Session } from '../entities/session'
@@ -9,7 +9,6 @@ import { CreateSessionContract,
   ICreateSessionUseCaseRequest, 
   ICreateSessionUseCaseResponse, 
 } from './contracts/create-session-contract'
-import { SessionExpiredError } from './errors/session-expired-error'
 
 @Injectable()
 export class CreateSessionUseCase implements CreateSessionContract {
@@ -29,12 +28,10 @@ export class CreateSessionUseCase implements CreateSessionContract {
       expiresAt,
     })
 
-    if(session.isExpired()) {
-      return left(new SessionExpiredError())
-    }
-
     await this.sessionsRepository.create(session)
 
-    return right(null)
+    return right({
+      session, 
+    })
   }
 }

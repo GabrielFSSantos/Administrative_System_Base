@@ -9,9 +9,14 @@ import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-
 import { LogoutUserContract } from './contracts/logout-user-contract'
 import { LogoutUserService } from './logout-user.service'
 
-describe('Logout User Service Test', () => {
+describe('LogoutUserService', () => {
   let service: LogoutUserContract
   let revokeSession: FakeRevokeSessionUseCase
+
+  const createdAt = new Date('2025-05-10T16:38:07.310Z')
+  const expiresAtFuture = new Date('2025-05-10T17:40:07.310Z')
+  const expiresAtPast = new Date('2025-05-10T16:39:07.310Z')
+  const revokedAtFuture = new Date('2025-05-10T16:40:12.310Z')
 
   beforeEach(() => {
     revokeSession = new FakeRevokeSessionUseCase()
@@ -20,13 +25,14 @@ describe('Logout User Service Test', () => {
 
   it('should successfully revoke a session', async () => {
     revokeSession.session = makeSession({
-      recipientId: new UniqueEntityId('correct-user-id'),
+      recipientId: new UniqueEntityId('user-1'),
       accessToken: 'valid-token',
-      expiresAt: new Date(Date.now() + 1000), 
+      createdAt,
+      expiresAt: expiresAtFuture,
     })
 
     const result = await service.execute({
-      recipientId: 'correct-user-id',
+      recipientId: 'user-1',
       accessToken: 'valid-token',
     })
 
@@ -37,8 +43,8 @@ describe('Logout User Service Test', () => {
     revokeSession.shouldReturnNotFound = true
 
     const result = await service.execute({
-      recipientId: 'any-id',
-      accessToken: 'invalid-token',
+      recipientId: 'user-1',
+      accessToken: 'non-existent-token',
     })
 
     expect(result.isLeft()).toBe(true)
@@ -47,11 +53,13 @@ describe('Logout User Service Test', () => {
 
   it('should return SessionExpiredError if session is expired', async () => {
     revokeSession.session = makeSession({
-      expiresAt: new Date(Date.now() - 1000),
+      recipientId: new UniqueEntityId('user-1'),
+      createdAt,
+      expiresAt: expiresAtPast,
     })
 
     const result = await service.execute({
-      recipientId: 'correct-user-id',
+      recipientId: 'user-1',
       accessToken: 'expired-token',
     })
 
@@ -61,11 +69,13 @@ describe('Logout User Service Test', () => {
 
   it('should return NotAllowedError if session belongs to another user', async () => {
     revokeSession.session = makeSession({
-      recipientId: new UniqueEntityId('different-user-id'),
+      recipientId: new UniqueEntityId('user-x'),
+      createdAt,
+      expiresAt: expiresAtFuture,
     })
 
     const result = await service.execute({
-      recipientId: 'unauthorized-user-id',
+      recipientId: 'user-1',
       accessToken: 'token',
     })
 
@@ -74,15 +84,17 @@ describe('Logout User Service Test', () => {
   })
 
   it('should return NotAllowedError if session is already revoked', async () => {
-    const session = makeSession()
+    revokeSession.session = makeSession({
+      recipientId: new UniqueEntityId('user-1'),
+      createdAt,
+      expiresAt: expiresAtFuture,
+      revokedAt: revokedAtFuture,
+    })
 
-    session.revoke()
-
-    revokeSession.session = session
     revokeSession.shouldReturnAlreadyRevoked = true
 
     const result = await service.execute({
-      recipientId: 'correct-user-id',
+      recipientId: 'user-1',
       accessToken: 'revoked-token',
     })
 
