@@ -4,6 +4,7 @@ import { left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
+import { SessionAlreadyRevokedError } from '../entities/errors/session-already-revoked-error'
 import { SessionsRepositoryContract } from '../repositories/contracts/sessions-repository-contract'
 import { 
   IRevokeSessionUseCaseRequest, 
@@ -29,16 +30,16 @@ export class RevokeSessionUseCase implements RevokeSessionContract {
       return left(new ResourceNotFoundError())
     }
 
+    if (!session.belongsTo(recipientId)) {
+      return left(new NotAllowedError())
+    }
+
     if (session.isExpired()) {
       return left(new SessionExpiredError())
     }
 
-    if(session.belongsTo(recipientId)) {
-      return left(new NotAllowedError())
-    }
-
-    if(session.isRevoked()) {
-      return left(new NotAllowedError())
+    if (session.isRevoked()) {
+      return left(new SessionAlreadyRevokedError())
     }
 
     session.revoke()

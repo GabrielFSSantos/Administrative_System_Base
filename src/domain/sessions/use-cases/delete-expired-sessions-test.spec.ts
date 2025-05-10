@@ -15,16 +15,21 @@ describe('Delete Expired Sessions Test', () => {
   })
 
   it('should delete only expired sessions', async () => {
+    const now = new Date()
+
     const expired1 = makeSession({
-      expiresAt: new Date(Date.now() - 1000 * 60 * 60), // 1h atrás
+      createdAt: new Date(now.getTime() - 70 * 60 * 1000), // 70min atrás
+      expiresAt: new Date(now.getTime() - 60 * 60 * 1000), // 60min atrás
     })
 
     const expired2 = makeSession({
-      expiresAt: new Date(Date.now() - 1000 * 60 * 5), // 5min atrás
+      createdAt: new Date(now.getTime() - 10 * 60 * 1000), // 10min atrás
+      expiresAt: new Date(now.getTime() - 5 * 60 * 1000),  // 5min atrás
     })
 
     const valid = makeSession({
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60), // 1h no futuro
+      createdAt: new Date(now.getTime() - 5 * 60 * 1000), // 5min atrás
+      expiresAt: new Date(now.getTime() + 60 * 60 * 1000), // 1h no futuro
     })
 
     await inMemorySessionsRepository.create(expired1)
@@ -38,11 +43,14 @@ describe('Delete Expired Sessions Test', () => {
   })
 
   it('should not delete sessions if none are expired', async () => {
-    const session1 = makeSession({
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60), // futuro
+    const now = new Date()
+
+    const session = makeSession({
+      createdAt: new Date(now.getTime() - 5 * 60 * 1000),
+      expiresAt: new Date(now.getTime() + 60 * 60 * 1000),
     })
 
-    await inMemorySessionsRepository.create(session1)
+    await inMemorySessionsRepository.create(session)
 
     await sut.execute()
 
@@ -50,12 +58,16 @@ describe('Delete Expired Sessions Test', () => {
   })
 
   it('should remove all sessions if all are expired', async () => {
+    const now = new Date()
+
     const expired1 = makeSession({
-      expiresAt: new Date(Date.now() - 1000 * 60 * 10),
+      createdAt: new Date(now.getTime() - 20 * 60 * 1000),
+      expiresAt: new Date(now.getTime() - 10 * 60 * 1000),
     })
 
     const expired2 = makeSession({
-      expiresAt: new Date(Date.now() - 1000 * 60 * 20),
+      createdAt: new Date(now.getTime() - 30 * 60 * 1000),
+      expiresAt: new Date(now.getTime() - 15 * 60 * 1000),
     })
 
     await inMemorySessionsRepository.create(expired1)

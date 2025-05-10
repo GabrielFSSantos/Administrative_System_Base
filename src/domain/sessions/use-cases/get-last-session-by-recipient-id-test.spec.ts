@@ -16,34 +16,56 @@ describe('Get Last Session By RecipientId Test', () => {
     sut = new GetLastSessionByRecipientIdUseCase(inMemorySessionsRepository)
   })
 
-  it('should return the last session for a given recipientId', async () => {
-    const recipientId = new UniqueEntityId('user-123')
+  it('should return the most recent session for a valid recipientId', async () => {
+    const recipientId = new UniqueEntityId('recipient-01')
 
     const olderSession = makeSession({
       recipientId,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 dia atrás
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5h atrás
     })
 
-    const newerSession = makeSession({
+    const recentSession = makeSession({
       recipientId,
       createdAt: new Date(), // agora
     })
 
     await inMemorySessionsRepository.create(olderSession)
-    await inMemorySessionsRepository.create(newerSession)
+    await inMemorySessionsRepository.create(recentSession)
 
-    const result = await sut.execute({ recipientId: recipientId.toString() })
+    const result = await sut.execute({
+      recipientId: recipientId.toString(),
+    })
 
     expect(result.isRight()).toBe(true)
 
     if (result.isRight()) {
-      expect(result.value.session.id.toString()).toBe(newerSession.id.toString())
+      expect(result.value.session.id.toString()).toBe(recentSession.id.toString())
     }
   })
 
-  it('should return ResourceNotFoundError if no session exists for recipientId', async () => {
+  it('should return ResourceNotFoundError if no session is found for recipientId', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId().toString(),
+      recipientId: new UniqueEntityId('non-existent-id').toString(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should ignore sessions from different recipientId', async () => {
+    const sessionA = makeSession({
+      recipientId: new UniqueEntityId('user-A'),
+    })
+
+    const sessionB = makeSession({
+      recipientId: new UniqueEntityId('user-B'),
+    })
+
+    await inMemorySessionsRepository.create(sessionA)
+    await inMemorySessionsRepository.create(sessionB)
+
+    const result = await sut.execute({
+      recipientId: 'user-C', // não existe
     })
 
     expect(result.isLeft()).toBe(true)

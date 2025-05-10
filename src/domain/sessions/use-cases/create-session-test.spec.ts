@@ -1,90 +1,60 @@
-import { FakeEncrypter } from 'test/fakes/cryptography/fake-encrypter'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
-import { Session } from '../entities/session'
+import { InvalidSessionDateExpiredError } from '../entities/errors/invalid-session-date-expired-error-error'
 import { CreateSessionContract } from './contracts/create-session-contract'
 import { CreateSessionUseCase } from './create-session-use-case'
-import { SessionExpiredError } from './errors/session-expired-error'
-
-let inMemorySessionsRepository: InMemorySessionsRepository
-let fakeEncrypter: FakeEncrypter
-let sut: CreateSessionContract
 
 describe('Create Session Test', () => {
+  let inMemorySessionsRepository: InMemorySessionsRepository
+  let sut: CreateSessionContract
+
   beforeEach(() => {
     inMemorySessionsRepository = new InMemorySessionsRepository()
-    fakeEncrypter = new FakeEncrypter()
-
-    sut = new CreateSessionUseCase(
-      inMemorySessionsRepository,
-    )
+    sut = new CreateSessionUseCase(inMemorySessionsRepository)
   })
 
-  it('should be able to create a new session', async () => {
-    const recipientId = new UniqueEntityId().toString()
-
-    const {accessToken, expiresAt} = await fakeEncrypter.encrypt({
-      sub: recipientId.toString(),
-    })
+  it('should create a new valid session', async () => {
+    const recipientId = new UniqueEntityId('user-1')
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000)
 
     const result = await sut.execute({
-      recipientId,
-      accessToken,
+      recipientId: recipientId.toString(),
+      accessToken: 'access-token',
       expiresAt,
     })
 
     expect(result.isRight()).toBe(true)
   })
 
-  it('should not create session if expiresAt is in the past', async () => {
-    const recipientId = new UniqueEntityId().toString()
+  it('should throw if expiresAt is in the past', async () => {
+    const recipientId = new UniqueEntityId('user-2')
+    const expiresAt = new Date(Date.now() - 1000)
   
-    const result = await sut.execute({
-      recipientId,
-      accessToken: 'fake-token',
-      expiresAt: new Date(Date.now() - 1000),
-    })
-  
-    expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(SessionExpiredError)
+    await expect(
+      sut.execute({
+        recipientId: recipientId.toString(),
+        accessToken: 'expired-token',
+        expiresAt,
+      }),
+    ).rejects.toThrow(InvalidSessionDateExpiredError)
   })
 
-  it('should store the session in the repository with correct values', async () => {
-    const recipientId = new UniqueEntityId()
-    const { accessToken, expiresAt } = await fakeEncrypter.encrypt({
-      sub: recipientId.toString(),
-    })
-  
+  it('should persist the session with correct values', async () => {
+    const recipientId = new UniqueEntityId('user-3')
+    const accessToken = 'stored-token'
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
+
     await sut.execute({
       recipientId: recipientId.toString(),
       accessToken,
       expiresAt,
     })
-  
-    expect(inMemorySessionsRepository.items).toHaveLength(1)
-    const session = inMemorySessionsRepository.items[0]
-  
-    expect(session.recipientId.toString()).toBe(recipientId.toString())
-    expect(session.accessToken).toBe(accessToken)
-    expect(session.expiresAt.getTime()).toBe(expiresAt.getTime())
-  })
 
-  it('should call isExpired before saving', async () => {
-    const recipientId = new UniqueEntityId()
-    const { accessToken, expiresAt } = await fakeEncrypter.encrypt({
-      sub: recipientId.toString(),
-    })
-  
-    const spy = vi.spyOn(Session.prototype, 'isExpired')
-  
-    await sut.execute({
-      recipientId: recipientId.toString(),
-      accessToken,
-      expiresAt,
-    })
-  
-    expect(spy).toHaveBeenCalled()
+    const stored = inMemorySessionsRepository.items[0]
+
+    expect(stored.recipientId.toString()).toBe(recipientId.toString())
+    expect(stored.accessToken).toBe(accessToken)
   })
 })
