@@ -1,5 +1,6 @@
 import { Either } from '@/core/either'
 
+import { Session } from '../../entities/session'
 import { SessionExpiredError } from '../errors/session-expired-error'
 
 export interface ICreateSessionUseCaseRequest {
@@ -10,7 +11,9 @@ export interface ICreateSessionUseCaseRequest {
 
 export type ICreateSessionUseCaseResponse = Either<
   SessionExpiredError,
-  null
+  {
+    session: Session
+  }
 >
 
 export abstract class CreateSessionContract {

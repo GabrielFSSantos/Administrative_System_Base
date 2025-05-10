@@ -4,6 +4,7 @@ import { left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
+import { SessionAlreadyRevokedError } from '../entities/errors/session-already-revoked-error'
 import { SessionsRepositoryContract } from '../repositories/contracts/sessions-repository-contract'
 import {
   IValidateSessionUseCaseRequest,
@@ -28,18 +29,20 @@ export class ValidateSessionUseCase implements ValidateSessionContract {
       return left(new ResourceNotFoundError())
     }
 
-    if (session.belongsTo(recipientId)) {
+    if (!session.belongsTo(recipientId)) {
       return left(new NotAllowedError())
     }
 
     if (session.isExpired()) {
       return left(new SessionExpiredError())
     }
-
+    
     if (session.isRevoked()) {
-      return left(new NotAllowedError())
+      return left(new SessionAlreadyRevokedError())
     }
 
-    return right({ session })
+    return right({ 
+      session,
+    })
   }
 }
