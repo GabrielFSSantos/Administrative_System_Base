@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Role } from '@/domain/roles/entities/role'
 import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { GetRoleUseCase } from '@/domain/roles/use-cases/get-role-use-case'
+import { Permissions } from '@/shared/permissions'
 
 import { GetRoleContract } from './contracts/get-role-contract'
 
@@ -18,11 +19,14 @@ describe('Get Role Test', () => {
   })
 
   it('should be able to get an existing role by ID', async () => {
+    const recipientId = new UniqueEntityId('company-1')
+
     const role = Role.create({
+      recipientId,
       name: 'Viewer',
       permissions: [
-        PermissionName.parse('view_user'),
-        PermissionName.parse('edit_user'),
+        PermissionName.parse(Permissions.USERS.VIEW),
+        PermissionName.parse(Permissions.USERS.EDIT),
       ],
     })
 
@@ -33,10 +37,13 @@ describe('Get Role Test', () => {
     expect(result.isRight()).toBe(true)
 
     if (result.isRight()) {
-      expect(result.value.role.name).toBe('Viewer')
-      expect(result.value.role.permissionValues).toEqual(
+      const fetchedRole = result.value.role
+
+      expect(fetchedRole.name).toBe('Viewer')
+      expect(fetchedRole.permissionValues).toEqual(
         expect.arrayContaining(['view_user', 'edit_user']),
       )
+      expect(fetchedRole.recipientId.toString()).toBe(recipientId.toString())
     }
   })
 

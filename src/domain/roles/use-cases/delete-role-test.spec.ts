@@ -19,6 +19,7 @@ describe('Delete Role Test', () => {
 
   it('should be able to delete an existing role', async () => {
     const role = Role.create({
+      recipientId: new UniqueEntityId('company-1'),
       name: 'Admin',
       permissions: [
         PermissionName.parse('create_user'),

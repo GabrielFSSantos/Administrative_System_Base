@@ -6,11 +6,16 @@ import { RolePermissionList } from './role-permission-list'
 import { PermissionName } from './value-objects/permission-name'
 
 interface RoleProps {
+  recipientId: UniqueEntityId
   name: string
   permissions: RolePermissionList
 }
 
 export class Role extends Entity<RoleProps> {
+  get recipientId(): UniqueEntityId {
+    return this.props.recipientId
+  }
+
   get name(): string {
     return this.props.name
   }
@@ -40,7 +45,10 @@ export class Role extends Entity<RoleProps> {
   }
 
   static create(
-    props: { name: string; permissions: PermissionName[] },
+    props: { 
+      recipientId: UniqueEntityId, 
+      name: string; 
+      permissions: PermissionName[] },
     id?: UniqueEntityId,
   ): Role {
     if (!Role.isValidName(props.name)) {
@@ -50,7 +58,8 @@ export class Role extends Entity<RoleProps> {
     const permissionList = new RolePermissionList(props.permissions)
   
     return new Role(
-      { 
+      {
+        recipientId: props.recipientId, 
         name: props.name, 
         permissions: permissionList, 
       }, 

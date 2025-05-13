@@ -1,6 +1,5 @@
 import { Either } from '@/core/either'
-
-import { Session } from '../../entities/session'
+import { Session } from '@/domain/sessions/entities/session'
 
 export interface IFetchManySessionsUseCaseRequest {
   page: number
