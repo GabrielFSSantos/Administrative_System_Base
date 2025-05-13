@@ -28,7 +28,7 @@ describe('Entity', () => {
     const id = new UniqueEntityId()
 
     const entity1 = TestEntity.create('one', id)
-    const entity2 = TestEntity.create('two', id) // mesmo ID, props diferentes
+    const entity2 = TestEntity.create('two', id)
 
     expect(entity1.equals(entity2)).toBe(true)
   })

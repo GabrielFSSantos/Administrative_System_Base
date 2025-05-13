@@ -1,32 +1,24 @@
 import { Injectable } from '@nestjs/common'
 
-import { Either, right } from '@/core/either'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
-import { ICreateSessionUseCase } from '@/domain/sessions/use-cases/contracts/create-session.interface'
-import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
-import { IAuthenticateUserUseCase } from '@/domain/users/use-cases/contracts/authenticate-user.interface'
-import { WrongCredentialsError } from '@/domain/users/use-cases/errors/wrong-credentials-error'
+import { right } from '@/core/either'
+import { CreateSessionContract } from '@/domain/sessions/use-cases/contracts/create-session-contract'
+import { AuthenticateUserContract } from '@/domain/users/use-cases/contracts/authenticate-user-contract'
 
-interface LoginUserRequest {
-  email: string
-  password: string
-}
-
-type LoginUserResponse = Either<
-  WrongCredentialsError | NotAllowedError | SessionExpiredError,
-  {
-    accessToken: string
-  }
->
+import { 
+  ILoginUserRequest, 
+  ILoginUserResponse, 
+  LoginUserContract,
+} from './contracts/login-user-contract'
 
 @Injectable()
-export class LoginUserService  {
+export class LoginUserService implements LoginUserContract{
   constructor(
-    private readonly authenticateUser: IAuthenticateUserUseCase,
-    private readonly createSession: ICreateSessionUseCase,
+    private readonly authenticateUser: AuthenticateUserContract,
+    private readonly createSession: CreateSessionContract,
   ) {}
 
-  async execute({email, password}: LoginUserRequest): Promise<LoginUserResponse> {
+  async execute({email, password}: ILoginUserRequest): 
+  Promise<ILoginUserResponse> {
     const result = await this.authenticateUser.execute({email, password})
 
     if (result.isLeft()) {

@@ -1,9 +1,9 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User } from '@/domain/users/entities/user'
-import { UsersRepository } from '@/domain/users/repositories/users-repository'
-import { IFetchManyUsersUseCaseRequest } from '@/domain/users/use-cases/contracts/fetch-many-users.interface'
+import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
+import { IFetchManyUsersUseCaseRequest } from '@/domain/users/use-cases/contracts/fetch-many-users-contract'
 
-export class InMemoryUsersRepository implements UsersRepository {
+export class InMemoryUsersRepository implements UsersRepositoryContract {
   public items: User[] = []
 
   async findById(id: string): Promise<User | null> {
@@ -26,7 +26,7 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user
   }
 
-  async findMany({ page, pageSize, search, role, isActive }: IFetchManyUsersUseCaseRequest): Promise<User[]> {
+  async findMany({ page, pageSize, search, roleId, isActive }: IFetchManyUsersUseCaseRequest): Promise<User[]> {
   
     let results = this.items
   
@@ -39,8 +39,8 @@ export class InMemoryUsersRepository implements UsersRepository {
       )
     }
   
-    if (role) {
-      results = results.filter((user) => user.role === role)
+    if (roleId) {
+      results = results.filter((user) => user.roleId.toString() === roleId)
     }
   
     if (isActive) {
