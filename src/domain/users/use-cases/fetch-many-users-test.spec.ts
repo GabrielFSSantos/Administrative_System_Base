@@ -2,7 +2,8 @@ import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
-import { Name } from '../entities/value-objects/name'
+import { Name } from '@/shared/value-objects/name'
+
 import { FetchManyUsersContract } from './contracts/fetch-many-users-contract'
 import { InvalidPaginationParamsError } from './errors/invalid-pagination-params-error'
 import { FetchManyUsersUseCase } from './fetch-many-users-use-case'

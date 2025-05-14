@@ -1,6 +1,6 @@
 import { ValueObject } from '@/core/entities/value-object'
 
-import { InvalidUserNameError } from './errors/invalid-user-name-error'
+import { InvalidNameError } from './errors/invalid-name-error'
 
 interface NameProps {
   value: string
@@ -16,7 +16,7 @@ export class Name extends ValueObject<NameProps> {
     const trimmed = value.trim()
 
     // Regras:
-    if (trimmed.length < 2 || trimmed.length > 100) return false
+    if (trimmed.length < 3 || trimmed.length > 50) return false
 
     // Permite letras, espaços e acentos. Rejeita números e símbolos especiais.
     const validPattern = /^[A-Za-zÀ-ÿ\s]+$/
@@ -37,7 +37,7 @@ export class Name extends ValueObject<NameProps> {
     const normalized = this.normalize(raw)
 
     if (!this.isValid(normalized)) {
-      throw new InvalidUserNameError()
+      throw new InvalidNameError()
     }
 
     const name = new Name({ value: normalized })

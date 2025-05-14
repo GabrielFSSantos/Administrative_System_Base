@@ -4,7 +4,7 @@ import { vi } from 'vitest'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
-import { Name } from '@/domain/users/entities/value-objects/name'
+import { Name } from '@/shared/value-objects/name'
 
 import { EditUserContract } from './contracts/edit-user-contract'
 import { EditUserUseCase } from './edit-user-use-case'

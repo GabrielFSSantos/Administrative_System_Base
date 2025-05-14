@@ -5,7 +5,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { CPF } from '@/domain/users/entities/value-objects/cpf'
 import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
 import { WeakPasswordError } from '@/domain/users/entities/value-objects/errors/weak-password-error'
-import { Name } from '@/domain/users/entities/value-objects/name'
+import { Name } from '@/shared/value-objects/name'
 
 import { CreateUserContract } from './contracts/create-user-contract'
 import { CreateUserUseCase } from './create-user-use-case'

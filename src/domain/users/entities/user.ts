@@ -1,11 +1,11 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { Name } from '@/shared/value-objects/name'
 
 import { InvalidUpdatedAtError } from './errors/invalid-updated-at-error'
 import { CPF } from './value-objects/cpf'
 import { EmailAddress } from './value-objects/email-address'
-import { Name } from './value-objects/name'
 import { PasswordHash } from './value-objects/password-hash'
 
 export interface UserProps {

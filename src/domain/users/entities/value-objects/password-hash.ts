@@ -1,6 +1,6 @@
-import { HashComparerContract } from '@/core/contracts/cryptography/hash-comparer-contract'
-import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-generator-contract'
 import { ValueObject } from '@/core/entities/value-object'
+import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
+import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
 
 import { InvalidPasswordHashError } from './errors/invalid-password-hash-error'
 import { WeakPasswordError } from './errors/weak-password-error'

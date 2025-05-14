@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
 
-import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-generator-contract'
 import { left,right } from '@/core/either'
+import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
+import { Name } from '@/shared/value-objects/name'
 
 import { User } from '../entities/user'
 import { CPF } from '../entities/value-objects/cpf'
 import { EmailAddress } from '../entities/value-objects/email-address'
-import { Name } from '../entities/value-objects/name'
 import { PasswordHash } from '../entities/value-objects/password-hash'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
