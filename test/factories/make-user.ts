@@ -16,7 +16,7 @@ export async function makeUser(
   const name = override.name ?? generateNameValueObject()
   const emailAddress = override.emailAddress ?? generateEmailValueObject()
   const passwordHash = override.passwordHash ??
-    await PasswordHash.generateFromPlain('Strong@123', new FakeHasher())
+    await PasswordHash.createFromPlain('Strong@123', new FakeHasher())
 
   const user = User.create(
     {

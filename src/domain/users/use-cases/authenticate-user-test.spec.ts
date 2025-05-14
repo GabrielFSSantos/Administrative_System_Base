@@ -25,7 +25,7 @@ describe('Authenticate User Use Case Test', () => {
 
   it('should authenticate a user with valid credentials', async () => {
     const password = 'Strong@123'
-    const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
+    const hashedPassword = await PasswordHash.createFromPlain(password, hashComparer)
     const user = await makeUser({ passwordHash: hashedPassword })
 
     await usersRepository.create(user)
@@ -54,7 +54,7 @@ describe('Authenticate User Use Case Test', () => {
   })
 
   it('should fail if password is incorrect', async () => {
-    const hashedPassword = await PasswordHash.generateFromPlain('ValidPass@1', hashComparer)
+    const hashedPassword = await PasswordHash.createFromPlain('ValidPass@1', hashComparer)
     const user = await makeUser({ passwordHash: hashedPassword })
 
     await usersRepository.create(user)
@@ -71,7 +71,7 @@ describe('Authenticate User Use Case Test', () => {
   it('should call hashComparer.compare with correct values', async () => {
     const plain = 'Secret@123'
     const hash = await hashComparer.generate(plain)
-    const hashedPassword = await PasswordHash.generateFromPlain(plain, hashComparer)
+    const hashedPassword = await PasswordHash.createFromPlain(plain, hashComparer)
 
     const user = await makeUser({ passwordHash: hashedPassword })
 
@@ -86,7 +86,7 @@ describe('Authenticate User Use Case Test', () => {
 
   it('should generate a token with user id as subject', async () => {
     const password = 'TokenTest@1'
-    const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
+    const hashedPassword = await PasswordHash.createFromPlain(password, hashComparer)
     const user = await makeUser({ passwordHash: hashedPassword })
 
     await usersRepository.create(user)
@@ -100,7 +100,7 @@ describe('Authenticate User Use Case Test', () => {
 
   it('should return a token with future expiration date', async () => {
     const password = 'FutureTest@2'
-    const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
+    const hashedPassword = await PasswordHash.createFromPlain(password, hashComparer)
     const user = await makeUser({ passwordHash: hashedPassword })
 
     await usersRepository.create(user)

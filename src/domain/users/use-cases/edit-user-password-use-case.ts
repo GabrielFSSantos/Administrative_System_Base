@@ -47,7 +47,7 @@ export class EditUserPasswordUseCase implements EditUserPasswordContract{
       return left(new SamePasswordError())
     }
 
-    const newPasswordHash = await PasswordHash.generateFromPlain(newPassword, this.hashGenerator)
+    const newPasswordHash = await PasswordHash.createFromPlain(newPassword, this.hashGenerator)
 
     user.changePasswordHash(newPasswordHash)
 

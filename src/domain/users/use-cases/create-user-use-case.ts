@@ -33,7 +33,7 @@ export class CreateUserUseCase implements CreateUserContract {
     const nameObject = Name.create(name)
     const cpfObject = CPF.create(cpf)
     const emailObject = EmailAddress.create(emailAddress)
-    const passwordObject = await PasswordHash.generateFromPlain(password, this.hashGenerator)
+    const passwordObject = await PasswordHash.createFromPlain(password, this.hashGenerator)
 
     const existingCpfUser =
       await this.usersRepository.findByCpf(cpfObject.value)

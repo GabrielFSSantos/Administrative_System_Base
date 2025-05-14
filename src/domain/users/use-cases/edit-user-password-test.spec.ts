@@ -25,7 +25,7 @@ describe('Edit User Password Use Case Test', () => {
   it('should update user password when current is valid and new is different', async () => {
     const currentPassword = 'OldPass@1'
     const newPassword = 'NewPass@1'
-    const hashedPassword = await PasswordHash.generateFromPlain(currentPassword, hasher)
+    const hashedPassword = await PasswordHash.createFromPlain(currentPassword, hasher)
 
     const user = await makeUser({ passwordHash: hashedPassword })
 
@@ -52,7 +52,7 @@ describe('Edit User Password Use Case Test', () => {
   })
 
   it('should return error if current password is incorrect', async () => {
-    const hashedPassword = await PasswordHash.generateFromPlain('Valid@123', hasher)
+    const hashedPassword = await PasswordHash.createFromPlain('Valid@123', hasher)
 
     const user = await makeUser({ passwordHash: hashedPassword })
 
@@ -70,7 +70,7 @@ describe('Edit User Password Use Case Test', () => {
 
   it('should return error if new password matches current', async () => {
     const samePassword = 'SamePass@1'
-    const hash = await PasswordHash.generateFromPlain(samePassword, hasher)
+    const hash = await PasswordHash.createFromPlain(samePassword, hasher)
 
     const user = await makeUser({ passwordHash: hash })
 
@@ -89,7 +89,7 @@ describe('Edit User Password Use Case Test', () => {
   it('should store new hashed password on success', async () => {
     const oldPassword = 'OldOne@1'
     const newPassword = 'NewOne@1'
-    const oldHash = await PasswordHash.generateFromPlain(oldPassword, hasher)
+    const oldHash = await PasswordHash.createFromPlain(oldPassword, hasher)
 
     const user = await makeUser({ passwordHash: oldHash })
 
@@ -108,7 +108,7 @@ describe('Edit User Password Use Case Test', () => {
 
   it('should call save repository method', async () => {
     const spy = vi.spyOn(usersRepository, 'save')
-    const hashed = await PasswordHash.generateFromPlain('Initial@1', hasher)
+    const hashed = await PasswordHash.createFromPlain('Initial@1', hasher)
 
     const user = await makeUser({ passwordHash: hashed })
 

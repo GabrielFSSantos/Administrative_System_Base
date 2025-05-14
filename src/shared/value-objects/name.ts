@@ -12,20 +12,6 @@ export class Name extends ValueObject<NameProps> {
     return this.props.value
   }
 
-  public static isValid(value: string): boolean {
-    const trimmed = value.trim()
-
-    // Regras:
-    if (trimmed.length < 3 || trimmed.length > 50) return false
-
-    // Permite letras, espaços e acentos. Rejeita números e símbolos especiais.
-    const validPattern = /^[A-Za-zÀ-ÿ\s]+$/
-
-    if (!validPattern.test(trimmed)) return false
-
-    return true
-  }
-
   private static normalize(value: string): string {
     return value
       .trim()
@@ -33,8 +19,21 @@ export class Name extends ValueObject<NameProps> {
       .replace(/\b\w/g, (char) => char.toUpperCase()) // capitaliza cada palavra
   }
 
-  public static create(raw: string): Name {
-    const normalized = this.normalize(raw)
+  private static isValid(value: string): boolean {
+
+    // Regras:
+    if (value.length < 3 || value.length > 50) return false
+
+    // Permite letras, espaços e acentos. Rejeita números e símbolos especiais.
+    const validPattern = /^[A-Za-zÀ-ÿ\s]+$/
+
+    if (!validPattern.test(value)) return false
+
+    return true
+  }
+
+  public static create(value: string): Name {
+    const normalized = this.normalize(value)
 
     if (!this.isValid(normalized)) {
       throw new InvalidNameError()

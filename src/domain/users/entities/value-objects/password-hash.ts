@@ -35,7 +35,7 @@ export class PasswordHash extends ValueObject<PasswordHashProps> {
     return comparer.compare(plain, this.value)
   }
 
-  public static fromHashed(hash: string): PasswordHash {
+  public static createfromHashed(hash: string): PasswordHash {
     if (!this.isValidHash(hash)) {
       throw new InvalidPasswordHashError()
     }
@@ -43,7 +43,7 @@ export class PasswordHash extends ValueObject<PasswordHashProps> {
     return new PasswordHash({ value: hash })
   }
 
-  public static async generateFromPlain(
+  public static async createFromPlain(
     plain: string,
     hasher: HashGeneratorContract,
   ): Promise<PasswordHash> {
@@ -53,6 +53,6 @@ export class PasswordHash extends ValueObject<PasswordHashProps> {
 
     const hashed = await hasher.generate(plain)
 
-    return this.fromHashed(hashed)
+    return this.createfromHashed(hashed)
   }
 }

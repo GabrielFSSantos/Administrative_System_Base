@@ -11,6 +11,10 @@ export class EmailAddress extends ValueObject<EmailAddressProps> {
     return this.props.value
   }
 
+  private static normalize(value: string): string {
+    return value.trim().toLowerCase()
+  }
+
   private static isValid(value: string): boolean {
     const emailRegex =
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -23,12 +27,8 @@ export class EmailAddress extends ValueObject<EmailAddressProps> {
     )
   }
 
-  private static normalize(value: string): string {
-    return value.trim().toLowerCase()
-  }
-
-  public static create(raw: string): EmailAddress {
-    const normalized = this.normalize(raw)
+  public static create(value: string): EmailAddress {
+    const normalized = this.normalize(value)
 
     if (!this.isValid(normalized)) {
       throw new InvalidEmailAddressError()
