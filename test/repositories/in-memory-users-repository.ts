@@ -16,6 +16,16 @@ export class InMemoryUsersRepository implements UsersRepositoryContract {
     return user
   }
 
+  async findByCpf(cpf: string): Promise<User | null> {
+    const user = this.items.find((item) => item.cpf.value === cpf)
+
+    if (!user) {
+      return null
+    }
+
+    return user
+  }
+
   async findByEmail(emailAddress: string): Promise<User | null> {
     const user = this.items.find((item) => item.emailAddress.value === emailAddress)
 

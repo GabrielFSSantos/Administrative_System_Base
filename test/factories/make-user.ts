@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
-import { generateValidCPF } from 'test/fakes/users/fake-generate-valid-cpf'
+import { generateValidCPF } from 'test/fakes/users/value-objects/fake-generate-valid-cpf'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User, UserProps} from '@/domain/users/entities/user'
@@ -14,10 +14,11 @@ export async function makeUser(
   id?: UniqueEntityId,
 ) {
 
-  const cpf = CPF.create(generateValidCPF())
-  const name = Name.create(faker.person.firstName())
-  const emailAddress = EmailAddress.create(faker.internet.email())
-  const passwordHash = await PasswordHash.generateFromPlain(faker.internet.password(), new FakeHasher)
+  const cpf = override.cpf ?? CPF.create(generateValidCPF())
+  const name = override.name ?? Name.create(faker.person.firstName())
+  const emailAddress = override.emailAddress ?? EmailAddress.create(faker.internet.email())
+  const passwordHash = override.passwordHash ??
+    await PasswordHash.generateFromPlain('Strong@123', new FakeHasher())
 
   const user = User.create(
     {

@@ -15,7 +15,7 @@ let usersRepository: InMemoryUsersRepository
 let hasher: FakeHasher
 let sut: EditUserPasswordContract
 
-describe('EditUserPasswordUseCase', () => {
+describe('Edit User Password Use Case Test', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     hasher = new FakeHasher()
@@ -23,8 +23,8 @@ describe('EditUserPasswordUseCase', () => {
   })
 
   it('should update user password when current is valid and new is different', async () => {
-    const currentPassword = 'old123'
-    const newPassword = 'new123'
+    const currentPassword = 'OldPass@1'
+    const newPassword = 'NewPass@1'
     const hashedPassword = await PasswordHash.generateFromPlain(currentPassword, hasher)
 
     const user = await makeUser({ passwordHash: hashedPassword })
@@ -43,8 +43,8 @@ describe('EditUserPasswordUseCase', () => {
   it('should return error if user is not found', async () => {
     const result = await sut.execute({
       userId: 'non-existent-id',
-      password: 'any',
-      newPassword: 'any',
+      password: 'Valid@123',
+      newPassword: 'NewValid@123',
     })
 
     expect(result.isLeft()).toBe(true)
@@ -52,7 +52,7 @@ describe('EditUserPasswordUseCase', () => {
   })
 
   it('should return error if current password is incorrect', async () => {
-    const hashedPassword = await PasswordHash.generateFromPlain('correct123', hasher)
+    const hashedPassword = await PasswordHash.generateFromPlain('Valid@123', hasher)
 
     const user = await makeUser({ passwordHash: hashedPassword })
 
@@ -60,8 +60,8 @@ describe('EditUserPasswordUseCase', () => {
 
     const result = await sut.execute({
       userId: user.id.toString(),
-      password: 'wrong123',
-      newPassword: 'newpass',
+      password: 'Wrong@123',
+      newPassword: 'NewValid@123',
     })
 
     expect(result.isLeft()).toBe(true)
@@ -69,8 +69,8 @@ describe('EditUserPasswordUseCase', () => {
   })
 
   it('should return error if new password matches current', async () => {
-    const plain = 'samepass'
-    const hash = await PasswordHash.generateFromPlain(plain, hasher)
+    const samePassword = 'SamePass@1'
+    const hash = await PasswordHash.generateFromPlain(samePassword, hasher)
 
     const user = await makeUser({ passwordHash: hash })
 
@@ -78,8 +78,8 @@ describe('EditUserPasswordUseCase', () => {
 
     const result = await sut.execute({
       userId: user.id.toString(),
-      password: plain,
-      newPassword: plain,
+      password: samePassword,
+      newPassword: samePassword,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -87,8 +87,8 @@ describe('EditUserPasswordUseCase', () => {
   })
 
   it('should store new hashed password on success', async () => {
-    const oldPassword = 'oldpwd'
-    const newPassword = 'newpwd'
+    const oldPassword = 'OldOne@1'
+    const newPassword = 'NewOne@1'
     const oldHash = await PasswordHash.generateFromPlain(oldPassword, hasher)
 
     const user = await makeUser({ passwordHash: oldHash })
@@ -108,7 +108,7 @@ describe('EditUserPasswordUseCase', () => {
 
   it('should call save repository method', async () => {
     const spy = vi.spyOn(usersRepository, 'save')
-    const hashed = await PasswordHash.generateFromPlain('initial', hasher)
+    const hashed = await PasswordHash.generateFromPlain('Initial@1', hasher)
 
     const user = await makeUser({ passwordHash: hashed })
 
@@ -116,8 +116,8 @@ describe('EditUserPasswordUseCase', () => {
 
     await sut.execute({
       userId: user.id.toString(),
-      password: 'initial',
-      newPassword: 'updated',
+      password: 'Initial@1',
+      newPassword: 'Updated@1',
     })
 
     expect(spy).toHaveBeenCalledWith(user)

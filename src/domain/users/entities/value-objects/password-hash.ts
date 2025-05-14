@@ -3,6 +3,7 @@ import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-genera
 import { ValueObject } from '@/core/entities/value-object'
 
 import { InvalidPasswordHashError } from './errors/invalid-password-hash-error'
+import { WeakPasswordError } from './errors/weak-password-error'
 
 interface PasswordHashProps {
   value: string
@@ -14,9 +15,17 @@ export class PasswordHash extends ValueObject<PasswordHashProps> {
   }
 
   private static isValidHash(hash: string): boolean {
-    // hash do bcrypt normalmente tem 60 caracteres e prefixo válido
     return typeof hash === 'string' &&
       /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/.test(hash)
+  }
+
+  private static isStrongPassword(password: string): boolean {
+    const minLength = 6
+    const hasUppercase = /[A-Z]/.test(password)
+    const hasNumber = /\d/.test(password)
+    const hasSpecial = /[^A-Za-z0-9]/.test(password)
+
+    return password.length >= minLength && hasUppercase && hasNumber && hasSpecial
   }
 
   public async compareWith(
@@ -38,6 +47,10 @@ export class PasswordHash extends ValueObject<PasswordHashProps> {
     plain: string,
     hasher: HashGeneratorContract,
   ): Promise<PasswordHash> {
+    if (!this.isStrongPassword(plain)) {
+      throw new WeakPasswordError()
+    }
+
     const hashed = await hasher.generate(plain)
 
     return this.fromHashed(hashed)

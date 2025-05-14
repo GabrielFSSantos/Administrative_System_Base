@@ -29,17 +29,25 @@ export class CreateUserUseCase implements CreateUserContract {
     emailAddress,
     password,
   }: ICreateUserUseCaseRequest): Promise<ICreateUserUseCaseResponse> {
-    const existingUser =
-      await this.usersRepository.findByEmail(emailAddress)
 
-    if (existingUser) {
-      return left(new UserAlreadyExistsError(emailAddress))
-    }
-
-    const cpfObject = CPF.create(cpf)
     const nameObject = Name.create(name)
+    const cpfObject = CPF.create(cpf)
     const emailObject = EmailAddress.create(emailAddress)
     const passwordObject = await PasswordHash.generateFromPlain(password, this.hashGenerator)
+
+    const existingCpfUser =
+      await this.usersRepository.findByCpf(cpfObject.value)
+
+    if (existingCpfUser) {
+      return left(new UserAlreadyExistsError(cpfObject.value))
+    }
+    
+    const existingEmailUser =
+      await this.usersRepository.findByEmail(emailObject.value)
+
+    if (existingEmailUser) {
+      return left(new UserAlreadyExistsError(emailObject.value))
+    }
 
     const user = User.create({
       cpf: cpfObject,

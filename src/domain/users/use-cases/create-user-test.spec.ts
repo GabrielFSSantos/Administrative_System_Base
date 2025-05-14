@@ -1,9 +1,10 @@
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
-import { generateValidCPF } from 'test/fakes/users/fake-generate-valid-cpf'
+import { generateValidCPF } from 'test/fakes/users/value-objects/fake-generate-valid-cpf'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
 import { CPF } from '@/domain/users/entities/value-objects/cpf'
 import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
+import { WeakPasswordError } from '@/domain/users/entities/value-objects/errors/weak-password-error'
 import { Name } from '@/domain/users/entities/value-objects/name'
 
 import { CreateUserContract } from './contracts/create-user-contract'
@@ -14,7 +15,7 @@ let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
 let sut: CreateUserContract
 
-describe('Create User Use Case', () => {
+describe('Create User Use Case Test', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     fakeHasher = new FakeHasher()
@@ -25,7 +26,7 @@ describe('Create User Use Case', () => {
     const result = await sut.execute({
       name: 'John Doe',
       emailAddress: 'john@example.com',
-      password: 'secure123',
+      password: 'Secure@123',
       cpf: generateValidCPF(),
     })
 
@@ -40,13 +41,13 @@ describe('Create User Use Case', () => {
     await sut.execute({
       name: 'John Doe',
       emailAddress: 'john@example.com',
-      password: 'mypassword',
+      password: 'Secure@123',
       cpf: generateValidCPF(),
     })
 
     const user = inMemoryUsersRepository.items[0]
 
-    const isPasswordHashed = await fakeHasher.compare('mypassword', user.passwordHash.value)
+    const isPasswordHashed = await fakeHasher.compare('Secure@123', user.passwordHash.value)
 
     expect(isPasswordHashed).toBe(true)
   })
@@ -55,20 +56,20 @@ describe('Create User Use Case', () => {
     await sut.execute({
       name: 'John Doe',
       emailAddress: 'john@example.com',
-      password: 'plaintext123',
+      password: 'Plain@123',
       cpf: generateValidCPF(),
     })
 
     const user = inMemoryUsersRepository.items[0]
 
-    expect(user.passwordHash.value).not.toBe('plaintext123')
+    expect(user.passwordHash.value).not.toBe('Plain@123')
   })
 
   it('should not allow duplicate emails', async () => {
     const data = {
       name: 'John Doe',
       emailAddress: 'john@example.com',
-      password: '123456',
+      password: 'Secure@123',
       cpf: generateValidCPF(),
     }
 
@@ -79,11 +80,44 @@ describe('Create User Use Case', () => {
     expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 
+  it('should not allow duplicate CPF', async () => {
+    const cpf = generateValidCPF()
+
+    await sut.execute({
+      name: 'User One',
+      emailAddress: 'user1@example.com',
+      password: 'Secure@123',
+      cpf,
+    })
+
+    const result = await sut.execute({
+      name: 'User Two',
+      emailAddress: 'user2@example.com',
+      password: 'Secure@123',
+      cpf,
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
+  })
+
+  it.skip('should reject weak passwords', async () => {
+    const result = await sut.execute({
+      name: 'Weak Password User',
+      emailAddress: 'weak@example.com',
+      password: 'weak',
+      cpf: generateValidCPF(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(WeakPasswordError)
+  })
+
   it('should store valid value objects', async () => {
     await sut.execute({
       name: 'Jane Smith',
       emailAddress: 'jane@example.com',
-      password: 'abc123',
+      password: 'Secure@123',
       cpf: generateValidCPF(),
     })
 

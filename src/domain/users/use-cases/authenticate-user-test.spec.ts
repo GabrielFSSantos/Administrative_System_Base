@@ -14,7 +14,7 @@ let hashComparer: FakeHasher
 let encrypter: FakeEncrypter
 let sut: AuthenticateUserContract
 
-describe('AuthenticateUserUseCase', () => {
+describe('Authenticate User Use Case Test', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     hashComparer = new FakeHasher()
@@ -24,7 +24,7 @@ describe('AuthenticateUserUseCase', () => {
   })
 
   it('should authenticate a user with valid credentials', async () => {
-    const password = 'secure123'
+    const password = 'Strong@123'
     const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
     const user = await makeUser({ passwordHash: hashedPassword })
 
@@ -46,7 +46,7 @@ describe('AuthenticateUserUseCase', () => {
   it('should fail if email does not exist', async () => {
     const result = await sut.execute({
       emailAddress: 'not@found.com',
-      password: 'irrelevant',
+      password: 'DoesntMatter@1',
     })
 
     expect(result.isLeft()).toBe(true)
@@ -54,14 +54,14 @@ describe('AuthenticateUserUseCase', () => {
   })
 
   it('should fail if password is incorrect', async () => {
-    const hashedPassword = await PasswordHash.generateFromPlain('correct', hashComparer)
+    const hashedPassword = await PasswordHash.generateFromPlain('ValidPass@1', hashComparer)
     const user = await makeUser({ passwordHash: hashedPassword })
 
     await usersRepository.create(user)
 
     const result = await sut.execute({
       emailAddress: user.emailAddress.value,
-      password: 'wrong',
+      password: 'WrongPass@1',
     })
 
     expect(result.isLeft()).toBe(true)
@@ -69,7 +69,7 @@ describe('AuthenticateUserUseCase', () => {
   })
 
   it('should call hashComparer.compare with correct values', async () => {
-    const plain = 'my-secret'
+    const plain = 'Secret@123'
     const hash = await hashComparer.generate(plain)
     const hashedPassword = await PasswordHash.generateFromPlain(plain, hashComparer)
 
@@ -85,7 +85,7 @@ describe('AuthenticateUserUseCase', () => {
   })
 
   it('should generate a token with user id as subject', async () => {
-    const password = 'test'
+    const password = 'TokenTest@1'
     const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
     const user = await makeUser({ passwordHash: hashedPassword })
 
@@ -99,7 +99,7 @@ describe('AuthenticateUserUseCase', () => {
   })
 
   it('should return a token with future expiration date', async () => {
-    const password = '123456'
+    const password = 'FutureTest@2'
     const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
     const user = await makeUser({ passwordHash: hashedPassword })
 

@@ -4,16 +4,16 @@ import { vi } from 'vitest'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
-import { GetUserContract } from './contracts/get-user-contract'
-import { GetUserUseCase } from './get-user-use-case'
+import { GetUserByIdContract } from './contracts/get-user-by-id-contract'
+import { GetUserByIdUseCase } from './get-user-by-id-use-case'
 
 let usersRepository: InMemoryUsersRepository
-let sut: GetUserContract
+let sut: GetUserByIdContract
 
-describe('GetUserUseCase', () => {
+describe('Get User By ID Use Case Test', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
-    sut = new GetUserUseCase(usersRepository)
+    sut = new GetUserByIdUseCase(usersRepository)
   })
 
   it('should retrieve a user by valid id', async () => {
