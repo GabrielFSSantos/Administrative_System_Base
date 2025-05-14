@@ -1,128 +1,125 @@
 import { makeUser } from 'test/factories/make-user'
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+import { vi } from 'vitest'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
+import { PasswordHash } from '../entities/value-objects/password-hash'
 import { EditUserPasswordContract } from './contracts/edit-user-password-contract'
 import { EditUserPasswordUseCase } from './edit-user-password-use-case'
 import { SamePasswordError } from './errors/same-password-error'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
-let inMemoryUsersRepository: InMemoryUsersRepository
-let fakeHasher: FakeHasher
+let usersRepository: InMemoryUsersRepository
+let hasher: FakeHasher
 let sut: EditUserPasswordContract
 
-describe('Edit User Password Test', () => {
+describe('Edit User Password Use Case Test', () => {
   beforeEach(() => {
-    inMemoryUsersRepository = new InMemoryUsersRepository()
-    fakeHasher = new FakeHasher()
-
-    sut = new EditUserPasswordUseCase(
-      inMemoryUsersRepository, 
-      fakeHasher,
-      fakeHasher,
-    )
+    usersRepository = new InMemoryUsersRepository()
+    hasher = new FakeHasher()
+    sut = new EditUserPasswordUseCase(usersRepository, hasher, hasher)
   })
 
-  it('should be able to edit user password', async () => {
-    const hashedPassword = await fakeHasher.generate('123456')
-    
-    const user = makeUser({
-      password: hashedPassword,
-    })
-  
-    await inMemoryUsersRepository.create(user)
+  it('should update user password when current is valid and new is different', async () => {
+    const currentPassword = 'OldPass@1'
+    const newPassword = 'NewPass@1'
+    const hashedPassword = await PasswordHash.generateFromPlain(currentPassword, hasher)
+
+    const user = await makeUser({ passwordHash: hashedPassword })
+
+    await usersRepository.create(user)
 
     const result = await sut.execute({
       userId: user.id.toString(),
-      password: '123456',
-      newPassword: '654321',
+      password: currentPassword,
+      newPassword,
     })
 
     expect(result.isRight()).toBe(true)
   })
 
-  it('should return error if user does not exist', async () => {
+  it('should return error if user is not found', async () => {
     const result = await sut.execute({
-      userId: 'non-existing-id',
-      password: '123456',
-      newPassword: '654321',
+      userId: 'non-existent-id',
+      password: 'Valid@123',
+      newPassword: 'NewValid@123',
     })
-  
+
+    expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 
   it('should return error if current password is incorrect', async () => {
-    const hashedPassword = await fakeHasher.generate('123456')
-  
-    const user = makeUser({ password: hashedPassword })
+    const hashedPassword = await PasswordHash.generateFromPlain('Valid@123', hasher)
 
-    await inMemoryUsersRepository.create(user)
-  
+    const user = await makeUser({ passwordHash: hashedPassword })
+
+    await usersRepository.create(user)
+
     const result = await sut.execute({
       userId: user.id.toString(),
-      password: 'wrong-password',
-      newPassword: '654321',
+      password: 'Wrong@123',
+      newPassword: 'NewValid@123',
     })
-  
+
+    expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 
-  it('should return error if new password is the same as current', async () => {
-    const hashedPassword = await fakeHasher.generate('123456')
-  
-    const user = makeUser({ password: hashedPassword })
+  it('should return error if new password matches current', async () => {
+    const samePassword = 'SamePass@1'
+    const hash = await PasswordHash.generateFromPlain(samePassword, hasher)
 
-    await inMemoryUsersRepository.create(user)
-  
+    const user = await makeUser({ passwordHash: hash })
+
+    await usersRepository.create(user)
+
     const result = await sut.execute({
       userId: user.id.toString(),
-      password: '123456',
-      newPassword: '123456',
+      password: samePassword,
+      newPassword: samePassword,
     })
-  
+
+    expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(SamePasswordError)
   })
 
-  it('should update user password with new hashed value', async () => {
-    const originalPassword = '123456'
-    const newPassword = '654321'
-    const hashedPassword = await fakeHasher.generate(originalPassword)
-  
-    const user = makeUser({ password: hashedPassword })
+  it('should store new hashed password on success', async () => {
+    const oldPassword = 'OldOne@1'
+    const newPassword = 'NewOne@1'
+    const oldHash = await PasswordHash.generateFromPlain(oldPassword, hasher)
 
-    await inMemoryUsersRepository.create(user)
-  
+    const user = await makeUser({ passwordHash: oldHash })
+
+    await usersRepository.create(user)
+
     await sut.execute({
       userId: user.id.toString(),
-      password: originalPassword,
+      password: oldPassword,
       newPassword,
     })
-  
-    const isPasswordCorrect = await fakeHasher.compare(
-      newPassword,
-      user.getHashedPassword(),
-    )
 
-    expect(isPasswordCorrect).toBe(true)
+    const isUpdated = await user.passwordHash.compareWith(newPassword, hasher)
+
+    expect(isUpdated).toBe(true)
   })
 
-  it('should call repository.save with updated user', async () => {
-    const spy = vi.spyOn(inMemoryUsersRepository, 'save')
-  
-    const hashedPassword = await fakeHasher.generate('123456')
-    const user = makeUser({ password: hashedPassword })
+  it('should call save repository method', async () => {
+    const spy = vi.spyOn(usersRepository, 'save')
+    const hashed = await PasswordHash.generateFromPlain('Initial@1', hasher)
 
-    await inMemoryUsersRepository.create(user)
-  
+    const user = await makeUser({ passwordHash: hashed })
+
+    await usersRepository.create(user)
+
     await sut.execute({
       userId: user.id.toString(),
-      password: '123456',
-      newPassword: '654321',
+      password: 'Initial@1',
+      newPassword: 'Updated@1',
     })
-  
-    expect(spy).toHaveBeenCalled()
-  })
 
+    expect(spy).toHaveBeenCalledWith(user)
+  })
 })

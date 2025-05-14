@@ -5,10 +5,10 @@ import { User } from '../../entities/user'
 import { UserAlreadyExistsError } from '../errors/user-already-exists-error'
 
 export interface ICreateUserUseCaseRequest {
+  cpf: string
   name: string
-  email: string
+  emailAddress: string
   password: string
-  roleId: string
 }
 
 export type ICreateUserUseCaseResponse = Either<

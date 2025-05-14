@@ -16,8 +16,8 @@ export class InMemoryUsersRepository implements UsersRepositoryContract {
     return user
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    const user = this.items.find((item) => item.email === email)
+  async findByCpf(cpf: string): Promise<User | null> {
+    const user = this.items.find((item) => item.cpf.value === cpf)
 
     if (!user) {
       return null
@@ -26,7 +26,18 @@ export class InMemoryUsersRepository implements UsersRepositoryContract {
     return user
   }
 
-  async findMany({ page, pageSize, search, roleId, isActive }: IFetchManyUsersUseCaseRequest): Promise<User[]> {
+  async findByEmail(emailAddress: string): Promise<User | null> {
+    const user = this.items.find((item) => item.emailAddress.value === emailAddress)
+
+    if (!user) {
+      return null
+    }
+
+    return user
+  }
+
+  async findMany({ page, pageSize, search}: IFetchManyUsersUseCaseRequest): 
+  Promise<{ users: User[]; total: number }> {
   
     let results = this.items
   
@@ -34,20 +45,19 @@ export class InMemoryUsersRepository implements UsersRepositoryContract {
       const term = search.toLowerCase()
 
       results = results.filter((user) =>
-        user.name.toLowerCase().includes(term) ||
-        user.email.toLowerCase().includes(term),
+        user.name.value.toLowerCase().includes(term) ||
+        user.emailAddress.value.toLowerCase().includes(term),
       )
     }
-  
-    if (roleId) {
-      results = results.filter((user) => user.roleId.toString() === roleId)
+
+    const total = results.length
+
+    const paginated = results.slice((page - 1) * pageSize, page * pageSize)
+
+    return {
+      users: paginated,
+      total,
     }
-  
-    if (isActive) {
-      results = results.filter((user) => user.isActive === isActive)
-    }
-    
-    return results.slice((page - 1) * pageSize, page * pageSize)
   }
 
   async create(user: User): Promise<void> {

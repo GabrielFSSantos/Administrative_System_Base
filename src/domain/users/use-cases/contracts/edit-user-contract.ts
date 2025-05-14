@@ -8,9 +8,7 @@ import { UserAlreadyExistsError } from '../errors/user-already-exists-error'
 export interface IEditUserUseCaseRequest {
   userId: string
   name?: string
-  email?: string
-  roleId?: string
-  isActive?: boolean
+  emailAddress?: string
 }
 
 export type IEditUserUseCaseResponse = Either<

@@ -4,7 +4,7 @@ import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { WrongCredentialsError } from '../errors/wrong-credentials-error'
 
 export interface IAuthenticateUserUseCaseRequest {
-  email: string,
+  emailAddress: string,
   password: string,
 }
 

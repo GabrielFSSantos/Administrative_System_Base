@@ -4,17 +4,18 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 import { User } from '../../entities/user'
 
-export interface IGetUserUseCaseRequest {
+export interface IGetUserByIdUseCaseRequest {
   userId: string
 }
 
-export type IGetUserUseCaseResponse = Either<
+export type IGetUserByIdUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     user: User
   }
 >
 
-export abstract class GetUserContract {
-  abstract execute(input: IGetUserUseCaseRequest): Promise<IGetUserUseCaseResponse> 
+export abstract class GetUserByIdContract {
+  abstract execute(input: IGetUserByIdUseCaseRequest): 
+  Promise<IGetUserByIdUseCaseResponse> 
 }

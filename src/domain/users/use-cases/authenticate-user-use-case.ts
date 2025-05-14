@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common'
 import { EncrypterContract } from '@/core/contracts/cryptography/encrypter-contract'
 import { HashComparerContract } from '@/core/contracts/cryptography/hash-comparer-contract'
 import { left, right } from '@/core/either'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
 
+import { EmailAddress } from '../entities/value-objects/email-address'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import { AuthenticateUserContract, 
   IAuthenticateUserUseCaseRequest, 
@@ -21,24 +21,19 @@ export class AuthenticateUserUseCase implements AuthenticateUserContract {
   ) {}
 
   async execute({
-    email,
+    emailAddress,
     password,
   }: IAuthenticateUserUseCaseRequest): Promise<IAuthenticateUserUseCaseResponse> {
-    const user = await this.usersRepository.findByEmail(email)
+    const emailObject = EmailAddress.create(emailAddress)
+
+    const user = await this.usersRepository.findByEmail(emailObject.value)
 
     if (!user) {
       return left(new WrongCredentialsError())
     }
 
-    if (!user.isCurrentlyActive()) {
-      return left(new NotAllowedError())
-    }
-
-    const isPasswordValid = await this.hashComparer.compare(
-      password,
-      user.getHashedPassword(),
-    )
-
+    const isPasswordValid = await user.passwordHash.compareWith(password, this.hashComparer)
+  
     if (!isPasswordValid) {
       return left(new WrongCredentialsError())
     }

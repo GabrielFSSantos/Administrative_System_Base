@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { right } from '@/core/either'
+import { left, right } from '@/core/either'
 
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import { 
@@ -8,6 +8,7 @@ import {
   IFetchManyUsersUseCaseRequest, 
   IFetchManyUsersUseCaseResponse, 
 } from './contracts/fetch-many-users-contract'
+import { InvalidPaginationParamsError } from './errors/invalid-pagination-params-error'
 
 @Injectable()
 export class FetchManyUsersUseCase implements FetchManyUsersContract{
@@ -15,13 +16,21 @@ export class FetchManyUsersUseCase implements FetchManyUsersContract{
     private usersRepository: UsersRepositoryContract,
   ) {}
 
-  async execute({ page, pageSize, search, roleId, isActive }: IFetchManyUsersUseCaseRequest): 
+  async execute({ page, pageSize, search}: IFetchManyUsersUseCaseRequest): 
   Promise<IFetchManyUsersUseCaseResponse> {
+    if (page < 1 || pageSize < 1) {
+      return left(new InvalidPaginationParamsError())
+    }
 
-    const users = await this.usersRepository.findMany({ page, pageSize, search, roleId, isActive })
+    const {users, total} = await this.usersRepository.findMany({ page, pageSize, search})
 
     return right({
       users,
+      pagination: {
+        page,
+        pageSize,
+        total,
+      },
     })
   }
 }

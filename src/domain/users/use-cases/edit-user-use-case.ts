@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
 
 import { left,right } from '@/core/either'
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
+import { EmailAddress } from '../entities/value-objects/email-address'
+import { Name } from '../entities/value-objects/name'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   EditUserContract,
@@ -21,9 +22,7 @@ export class EditUserUseCase implements EditUserContract{
   async execute({
     userId,
     name,
-    email,
-    roleId,
-    isActive,
+    emailAddress,
   }: IEditUserUseCaseRequest): Promise<IEditUserUseCaseResponse> {
 
     const user =  await this.usersRepository.findById(userId)
@@ -32,28 +31,21 @@ export class EditUserUseCase implements EditUserContract{
       return left(new ResourceNotFoundError())
     }
 
-    if(email && email !== user.email) {
-      const userWithSameEmail =  await this.usersRepository.findByEmail(email)
+    if(emailAddress && emailAddress !== user.emailAddress.value) {
+      const newEmail = EmailAddress.create(emailAddress)
+      const userWithSameEmail =  await this.usersRepository.findByEmail(newEmail.value)
 
-      if(userWithSameEmail && userWithSameEmail.id.toString() !== user.id.toString()) {
-        return left(new UserAlreadyExistsError(email))
+      if(userWithSameEmail && !userWithSameEmail.id.equals(user.id)) {
+        return left(new UserAlreadyExistsError(newEmail.value))
       }
 
-      user.email = email
+      user.changeEmail(newEmail)
     }
 
     if (name) {
-      user.name = name
-    }
+      const newName = Name.create(name)
 
-    if (roleId) {
-      user.roleId = new UniqueEntityId(roleId)
-    }
-
-    if (isActive === true) {
-      user.activate()
-    } else if (isActive === false) {
-      user.deactivate()
+      user.changeName(newName)
     }
 
     await this.usersRepository.save(user)

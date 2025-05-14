@@ -83,10 +83,13 @@ describe('Revoke Session Test', () => {
   })
 
   it('should return SessionAlreadyRevokedError if session is already revoked', async () => {
+    const now = new Date()
+
     const session = makeSession({
       recipientId: new UniqueEntityId('user-1'),
       accessToken: 'revoked-token',
-      revokedAt: new Date(),
+      createdAt: now,
+      revokedAt: new Date(now.getTime() + 100),
     })
 
     await inMemorySessionsRepository.create(session)

@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker'
-
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Session, SessionProps} from '@/domain/sessions/entities/session'
 
@@ -10,8 +8,8 @@ export function makeSession(
   const session = Session.create(
     {
       recipientId: new UniqueEntityId(),
-      accessToken: faker.string.uuid(),
-      expiresAt: faker.date.future(),
+      accessToken: crypto.randomUUID(),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
       ...override,
     },
     id,

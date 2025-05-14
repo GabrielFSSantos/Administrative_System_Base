@@ -5,6 +5,7 @@ import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-genera
 import { left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
+import { PasswordHash } from '../entities/value-objects/password-hash'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   EditUserPasswordContract,
@@ -34,24 +35,21 @@ export class EditUserPasswordUseCase implements EditUserPasswordContract{
       return left(new ResourceNotFoundError())
     }
 
-    const isPasswordValid = await this.hashComparer.compare(
-      password,
-      user.getHashedPassword(),
-    )
+    const isPasswordValid = await user.passwordHash.compareWith(password, this.hashComparer)
 
     if (!isPasswordValid) {
       return left(new WrongCredentialsError())
     }
 
-    const isSamePassword = password === newPassword
+    const isSamePassword = await user.passwordHash.compareWith(newPassword, this.hashComparer)
 
     if (isSamePassword) {
       return left(new SamePasswordError())
     }
 
-    const hashPassword = await this.hashGenerator.generate(newPassword)
+    const newPasswordHash = await PasswordHash.generateFromPlain(newPassword, this.hashGenerator)
 
-    user.changePassword(hashPassword)
+    user.changePasswordHash(newPasswordHash)
 
     await this.usersRepository.save(user)
 

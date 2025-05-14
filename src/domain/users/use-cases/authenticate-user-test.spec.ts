@@ -2,189 +2,118 @@ import { makeUser } from 'test/factories/make-user'
 import { FakeEncrypter } from 'test/fakes/cryptography/fake-encrypter'
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+import { vi } from 'vitest'
 
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
-
+import { PasswordHash } from '../entities/value-objects/password-hash'
 import { AuthenticateUserUseCase } from './authenticate-user-use-case'
 import { AuthenticateUserContract } from './contracts/authenticate-user-contract'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
-let inMemoryUsersRepository: InMemoryUsersRepository
-let fakeHasher: FakeHasher
-let fakeEncrypter: FakeEncrypter
+let usersRepository: InMemoryUsersRepository
+let hashComparer: FakeHasher
+let encrypter: FakeEncrypter
 let sut: AuthenticateUserContract
 
-describe('Authenticate User Test', () => {
+describe('Authenticate User Use Case Test', () => {
   beforeEach(() => {
-    inMemoryUsersRepository = new InMemoryUsersRepository()
-    fakeHasher = new FakeHasher()
-    fakeEncrypter = new FakeEncrypter()
+    usersRepository = new InMemoryUsersRepository()
+    hashComparer = new FakeHasher()
+    encrypter = new FakeEncrypter()
 
-    sut = new AuthenticateUserUseCase(
-      inMemoryUsersRepository,
-      fakeHasher,
-      fakeEncrypter,
-    )
+    sut = new AuthenticateUserUseCase(usersRepository, hashComparer, encrypter)
   })
 
-  it('should be able to authenticate an user', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
-    })
+  it('should authenticate a user with valid credentials', async () => {
+    const password = 'Strong@123'
+    const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
+    const user = await makeUser({ passwordHash: hashedPassword })
 
-    await inMemoryUsersRepository.create(user)
+    await usersRepository.create(user)
 
     const result = await sut.execute({
-      email: 'johndoe@exemple.com',
-      password: '123456',
+      emailAddress: user.emailAddress.value,
+      password,
     })
 
     expect(result.isRight()).toBe(true)
-    expect(result.value).toEqual({
-      userId: expect.any(String),
+    expect(result.value).toMatchObject({
+      userId: user.id.toString(),
       accessToken: expect.any(String),
       expiresAt: expect.any(Date),
     })
   })
 
-  it('should not authenticate an user with malformed email', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
-    })
-
-    await inMemoryUsersRepository.create(user)
-
+  it('should fail if email does not exist', async () => {
     const result = await sut.execute({
-      email: 'invalid-email',
-      password: '123456',
+      emailAddress: 'not@found.com',
+      password: 'DoesntMatter@1',
     })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 
-  it('should fail if password is wrong', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
-    })
+  it('should fail if password is incorrect', async () => {
+    const hashedPassword = await PasswordHash.generateFromPlain('ValidPass@1', hashComparer)
+    const user = await makeUser({ passwordHash: hashedPassword })
 
-    await inMemoryUsersRepository.create(user)
+    await usersRepository.create(user)
 
     const result = await sut.execute({
-      email: 'johndoe@exemple.com',
-      password: 'wrong-password',
+      emailAddress: user.emailAddress.value,
+      password: 'WrongPass@1',
     })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(WrongCredentialsError)
   })
 
-  it('should not authenticate an user with SQL injection string as email', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
-    })
+  it('should call hashComparer.compare with correct values', async () => {
+    const plain = 'Secret@123'
+    const hash = await hashComparer.generate(plain)
+    const hashedPassword = await PasswordHash.generateFromPlain(plain, hashComparer)
 
-    await inMemoryUsersRepository.create(user)
+    const user = await makeUser({ passwordHash: hashedPassword })
+
+    await usersRepository.create(user)
+
+    const spy = vi.spyOn(hashComparer, 'compare')
+
+    await sut.execute({ emailAddress: user.emailAddress.value, password: plain })
+
+    expect(spy).toHaveBeenCalledWith(plain, hash)
+  })
+
+  it('should generate a token with user id as subject', async () => {
+    const password = 'TokenTest@1'
+    const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
+    const user = await makeUser({ passwordHash: hashedPassword })
+
+    await usersRepository.create(user)
+
+    const spy = vi.spyOn(encrypter, 'encrypt')
+
+    await sut.execute({ emailAddress: user.emailAddress.value, password })
+
+    expect(spy).toHaveBeenCalledWith({ sub: user.id.toString() })
+  })
+
+  it('should return a token with future expiration date', async () => {
+    const password = 'FutureTest@2'
+    const hashedPassword = await PasswordHash.generateFromPlain(password, hashComparer)
+    const user = await makeUser({ passwordHash: hashedPassword })
+
+    await usersRepository.create(user)
 
     const result = await sut.execute({
-      // eslint-disable-next-line quotes
-      email: "'; DROP TABLE users; --",
-      password: 'irrelevant',
+      emailAddress: user.emailAddress.value,
+      password,
     })
 
-    expect(result.isLeft()).toBe(true)
-  })
-
-  it('should not authenticate an inactive user', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: null,
-    })
-  
-    await inMemoryUsersRepository.create(user)
-  
-    const result = await sut.execute({
-      email: 'johndoe@exemple.com',
-      password: '123456',
-    })
-  
-    expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(NotAllowedError)
-  })
-
-  it('should generate access token with user id as subject', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
-    })
-  
-    await inMemoryUsersRepository.create(user)
-  
-    const spy = vi.spyOn(fakeEncrypter, 'encrypt')
-  
-    await sut.execute({
-      email: 'johndoe@exemple.com',
-      password: '123456',
-    })
-  
-    expect(spy).toHaveBeenCalledWith({
-      sub: user.id.toString(),
-    })
-  })
-
-  it('should call hashComparer.compare with correct arguments', async () => {
-    const plainPassword = '123456'
-    const hashedPassword = await fakeHasher.generate(plainPassword)
-  
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: hashedPassword,
-      isActive: new Date(),
-    })
-  
-    await inMemoryUsersRepository.create(user)
-  
-    const spy = vi.spyOn(fakeHasher, 'compare')
-  
-    await sut.execute({
-      email: 'johndoe@exemple.com',
-      password: plainPassword,
-    })
-  
-    expect(spy).toHaveBeenCalledWith(plainPassword, hashedPassword)
-  })
-
-  it('should return a valid future expiration date', async () => {
-    const user = makeUser({
-      email: 'johndoe@exemple.com',
-      password: await fakeHasher.generate('123456'),
-      isActive: new Date(),
-    })
-  
-    await inMemoryUsersRepository.create(user)
-  
-    const result = await sut.execute({
-      email: 'johndoe@exemple.com',
-      password: '123456',
-    })
-  
     expect(result.isRight()).toBe(true)
-  
+
     if (result.isRight()) {
-      const { expiresAt } = result.value as { accessToken: string; expiresAt: Date }
-  
-      expect(expiresAt).toBeInstanceOf(Date)
-      expect(expiresAt.getTime()).toBeGreaterThan(Date.now())
+      expect(result.value.expiresAt.getTime()).toBeGreaterThan(Date.now())
     }
   })
 })

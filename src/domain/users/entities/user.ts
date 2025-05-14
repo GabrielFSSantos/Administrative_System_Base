@@ -2,102 +2,84 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
+import { InvalidUpdatedAtError } from './errors/invalid-updated-at-error'
+import { CPF } from './value-objects/cpf'
+import { EmailAddress } from './value-objects/email-address'
+import { Name } from './value-objects/name'
+import { PasswordHash } from './value-objects/password-hash'
+
 export interface UserProps {
-  // cpf: string // Passar para Value Object
-  name: string
-  email: string // Passar para Value Object
-  password: string //passwordHash
-  roleId: UniqueEntityId
-  isActive: Date | null
+  cpf: CPF
+  name: Name
+  emailAddress: EmailAddress
+  passwordHash: PasswordHash
   createdAt: Date
   updatedAt: Date | null
 }
 
 export class User extends Entity<UserProps> {
-  get name() {
+  get cpf(): CPF {
+    return this.props.cpf
+  }
+
+  get name(): Name {
     return this.props.name
   }
-  
-  set name(name: string) {
-    this.props.name = name
-    this.touch()
+
+  get emailAddress(): EmailAddress {
+    return this.props.emailAddress
   }
 
-  get email() {
-    return this.props.email
+  get passwordHash(): PasswordHash {
+    return this.props.passwordHash
   }
 
-  set email(email: string) {
-    this.props.email = email
-    this.touch()
-  }
-
-  get roleId() {
-    return this.props.roleId
-  }
-  
-  set roleId(roleId: UniqueEntityId) {
-    this.props.roleId = roleId
-    this.touch()
-  }
-
-  get isActive() {
-    return this.props.isActive
-  }
-
-  get createdAt() {
+  get createdAt(): Date {
     return this.props.createdAt
   }
 
-  get updatedAt() {
+  get updatedAt(): Date | null {
     return this.props.updatedAt
   }
 
-  private touch() {
+  private touch(): void {
     this.props.updatedAt = new Date()
   }
 
-  public isCurrentlyActive() {
-    return this.props.isActive !== null && this.props.isActive <= new Date()
-  }
-
-  public activate(): void {
-    if (!this.isCurrentlyActive()) {
-      this.props.isActive = new Date()
-      this.touch()
-    }
-  }
-
-  public deactivate(): void {
-    if (this.isCurrentlyActive()) {
-      this.props.isActive = null
-      this.touch()
-    }
-  }
-
-  public changePassword(newHashedPassword: string): void {
-    this.props.password = newHashedPassword
+  public changeName(newName: Name): void {
+    this.props.name = newName
     this.touch()
   }
 
-  public getHashedPassword(): string {
-    return this.props.password
+  public changeEmail(newEmailAddress: EmailAddress): void {
+    this.props.emailAddress = newEmailAddress
+    this.touch()
+  }
+
+  public changePasswordHash(newPasswordHash: PasswordHash): void {
+    this.props.passwordHash = newPasswordHash
+    this.touch()
   }
 
   static create(
-    props: Optional<UserProps, 'isActive' | 'createdAt' | 'updatedAt'>,
+    props: Optional<UserProps,  'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
-  ) {
-    const user = new User(
+  ): User {
+
+    const createdAt = props.createdAt ?? new Date()
+    const updatedAt = props.updatedAt ?? null
+
+    if (updatedAt && updatedAt < createdAt) {
+      throw new InvalidUpdatedAtError()
+    }
+  
+    return new User(
       {
         ...props,
-        isActive: props.isActive ?? null,
-        createdAt: props.createdAt ?? new Date(),
-        updatedAt: props.updatedAt ?? null,
-      }, 
+        createdAt,
+        updatedAt,
+      },
       id,
     )
-
-    return user
   }
 }

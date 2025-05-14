@@ -1,160 +1,140 @@
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+import { vi } from 'vitest'
 
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
+import { Name } from '@/domain/users/entities/value-objects/name'
 
 import { EditUserContract } from './contracts/edit-user-contract'
 import { EditUserUseCase } from './edit-user-use-case'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
-let inMemoryUsersRepository: InMemoryUsersRepository
+let usersRepository: InMemoryUsersRepository
 let sut: EditUserContract
 
-describe('Edit User Test', () => {
+describe('Edit User Use Case Test', () => {
   beforeEach(() => {
-    inMemoryUsersRepository = new InMemoryUsersRepository()
-
-    sut = new EditUserUseCase(inMemoryUsersRepository)
+    usersRepository = new InMemoryUsersRepository()
+    sut = new EditUserUseCase(usersRepository)
   })
 
-  it('should be able to edit a user', async () => {
-    const user = makeUser()
-  
-    await inMemoryUsersRepository.create(user)
+  it('should edit both name and email of a user', async () => {
+    const user = await makeUser()
+
+    await usersRepository.create(user)
+
+    const newName = 'Updated Name'
+    const newEmail = 'updated@example.com'
 
     const result = await sut.execute({
       userId: user.id.toString(),
-      email: 'email@teste.com.br',
-      name: 'name teste',
-      roleId: 'TESTE',
-      isActive: false,
+      name: newName,
+      emailAddress: newEmail,
     })
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryUsersRepository.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          email: 'email@teste.com.br',
-          name: 'name teste',
-          roleId: new UniqueEntityId('TESTE'),
-          isActive: null,
-        }),
-      ]),
-    )
+
+    const updated = await usersRepository.findById(user.id.toString())
+
+    expect(updated?.name.value).toBe(Name.create(newName).value)
+    expect(updated?.emailAddress.value).toBe(EmailAddress.create(newEmail).value)
   })
-  
-  it('should update only the name and preserve other fields', async () => {
-    const user = makeUser({
-      email: 'email@teste.com.br',
-      name: 'name teste',
-    })
-  
-    await inMemoryUsersRepository.create(user)
-  
-    await sut.execute({
+
+  it('should edit only the name if email is not provided', async () => {
+    const user = await makeUser()
+
+    await usersRepository.create(user)
+
+    const newName = 'Only Name Updated'
+
+    const result = await sut.execute({
       userId: user.id.toString(),
-      name: 'new name',
+      name: newName,
     })
 
-    expect(inMemoryUsersRepository.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          email: 'email@teste.com.br',
-          name: 'new name',
-        }),
-      ]),
-    )
+    expect(result.isRight()).toBe(true)
+
+    const updated = await usersRepository.findById(user.id.toString())
+
+    expect(updated?.name.value).toBe(Name.create(newName).value)
   })
 
-  it('should allow setting isActive to Date', async () => {
-    const user = makeUser()
-  
-    await inMemoryUsersRepository.create(user)
+  it('should edit only the email if name is not provided', async () => {
+    const user = await makeUser()
 
-    expect(inMemoryUsersRepository.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          isActive: null,
-        }),
-      ]),
-    )
-  
-    await sut.execute({
+    await usersRepository.create(user)
+
+    const newEmail = 'newemail@example.com'
+
+    const result = await sut.execute({
       userId: user.id.toString(),
-      isActive: true,
+      emailAddress: newEmail,
     })
-  
-    expect(inMemoryUsersRepository.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          isActive: expect.any(Date),
-        }),
-      ]),
-    )
+
+    expect(result.isRight()).toBe(true)
+
+    const updated = await usersRepository.findById(user.id.toString())
+
+    expect(updated?.emailAddress.value).toBe(EmailAddress.create(newEmail).value)
   })
 
-  it('should update updatedAt timestamp on edit', async () => {
-    const user = makeUser()
-  
-    await inMemoryUsersRepository.create(user)
+  it('should not allow editing to an email that already exists for another user', async () => {
+    const user1 = await makeUser({ emailAddress: EmailAddress.create('email1@test.com') })
+    const user2 = await makeUser({ emailAddress: EmailAddress.create('email2@test.com') })
 
-    expect(inMemoryUsersRepository.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          updatedAt: null,
-        }),
-      ]),
-    )
-  
-    await sut.execute({
-      userId: user.id.toString(),
-      isActive: true,
+    await usersRepository.create(user1)
+    await usersRepository.create(user2)
+
+    const result = await sut.execute({
+      userId: user1.id.toString(),
+      emailAddress: 'email2@test.com',
     })
-  
-    expect(inMemoryUsersRepository.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          updatedAt: expect.any(Date),
-        }),
-      ]),
-    )
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 
-  it('should call repository.save with updated user', async () => {
-    const spy = vi.spyOn(inMemoryUsersRepository, 'save')
-  
-    const user = makeUser()
-  
-    await inMemoryUsersRepository.create(user)
-  
-    await sut.execute({
-      userId: user.id.toString(),
-      name: 'updated name',
+  it('should return error if user does not exist', async () => {
+    const result = await sut.execute({
+      userId: 'non-existent-id',
+      name: 'Does Not Matter',
     })
-  
-    expect(spy).toHaveBeenCalled()
-  })
 
-  it('should throw UserNotFoundError if user does not exist', async () => {
-    const result = await sut.execute({userId: 'non-existing-id'})
-  
+    expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 
-  it('should not allow to edit a user with an existing email', async () => {
-    const user1 = makeUser({ email: 'email1@teste.com' })
-    const user2 = makeUser({ email: 'email2@teste.com' })
+  it('should call repository.save with updated user', async () => {
+    const user = await makeUser()
 
-    await inMemoryUsersRepository.create(user1)
-    await inMemoryUsersRepository.create(user2)
-    
-    const result = await sut.execute({
-      userId: user1.id.toString(),
-      email: user2.email,
+    await usersRepository.create(user)
+
+    const spy = vi.spyOn(usersRepository, 'save')
+
+    await sut.execute({
+      userId: user.id.toString(),
+      name: 'Tracked Save Call',
     })
-    
-    expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
+
+    expect(spy).toHaveBeenCalledWith(expect.objectContaining({ id: user.id }))
+  })
+
+  it('should update updatedAt when user is edited', async () => {
+    const user = await makeUser()
+
+    await usersRepository.create(user)
+
+    const beforeUpdate = user.updatedAt
+
+    await sut.execute({
+      userId: user.id.toString(),
+      name: 'With Timestamp',
+    })
+
+    const updatedUser = await usersRepository.findById(user.id.toString())
+
+    expect(updatedUser?.updatedAt).not.toBe(beforeUpdate)
+    expect(updatedUser?.updatedAt).toBeInstanceOf(Date)
   })
 })

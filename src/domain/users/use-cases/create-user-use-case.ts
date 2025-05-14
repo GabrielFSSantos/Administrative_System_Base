@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common'
 
 import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-generator-contract'
 import { left,right } from '@/core/either'
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 import { User } from '../entities/user'
+import { CPF } from '../entities/value-objects/cpf'
+import { EmailAddress } from '../entities/value-objects/email-address'
+import { Name } from '../entities/value-objects/name'
+import { PasswordHash } from '../entities/value-objects/password-hash'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   CreateUserContract, 
@@ -21,25 +24,36 @@ export class CreateUserUseCase implements CreateUserContract {
   ) {}
 
   async execute({
+    cpf,
     name,
-    email,
+    emailAddress,
     password,
-    roleId,
   }: ICreateUserUseCaseRequest): Promise<ICreateUserUseCaseResponse> {
-    const userWithSameEmail =
-      await this.usersRepository.findByEmail(email)
 
-    if (userWithSameEmail) {
-      return left(new UserAlreadyExistsError(email))
+    const nameObject = Name.create(name)
+    const cpfObject = CPF.create(cpf)
+    const emailObject = EmailAddress.create(emailAddress)
+    const passwordObject = await PasswordHash.generateFromPlain(password, this.hashGenerator)
+
+    const existingCpfUser =
+      await this.usersRepository.findByCpf(cpfObject.value)
+
+    if (existingCpfUser) {
+      return left(new UserAlreadyExistsError(cpfObject.value))
+    }
+    
+    const existingEmailUser =
+      await this.usersRepository.findByEmail(emailObject.value)
+
+    if (existingEmailUser) {
+      return left(new UserAlreadyExistsError(emailObject.value))
     }
 
-    const hashPassword = await this.hashGenerator.generate(password)
-
     const user = User.create({
-      name,
-      email,
-      password: hashPassword,
-      roleId: new UniqueEntityId(roleId),
+      cpf: cpfObject,
+      name: nameObject,
+      emailAddress: emailObject,
+      passwordHash: passwordObject,
     })
 
     await this.usersRepository.create(user)

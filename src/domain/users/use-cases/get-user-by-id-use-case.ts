@@ -5,19 +5,19 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
-  GetUserContract,
-  IGetUserUseCaseRequest, 
-  IGetUserUseCaseResponse, 
-} from './contracts/get-user-contract'
+  GetUserByIdContract,
+  IGetUserByIdUseCaseRequest, 
+  IGetUserByIdUseCaseResponse, 
+} from './contracts/get-user-by-id-contract'
 
 @Injectable()
-export class GetUserUseCase implements GetUserContract{
+export class GetUserByIdUseCase implements GetUserByIdContract{
   constructor(
     private usersRepository: UsersRepositoryContract,
   ) {}
 
-  async execute({ userId }: IGetUserUseCaseRequest): 
-  Promise<IGetUserUseCaseResponse> {
+  async execute({ userId }: IGetUserByIdUseCaseRequest): 
+  Promise<IGetUserByIdUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {
