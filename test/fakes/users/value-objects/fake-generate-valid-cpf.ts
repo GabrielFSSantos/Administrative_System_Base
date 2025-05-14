@@ -1,3 +1,5 @@
+import { CPF } from '@/domain/users/entities/value-objects/cpf'
+
 export function generateValidCPF(): string {
   const randomDigits = (): number[] =>
     Array.from({ length: 9 }, () => Math.floor(Math.random() * 10))
@@ -14,7 +16,9 @@ export function generateValidCPF(): string {
   const digit1 = calcCheckDigit(base)
   const digit2 = calcCheckDigit([...base, digit1])
 
-  const cpfArray = [...base, digit1, digit2]
+  return [...base, digit1, digit2].join('')
+}
 
-  return cpfArray.join('')
+export function generateCPFValueObject(): CPF {
+  return CPF.create(generateValidCPF())
 }
