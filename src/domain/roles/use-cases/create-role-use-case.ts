@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { Name } from '@/shared/value-objects/name'
 
 import { Role } from '../entities/role'
 import { validateAndParsePermissions } from '../helpers/validate-and-parse-permissions-helper'
@@ -24,6 +25,8 @@ export class CreateRoleUseCase implements CreateRoleContract {
     permissionValues,
   }: ICreateRoleUseCaseRequest): Promise<ICreateRoleUseCaseResponse> {
 
+    const nameObject = Name.create(name)
+
     const result = validateAndParsePermissions(permissionValues)
     
     if (result.isLeft()) {
@@ -34,7 +37,7 @@ export class CreateRoleUseCase implements CreateRoleContract {
 
     const role = Role.create({
       recipientId: new UniqueEntityId(recipientId),
-      name,
+      name: nameObject,
       permissions,
     })
 

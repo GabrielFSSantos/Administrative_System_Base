@@ -1,13 +1,13 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { Name } from '@/shared/value-objects/name'
 
-import { InvalidRoleNameError } from './errors/invalid-role-name-error'
 import { RolePermissionList } from './role-permission-list'
 import { PermissionName } from './value-objects/permission-name'
 
 interface RoleProps {
   recipientId: UniqueEntityId
-  name: string
+  name: Name
   permissions: RolePermissionList
 }
 
@@ -16,7 +16,7 @@ export class Role extends Entity<RoleProps> {
     return this.props.recipientId
   }
 
-  get name(): string {
+  get name(): Name {
     return this.props.name
   }
 
@@ -28,11 +28,7 @@ export class Role extends Entity<RoleProps> {
     return this.props.permissions.has(permissionName)
   }
 
-  public updateName(name: string): void {
-    if (!Role.isValidName(name)) {
-      throw new InvalidRoleNameError(name)
-    }
-
+  public updateName(name: Name): void {
     this.props.name = name
   }
 
@@ -40,29 +36,22 @@ export class Role extends Entity<RoleProps> {
     this.props.permissions.update(permissions)
   }
 
-  static isValidName(name: string): boolean {
-    return !!name && name.trim().length > 0
-  }
-
   static create(
-    props: { 
-      recipientId: UniqueEntityId, 
-      name: string; 
-      permissions: PermissionName[] },
+    props: {
+      recipientId: UniqueEntityId
+      name: Name
+      permissions: PermissionName[]
+    },
     id?: UniqueEntityId,
   ): Role {
-    if (!Role.isValidName(props.name)) {
-      throw new InvalidRoleNameError(props.name)
-    }
-
     const permissionList = new RolePermissionList(props.permissions)
-  
+
     return new Role(
       {
-        recipientId: props.recipientId, 
-        name: props.name, 
-        permissions: permissionList, 
-      }, 
+        recipientId: props.recipientId,
+        name: props.name,
+        permissions: permissionList,
+      },
       id,
     )
   }

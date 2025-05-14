@@ -1,4 +1,4 @@
-import { Name } from '@/domain/users/entities/value-objects/name'
+import { Name } from '@/shared/value-objects/name'
 
 const firstNames = [
   'Lucas', 'Ana', 'Rafael', 'Marina', 'Carlos', 'Juliana', 'Eduardo', 'Fernanda',

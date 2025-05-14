@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Name } from '@/shared/value-objects/name'
 
 import { validateAndParsePermissions } from '../helpers/validate-and-parse-permissions-helper'
 import { RolesRepositoryContract } from '../repositories/contracts/roles-repository-contract'
@@ -29,7 +30,8 @@ export class EditRoleUseCase implements EditRoleContract {
     }
 
     if (name) {
-      role.updateName(name)
+
+      role.updateName(Name.create(name))
     }
 
     if (permissionValues) {
