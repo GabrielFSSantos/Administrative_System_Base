@@ -1,51 +1,72 @@
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+import { vi } from 'vitest'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 import { GetUserContract } from './contracts/get-user-contract'
 import { GetUserUseCase } from './get-user-use-case'
 
-let inMemoryUsersRepository: InMemoryUsersRepository
+let usersRepository: InMemoryUsersRepository
 let sut: GetUserContract
 
-describe('Get User Test', () => {
+describe('GetUserUseCase', () => {
   beforeEach(() => {
-    inMemoryUsersRepository = new InMemoryUsersRepository()
-
-    sut = new GetUserUseCase(inMemoryUsersRepository)
+    usersRepository = new InMemoryUsersRepository()
+    sut = new GetUserUseCase(usersRepository)
   })
 
-  it('should be able to get a user', async () => {
-    const user = makeUser()
-  
-    await inMemoryUsersRepository.create(user)
+  it('should retrieve a user by valid id', async () => {
+    const user = await makeUser()
 
-    const result = await sut.execute({userId: user.id.toString()})
+    await usersRepository.create(user)
+
+    const result = await sut.execute({ userId: user.id.toString() })
 
     expect(result.isRight()).toBe(true)
-    expect(result.value).toEqual({
-      user: inMemoryUsersRepository.items[0],
-    })
 
+    if (result.isRight()) {
+      expect(result.value.user.id.toString()).toBe(user.id.toString())
+      expect(result.value.user.name.value).toBe(user.name.value)
+      expect(result.value.user.emailAddress.value).toBe(user.emailAddress.value)
+      expect(result.value.user.cpf.value).toBe(user.cpf.value)
+    }
   })
 
-  it('should throw UserNotFoundError if user does not exist', async () => {
-    const result = await sut.execute({userId: 'non-existing-id'})
+  it('should return error if user does not exist', async () => {
+    const result = await sut.execute({ userId: 'non-existent-id' })
 
-    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+    expect(result.isLeft()).toBe(true)
+
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+    }
   })
-  
-  it('should call repository with correct user id', async () => {
 
-    const spy = vi.spyOn(inMemoryUsersRepository, 'findById')
+  it('should call repository with correct id', async () => {
+    const user = await makeUser()
 
-    const user = makeUser()
-  
-    await inMemoryUsersRepository.create(user)
+    await usersRepository.create(user)
 
-    await sut.execute({userId: user.id.toString()})
-  
+    const spy = vi.spyOn(usersRepository, 'findById')
+
+    await sut.execute({ userId: user.id.toString() })
+
     expect(spy).toHaveBeenCalledWith(user.id.toString())
+  })
+
+  it('should not retrieve a user after deletion', async () => {
+    const user = await makeUser()
+
+    await usersRepository.create(user)
+    await usersRepository.delete(user.id)
+
+    const result = await sut.execute({ userId: user.id.toString() })
+
+    expect(result.isLeft()).toBe(true)
+
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+    }
   })
 })

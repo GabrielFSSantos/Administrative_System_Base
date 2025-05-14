@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common'
 
 import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-generator-contract'
 import { left,right } from '@/core/either'
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 import { User } from '../entities/user'
+import { CPF } from '../entities/value-objects/cpf'
+import { EmailAddress } from '../entities/value-objects/email-address'
+import { Name } from '../entities/value-objects/name'
+import { PasswordHash } from '../entities/value-objects/password-hash'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   CreateUserContract, 
@@ -21,25 +24,28 @@ export class CreateUserUseCase implements CreateUserContract {
   ) {}
 
   async execute({
+    cpf,
     name,
-    email,
+    emailAddress,
     password,
-    roleId,
   }: ICreateUserUseCaseRequest): Promise<ICreateUserUseCaseResponse> {
-    const userWithSameEmail =
-      await this.usersRepository.findByEmail(email)
+    const existingUser =
+      await this.usersRepository.findByEmail(emailAddress)
 
-    if (userWithSameEmail) {
-      return left(new UserAlreadyExistsError(email))
+    if (existingUser) {
+      return left(new UserAlreadyExistsError(emailAddress))
     }
 
-    const hashPassword = await this.hashGenerator.generate(password)
+    const cpfObject = CPF.create(cpf)
+    const nameObject = Name.create(name)
+    const emailObject = EmailAddress.create(emailAddress)
+    const passwordObject = await PasswordHash.generateFromPlain(password, this.hashGenerator)
 
     const user = User.create({
-      name,
-      email,
-      password: hashPassword,
-      roleId: new UniqueEntityId(roleId),
+      cpf: cpfObject,
+      name: nameObject,
+      emailAddress: emailObject,
+      passwordHash: passwordObject,
     })
 
     await this.usersRepository.create(user)

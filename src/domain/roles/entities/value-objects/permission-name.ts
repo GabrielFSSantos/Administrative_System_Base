@@ -15,11 +15,11 @@ export class PermissionName extends ValueObject<PermissionNameProps> {
     return value.trim().toLowerCase().replace(/\s+/g, '_')
   }
 
-  static parse(value: string): PermissionName {
-    return new PermissionName({ value: this.normalize(value) })
-  }
-
   static verify(value: string): boolean {
     return (ALL_PERMISSIONS as readonly string[]).includes(this.normalize(value))
+  }
+
+  static parse(value: string): PermissionName {
+    return new PermissionName({ value: this.normalize(value) })
   }
 }

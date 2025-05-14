@@ -5,8 +5,8 @@ import { IFetchManyUsersUseCaseRequest } from '../../use-cases/contracts/fetch-m
 
 export abstract class UsersRepositoryContract {
   abstract findById(id: string): Promise<User | null>
-  abstract findByEmail(email: string): Promise<User | null>
-  abstract findMany(parms: IFetchManyUsersUseCaseRequest): Promise<User[]>
+  abstract findByEmail(emailAddress: string): Promise<User | null>
+  abstract findMany(parms: IFetchManyUsersUseCaseRequest): Promise<{ users: User[]; total: number }>
   abstract create(user: User): Promise<void>
   abstract save(user: User): Promise<void>
   abstract delete(id: UniqueEntityId): Promise<void>

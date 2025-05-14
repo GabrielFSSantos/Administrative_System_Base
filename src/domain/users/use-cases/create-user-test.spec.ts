@@ -1,7 +1,10 @@
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
+import { generateValidCPF } from 'test/fakes/users/fake-generate-valid-cpf'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { CPF } from '@/domain/users/entities/value-objects/cpf'
+import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
+import { Name } from '@/domain/users/entities/value-objects/name'
 
 import { CreateUserContract } from './contracts/create-user-contract'
 import { CreateUserUseCase } from './create-user-use-case'
@@ -11,98 +14,84 @@ let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
 let sut: CreateUserContract
 
-describe('Create User Test', () => {
+describe('Create User Use Case', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     fakeHasher = new FakeHasher()
-
     sut = new CreateUserUseCase(inMemoryUsersRepository, fakeHasher)
   })
 
-  it('should be able to create a user', async () => {
+  it('should create a user with valid data', async () => {
     const result = await sut.execute({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: 'secret123',
-      roleId: 'admin',
+      name: 'John Doe',
+      emailAddress: 'john@example.com',
+      password: 'secure123',
+      cpf: generateValidCPF(),
     })
 
     expect(result.isRight()).toBe(true)
-    expect(result.value).toEqual({
-      user: inMemoryUsersRepository.items[0],
-    })
-  })
 
-  it('should hash user password upon registration', async () => {
-    const result = await sut.execute({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: '123456',
-      roleId: 'admin',
-    })
-
-    const user = inMemoryUsersRepository.items[0]
-
-    const isPasswordCorrect = await fakeHasher.compare(
-      '123456',
-      user.getHashedPassword(),
-    )
-
-    expect(result.isRight()).toBe(true)
-    expect(isPasswordCorrect).toBe(true)
-  })
-
-  it('should not store plain text password', async () => {
-    await sut.execute({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: 'plaintext',
-      roleId: 'admin',
-    })
-    
-    const user = inMemoryUsersRepository.items[0]
-
-    const storedPassword = await fakeHasher.compare(
-      'plaintext',
-      user.getHashedPassword(),
-    )
-
-    expect(storedPassword).not.toBe('plaintext')
-  })
-
-  it('should not allow to create a user with an existing email', async () => {
-    const userData = {
-      name: 'Test User',
-      email: 'test@example.com',
-      password: '123456',
-      roleId: 'admin',
+    if (result.isRight()) {
+      expect(result.value.user).toEqual(inMemoryUsersRepository.items[0])
     }
-  
-    await sut.execute(userData)
-    const result = await sut.execute(userData)
-  
+  })
+
+  it('should hash the password before storing', async () => {
+    await sut.execute({
+      name: 'John Doe',
+      emailAddress: 'john@example.com',
+      password: 'mypassword',
+      cpf: generateValidCPF(),
+    })
+
+    const user = inMemoryUsersRepository.items[0]
+
+    const isPasswordHashed = await fakeHasher.compare('mypassword', user.passwordHash.value)
+
+    expect(isPasswordHashed).toBe(true)
+  })
+
+  it('should not store password in plain text', async () => {
+    await sut.execute({
+      name: 'John Doe',
+      emailAddress: 'john@example.com',
+      password: 'plaintext123',
+      cpf: generateValidCPF(),
+    })
+
+    const user = inMemoryUsersRepository.items[0]
+
+    expect(user.passwordHash.value).not.toBe('plaintext123')
+  })
+
+  it('should not allow duplicate emails', async () => {
+    const data = {
+      name: 'John Doe',
+      emailAddress: 'john@example.com',
+      password: '123456',
+      cpf: generateValidCPF(),
+    }
+
+    await sut.execute(data)
+    const result = await sut.execute({ ...data, cpf: generateValidCPF() })
+
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
-  
-  it('should store name, email, roleId and hashed password', async () => {
+
+  it('should store valid value objects', async () => {
     await sut.execute({
-      name: 'Test User',
-      email: 'test@example.com',
-      password: 'secret123',
-      roleId: 'admin',
+      name: 'Jane Smith',
+      emailAddress: 'jane@example.com',
+      password: 'abc123',
+      cpf: generateValidCPF(),
     })
 
-    const createdUser = inMemoryUsersRepository.items[0]
+    const user = inMemoryUsersRepository.items[0]
 
-    expect(createdUser).toMatchObject({
-      props: expect.objectContaining({
-        name: 'Test User',
-        email: 'test@example.com',
-        password: 'secret123-hashed',
-        roleId: new UniqueEntityId('admin'),
-      }),
-    })
+    expect(user.name).toBeInstanceOf(Name)
+    expect(user.emailAddress).toBeInstanceOf(EmailAddress)
+    expect(user.cpf).toBeInstanceOf(CPF)
+    expect(user.passwordHash.value).toMatch(/^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/)
   })
-  
 })
