@@ -36,10 +36,10 @@ export class AuthenticateUserUseCase implements AuthenticateUserContract {
       return left(new WrongCredentialsError())
     }
 
-    const isPasswordValid = await user.passwordHash.compareWith(password, this.hashComparer)
+    const isPasswordValid = await user.passwordHash.compareWith(this.hashComparer, password)
   
-    if (!isPasswordValid) {
-      return left(new WrongCredentialsError())
+    if (isPasswordValid.isLeft()) {
+      return left(isPasswordValid.value)
     }
 
     const {accessToken, expiresAt} = await this.encrypter.encrypt({

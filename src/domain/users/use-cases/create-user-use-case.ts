@@ -48,7 +48,11 @@ export class CreateUserUseCase implements CreateUserContract {
       return left(emailObject.value)
     }
 
-    const passwordObject = await PasswordHash.createFromPlain(password, this.hashGenerator)
+    const passwordObject = await PasswordHash.createFromPlain(this.hashGenerator, password)
+
+    if(passwordObject.isLeft()) {
+      return left(passwordObject.value)
+    }
 
     const existingCpfUser =
       await this.usersRepository.findByCpf(cpfObject.value.toString())
@@ -68,7 +72,7 @@ export class CreateUserUseCase implements CreateUserContract {
       cpf: cpfObject.value,
       name: nameObject.value,
       emailAddress: emailObject.value,
-      passwordHash: passwordObject,
+      passwordHash: passwordObject.value,
     })
 
     await this.usersRepository.create(user)

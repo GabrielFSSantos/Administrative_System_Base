@@ -1,11 +1,10 @@
-import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
+import { generateCPFValueObject } from 'test/fakes/users/value-objects/fake-generate-cpf'
 import { generateEmailValueObject } from 'test/fakes/users/value-objects/fake-generate-email'
 import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
-import { generateCPFValueObject } from 'test/fakes/users/value-objects/fake-generate-valid-cpf'
+import { generatePasswordHashValueObject } from 'test/fakes/users/value-objects/fake-generate-password-hash'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User, UserProps} from '@/domain/users/entities/user'
-import { PasswordHash } from '@/domain/users/entities/value-objects/password-hash'
 
 export async function makeUser(
   override: Partial<UserProps> = {},
@@ -15,8 +14,7 @@ export async function makeUser(
   const cpf = override.cpf ?? generateCPFValueObject()
   const name = override.name ?? generateNameValueObject()
   const emailAddress = override.emailAddress ?? generateEmailValueObject()
-  const passwordHash = override.passwordHash ??
-    await PasswordHash.createFromPlain('Strong@123', new FakeHasher())
+  const passwordHash = override.passwordHash ?? await generatePasswordHashValueObject()
 
   const user = User.create(
     {
