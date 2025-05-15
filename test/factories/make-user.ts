@@ -27,5 +27,9 @@ export async function makeUser(
     id,
   )
 
-  return user
+  if(user.isLeft()) {
+    throw user.value
+  }
+
+  return user.value
 }

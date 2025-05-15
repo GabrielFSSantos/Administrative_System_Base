@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
@@ -64,16 +65,20 @@ export class User extends Entity<UserProps> {
   static create(
     props: Optional<UserProps,  'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
-  ): User {
+  ): Either<
+      InvalidUpdatedAtError,
+      User
+    > {
 
     const createdAt = props.createdAt ?? new Date()
     const updatedAt = props.updatedAt ?? null
 
     if (updatedAt && updatedAt < createdAt) {
-      throw new InvalidUpdatedAtError()
+      return left(new InvalidUpdatedAtError())
+
     }
-  
-    return new User(
+
+    const user = new User(
       {
         ...props,
         createdAt,
@@ -81,5 +86,7 @@ export class User extends Entity<UserProps> {
       },
       id,
     )
+    
+    return right(user)
   }
 }

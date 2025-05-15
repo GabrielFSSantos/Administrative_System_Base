@@ -75,10 +75,14 @@ export class CreateUserUseCase implements CreateUserContract {
       passwordHash: passwordObject.value,
     })
 
-    await this.usersRepository.create(user)
+    if(user.isLeft()) {
+      return left(user.value)
+    }
+
+    await this.usersRepository.create(user.value)
 
     return right({
-      user,
+      user: user.value,
     })
   }
 }
