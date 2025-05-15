@@ -30,8 +30,13 @@ export class EditRoleUseCase implements EditRoleContract {
     }
 
     if (name) {
+      const nameObject = Name.create(name)
 
-      role.updateName(Name.create(name))
+      if(nameObject.isLeft()) {
+        return left(nameObject.value)
+      }
+
+      role.updateName(nameObject.value)
     }
 
     if (permissionValues) {

@@ -13,6 +13,6 @@ export function generateValidEmail(): string {
   return `${local}@${domain}`
 }
 
-export function generateEmailValueObject(): EmailAddress {
-  return EmailAddress.create(generateValidEmail())
+export function generateEmailValueObject(value?: string): EmailAddress {
+  return EmailAddress.create(value ?? generateValidEmail())
 }

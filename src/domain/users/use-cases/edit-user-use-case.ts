@@ -45,7 +45,11 @@ export class EditUserUseCase implements EditUserContract{
     if (name) {
       const newName = Name.create(name)
 
-      user.changeName(newName)
+      if(newName.isLeft()) {
+        return left(newName.value)
+      }
+
+      user.changeName(newName.value)
     }
 
     await this.usersRepository.save(user)

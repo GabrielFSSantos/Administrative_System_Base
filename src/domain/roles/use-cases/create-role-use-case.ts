@@ -27,6 +27,10 @@ export class CreateRoleUseCase implements CreateRoleContract {
 
     const nameObject = Name.create(name)
 
+    if(nameObject.isLeft()) {
+      return left(nameObject.value)
+    }
+
     const result = validateAndParsePermissions(permissionValues)
     
     if (result.isLeft()) {
@@ -37,7 +41,7 @@ export class CreateRoleUseCase implements CreateRoleContract {
 
     const role = Role.create({
       recipientId: new UniqueEntityId(recipientId),
-      name: nameObject,
+      name: nameObject.value,
       permissions,
     })
 

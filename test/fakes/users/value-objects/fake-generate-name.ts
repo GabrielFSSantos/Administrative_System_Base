@@ -1,3 +1,4 @@
+import { InvalidNameError } from '@/shared/value-objects/errors/invalid-name-error'
 import { Name } from '@/shared/value-objects/name'
 
 const firstNames = [
@@ -10,6 +11,12 @@ export function generateValidName(): string {
   return firstNames[index]
 }
 
-export function generateNameValueObject(): Name {
-  return Name.create(generateValidName())
+export function generateNameValueObject(value?: string): Name {
+  const nameObject = Name.create(value ?? generateValidName())
+  
+  if(nameObject.isLeft()) {
+    throw new InvalidNameError()
+  }
+
+  return nameObject.value
 }

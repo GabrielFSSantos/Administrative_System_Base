@@ -17,9 +17,9 @@ export class LoginUserService implements LoginUserContract{
     private readonly createSession: CreateSessionContract,
   ) {}
 
-  async execute({email, password}: ILoginUserRequest): 
+  async execute({emailAddress, password}: ILoginUserRequest): 
   Promise<ILoginUserResponse> {
-    const result = await this.authenticateUser.execute({email, password})
+    const result = await this.authenticateUser.execute({emailAddress, password})
 
     if (result.isLeft()) {
       return result

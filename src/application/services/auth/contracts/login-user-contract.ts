@@ -5,7 +5,7 @@ import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-
 import { WrongCredentialsError } from '@/domain/users/use-cases/errors/wrong-credentials-error'
 
 export interface ILoginUserRequest {
-  email: string
+  emailAddress: string
   password: string
 }
 

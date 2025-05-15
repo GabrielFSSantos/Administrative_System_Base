@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either'
 import { ValueObject } from '@/core/entities/value-object'
 
 import { InvalidNameError } from './errors/invalid-name-error'
@@ -32,15 +33,18 @@ export class Name extends ValueObject<NameProps> {
     return true
   }
 
-  public static create(value: string): Name {
+  public static create(value: string): Either<
+    InvalidNameError,
+    Name
+  > {
     const normalized = this.normalize(value)
 
     if (!this.isValid(normalized)) {
-      throw new InvalidNameError()
+      return left(new InvalidNameError())
     }
 
     const name = new Name({ value: normalized })
 
-    return name
+    return right(name)
   }
 }

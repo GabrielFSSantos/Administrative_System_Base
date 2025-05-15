@@ -19,6 +19,6 @@ export function generateValidCPF(): string {
   return [...base, digit1, digit2].join('')
 }
 
-export function generateCPFValueObject(): CPF {
-  return CPF.create(generateValidCPF())
+export function generateCPFValueObject(value?: string): CPF {
+  return CPF.create(value ?? generateValidCPF())
 }

@@ -31,6 +31,11 @@ export class CreateUserUseCase implements CreateUserContract {
   }: ICreateUserUseCaseRequest): Promise<ICreateUserUseCaseResponse> {
 
     const nameObject = Name.create(name)
+
+    if(nameObject.isLeft()) {
+      return left(nameObject.value)
+    }
+
     const cpfObject = CPF.create(cpf)
     const emailObject = EmailAddress.create(emailAddress)
     const passwordObject = await PasswordHash.createFromPlain(password, this.hashGenerator)
@@ -51,7 +56,7 @@ export class CreateUserUseCase implements CreateUserContract {
 
     const user = User.create({
       cpf: cpfObject,
-      name: nameObject,
+      name: nameObject.value,
       emailAddress: emailObject,
       passwordHash: passwordObject,
     })
