@@ -1,5 +1,8 @@
+import { Either, left, right } from '@/core/either'
 import { ValueObject } from '@/core/entities/value-object'
 import { ALL_PERMISSIONS } from '@/shared/permissions'
+
+import { InvalidPermissionNameError } from './errors/invalid-permission-name-error'
 
 interface PermissionNameProps {
   value: string
@@ -19,15 +22,18 @@ export class PermissionName extends ValueObject<PermissionNameProps> {
     return (ALL_PERMISSIONS as readonly string[]).includes(value)
   }
 
-  public static parse(value: string): PermissionName {
+  public static parse(value: string): Either<
+    InvalidPermissionNameError,
+    PermissionName
+  > {
     const normalized = this.normalize(value)
 
     if (!this.verify(normalized)) {
-      throw new Error()
+      return left(new InvalidPermissionNameError(value))
     }
 
     const permissionName = new PermissionName({ value: normalized })
 
-    return permissionName
+    return right(permissionName)
   }
 }

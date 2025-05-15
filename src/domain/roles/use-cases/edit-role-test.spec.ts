@@ -1,10 +1,10 @@
 import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
+import { generatePermissionValueObject } from 'test/fakes/users/value-objects/fake-generate-permissions.'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Role } from '@/domain/roles/entities/role'
-import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { EditRoleUseCase } from '@/domain/roles/use-cases/edit-role-use-case'
 import { InvalidPermissionError } from '@/domain/roles/use-cases/errors/invalid-permission-error'
 import { Permissions } from '@/shared/permissions'
@@ -25,7 +25,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Old Name'),
-      permissions: [PermissionName.parse(Permissions.USERS.CREATE)],
+      permissions: [generatePermissionValueObject(Permissions.USERS.CREATE)],
     })
 
     await inMemoryRolesRepository.create(role)
@@ -61,7 +61,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Editor'),
-      permissions: [PermissionName.parse(Permissions.USERS.VIEW)],
+      permissions: [generatePermissionValueObject(Permissions.USERS.VIEW)],
     })
 
     await inMemoryRolesRepository.create(role)
@@ -81,8 +81,8 @@ describe('Edit Role Test', () => {
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Manager'),
       permissions: [
-        PermissionName.parse(Permissions.SESSIONS.CREATE),
-        PermissionName.parse(Permissions.SESSIONS.REVOKE),
+        generatePermissionValueObject(Permissions.SESSIONS.CREATE),
+        generatePermissionValueObject(Permissions.SESSIONS.REVOKE),
       ],
     })
 
@@ -111,7 +111,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Unchanged Name'),
-      permissions: [PermissionName.parse(Permissions.USERS.CREATE)],
+      permissions: [generatePermissionValueObject(Permissions.USERS.CREATE)],
     })
 
     await inMemoryRolesRepository.create(role)
@@ -138,7 +138,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('No Change'),
-      permissions: [PermissionName.parse(Permissions.USERS.DELETE)],
+      permissions: [generatePermissionValueObject(Permissions.USERS.DELETE)],
     })
 
     await inMemoryRolesRepository.create(role)
@@ -159,7 +159,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Valid Name'),
-      permissions: [PermissionName.parse(Permissions.USERS.CREATE)],
+      permissions: [generatePermissionValueObject(Permissions.USERS.CREATE)],
     })
 
     await inMemoryRolesRepository.create(role)

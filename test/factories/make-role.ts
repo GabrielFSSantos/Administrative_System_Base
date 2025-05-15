@@ -1,4 +1,5 @@
 import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
+import { generatePermissionValueObject } from 'test/fakes/users/value-objects/fake-generate-permissions.'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Role } from '@/domain/roles/entities/role'
@@ -15,14 +16,7 @@ export function makeRole(
 ): Role {
   const recipientId = override.recipientId ?? new UniqueEntityId()
   const name = override.name ?? generateNameValueObject()
-  const permissions = override.permissions ?? [
-    PermissionName.parse('create_user'),
-    PermissionName.parse('edit_user'),
-    PermissionName.parse('delete_user'),
-    PermissionName.parse('view_user'),
-    PermissionName.parse('create_session'),
-    PermissionName.parse('revoke_session'),
-  ]
+  const permissions = override.permissions ?? [generatePermissionValueObject()]
 
   return Role.create(
     {

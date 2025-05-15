@@ -1,8 +1,9 @@
+import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
+import { generatePermissionValueObject } from 'test/fakes/users/value-objects/fake-generate-permissions.'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Role } from '@/domain/roles/entities/role'
-import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { FetchManyRolesByRecipientIdUseCase } from '@/domain/roles/use-cases/fetch-many-roles-by-recipient-id-use-case'
 import { Permissions } from '@/shared/permissions'
 
@@ -24,8 +25,8 @@ describe('Fetch Many Roles By RecipientId Test', () => {
       await inMemoryRolesRepository.create(
         Role.create({
           recipientId,
-          name: `Role ${i + 1}`,
-          permissions: [PermissionName.parse(Permissions.USERS.VIEW)],
+          name: generateNameValueObject(`Role ${String.fromCharCode(65 + i)}`),
+          permissions: [generatePermissionValueObject(Permissions.USERS.VIEW)],
         }),
       )
     }
@@ -50,16 +51,16 @@ describe('Fetch Many Roles By RecipientId Test', () => {
     await inMemoryRolesRepository.create(
       Role.create({
         recipientId,
-        name: 'Admin',
-        permissions: [PermissionName.parse(Permissions.USERS.CREATE)],
+        name: generateNameValueObject('Admin'),
+        permissions: [generatePermissionValueObject(Permissions.USERS.CREATE)],
       }),
     )
 
     await inMemoryRolesRepository.create(
       Role.create({
         recipientId,
-        name: 'Editor',
-        permissions: [PermissionName.parse(Permissions.USERS.EDIT)],
+        name: generateNameValueObject('Editor'),
+        permissions: [generatePermissionValueObject(Permissions.USERS.EDIT)],
       }),
     )
 
@@ -73,7 +74,7 @@ describe('Fetch Many Roles By RecipientId Test', () => {
 
     if (result.isRight()) {
       expect(result.value.roles).toHaveLength(2)
-      expect(result.value.roles.map((r) => r.name)).toEqual(expect.arrayContaining(['Admin', 'Editor']))
+      expect(result.value.roles.map((r) => r.name.value)).toEqual(expect.arrayContaining(['Admin', 'Editor']))
     }
   })
 

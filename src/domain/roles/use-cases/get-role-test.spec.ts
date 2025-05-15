@@ -1,9 +1,10 @@
+import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
+import { generatePermissionValueObject } from 'test/fakes/users/value-objects/fake-generate-permissions.'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Role } from '@/domain/roles/entities/role'
-import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { GetRoleUseCase } from '@/domain/roles/use-cases/get-role-use-case'
 import { Permissions } from '@/shared/permissions'
 
@@ -23,10 +24,10 @@ describe('Get Role Test', () => {
 
     const role = Role.create({
       recipientId,
-      name: 'Viewer',
+      name: generateNameValueObject('Viewer'),
       permissions: [
-        PermissionName.parse(Permissions.USERS.VIEW),
-        PermissionName.parse(Permissions.USERS.EDIT),
+        generatePermissionValueObject(Permissions.USERS.VIEW),
+        generatePermissionValueObject(Permissions.USERS.EDIT),
       ],
     })
 
@@ -39,7 +40,7 @@ describe('Get Role Test', () => {
     if (result.isRight()) {
       const fetchedRole = result.value.role
 
-      expect(fetchedRole.name).toBe('Viewer')
+      expect(fetchedRole.name.value).toBe('Viewer')
       expect(fetchedRole.permissionValues).toEqual(
         expect.arrayContaining(['view_user', 'edit_user']),
       )
