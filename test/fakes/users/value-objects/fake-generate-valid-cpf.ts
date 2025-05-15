@@ -20,5 +20,11 @@ export function generateValidCPF(): string {
 }
 
 export function generateCPFValueObject(value?: string): CPF {
-  return CPF.create(value ?? generateValidCPF())
+  const cpfObject = CPF.create(value ?? generateValidCPF())
+      
+  if(cpfObject.isLeft()) {
+    throw cpfObject.value
+  }
+    
+  return cpfObject.value
 }

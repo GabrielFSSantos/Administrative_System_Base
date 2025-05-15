@@ -22,6 +22,10 @@ export class PermissionName extends ValueObject<PermissionNameProps> {
     return (ALL_PERMISSIONS as readonly string[]).includes(value)
   }
 
+  public toString(): string {
+    return this.value
+  }
+
   public static parse(value: string): Either<
     InvalidPermissionNameError,
     PermissionName

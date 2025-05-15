@@ -14,5 +14,11 @@ export function generateValidEmail(): string {
 }
 
 export function generateEmailValueObject(value?: string): EmailAddress {
-  return EmailAddress.create(value ?? generateValidEmail())
+  const emailObject = EmailAddress.create(value ?? generateValidEmail())
+    
+  if(emailObject.isLeft()) {
+    throw emailObject.value
+  }
+  
+  return emailObject.value
 }

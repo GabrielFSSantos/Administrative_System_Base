@@ -16,8 +16,10 @@ export class Name extends ValueObject<NameProps> {
   private static normalize(value: string): string {
     return value
       .trim()
-      .replace(/\s+/g, ' ') // remove espaços duplicados
-      .replace(/\b\w/g, (char) => char.toUpperCase()) // capitaliza cada palavra
+      .replace(/\s+/g, ' ')
+      .split(' ')
+      .map((word) => word.charAt(0).toLocaleUpperCase() + word.slice(1).toLocaleLowerCase())
+      .join(' ')
   }
 
   private static isValid(value: string): boolean {
@@ -31,6 +33,10 @@ export class Name extends ValueObject<NameProps> {
     if (!validPattern.test(value)) return false
 
     return true
+  }
+
+  public toString(): string {
+    return this.value
   }
 
   public static create(value: string): Either<

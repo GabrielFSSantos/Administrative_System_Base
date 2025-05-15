@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either'
 import { ValueObject } from '@/core/entities/value-object'
 
 import { InvalidEmailAddressError } from './errors/invalid-email-address-error'
@@ -27,15 +28,22 @@ export class EmailAddress extends ValueObject<EmailAddressProps> {
     )
   }
 
-  public static create(value: string): EmailAddress {
+  public toString(): string {
+    return this.value
+  }
+
+  public static create(value: string): Either<
+      InvalidEmailAddressError,
+      EmailAddress
+    > {
     const normalized = this.normalize(value)
 
     if (!this.isValid(normalized)) {
-      throw new InvalidEmailAddressError()
+      return left(new InvalidEmailAddressError())
     }
 
     const emailAddress = new EmailAddress({ value: normalized })
 
-    return emailAddress
+    return right(emailAddress)
   }
 }

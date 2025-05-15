@@ -33,13 +33,18 @@ export class EditUserUseCase implements EditUserContract{
 
     if(emailAddress && emailAddress !== user.emailAddress.value) {
       const newEmail = EmailAddress.create(emailAddress)
-      const userWithSameEmail =  await this.usersRepository.findByEmail(newEmail.value)
+
+      if(newEmail.isLeft()) {
+        return left(newEmail.value)
+      }
+    
+      const userWithSameEmail =  await this.usersRepository.findByEmail(newEmail.value.toString())
 
       if(userWithSameEmail && !userWithSameEmail.id.equals(user.id)) {
-        return left(new UserAlreadyExistsError(newEmail.value))
+        return left(new UserAlreadyExistsError(newEmail.value.toString()))
       }
 
-      user.changeEmail(newEmail)
+      user.changeEmail(newEmail.value)
     }
 
     if (name) {

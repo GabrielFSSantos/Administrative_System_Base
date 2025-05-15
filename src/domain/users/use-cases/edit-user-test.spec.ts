@@ -1,10 +1,10 @@
 import { makeUser } from 'test/factories/make-user'
+import { generateEmailValueObject } from 'test/fakes/users/value-objects/fake-generate-email'
 import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
 
 import { EditUserContract } from './contracts/edit-user-contract'
 import { EditUserUseCase } from './edit-user-use-case'
@@ -37,8 +37,8 @@ describe('Edit User Use Case Test', () => {
 
     const updated = await usersRepository.findById(user.id.toString())
 
-    expect(updated?.name.value).toBe(generateNameValueObject(newName).value)
-    expect(updated?.emailAddress.value).toBe(EmailAddress.create(newEmail).value)
+    expect(updated?.name.toString()).toBe(generateNameValueObject(newName).toString())
+    expect(updated?.emailAddress.toString()).toBe(generateEmailValueObject(newEmail).toString())
   })
 
   it('should edit only the name if email is not provided', async () => {
@@ -57,7 +57,7 @@ describe('Edit User Use Case Test', () => {
 
     const updated = await usersRepository.findById(user.id.toString())
 
-    expect(updated?.name.value).toBe(generateNameValueObject(newName).value)
+    expect(updated?.name.toString()).toBe(generateNameValueObject(newName).toString())
   })
 
   it('should edit only the email if name is not provided', async () => {
@@ -76,12 +76,12 @@ describe('Edit User Use Case Test', () => {
 
     const updated = await usersRepository.findById(user.id.toString())
 
-    expect(updated?.emailAddress.value).toBe(EmailAddress.create(newEmail).value)
+    expect(updated?.emailAddress.toString()).toBe(generateEmailValueObject(newEmail).toString())
   })
 
   it('should not allow editing to an email that already exists for another user', async () => {
-    const user1 = await makeUser({ emailAddress: EmailAddress.create('email1@test.com') })
-    const user2 = await makeUser({ emailAddress: EmailAddress.create('email2@test.com') })
+    const user1 = await makeUser({ emailAddress: generateEmailValueObject('email1@test.com') })
+    const user2 = await makeUser({ emailAddress: generateEmailValueObject('email2@test.com') })
 
     await usersRepository.create(user1)
     await usersRepository.create(user2)

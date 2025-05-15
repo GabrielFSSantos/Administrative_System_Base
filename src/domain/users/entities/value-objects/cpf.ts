@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either'
 import { ValueObject } from '@/core/entities/value-object'
 
 import { InvalidCPFError } from './errors/invalid-cpf-error'
@@ -41,15 +42,22 @@ export class CPF extends ValueObject<CpfProps> {
     )
   }
 
-  public static create(value: string): CPF {
+  public toString(): string {
+    return this.value
+  }
+
+  public static create(value: string): Either<
+    InvalidCPFError,
+    CPF
+  > {
     const normalized = this.normalize(value)
 
     if (!this.isValid(normalized)) {
-      throw new InvalidCPFError()
+      return left(new InvalidCPFError())
     }
 
     const cpf = new CPF({ value: normalized })
 
-    return cpf
+    return right(cpf)
   }
 }

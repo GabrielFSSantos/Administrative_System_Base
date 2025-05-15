@@ -25,8 +25,12 @@ export class AuthenticateUserUseCase implements AuthenticateUserContract {
     password,
   }: IAuthenticateUserUseCaseRequest): Promise<IAuthenticateUserUseCaseResponse> {
     const emailObject = EmailAddress.create(emailAddress)
+    
+    if(emailObject.isLeft()) {
+      return left(emailObject.value)
+    }
 
-    const user = await this.usersRepository.findByEmail(emailObject.value)
+    const user = await this.usersRepository.findByEmail(emailObject.value.toString())
 
     if (!user) {
       return left(new WrongCredentialsError())
