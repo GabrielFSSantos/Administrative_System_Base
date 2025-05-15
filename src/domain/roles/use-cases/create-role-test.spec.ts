@@ -74,7 +74,7 @@ describe('Create Role Test', () => {
     expect(stored.permissionValues).toEqual(expect.arrayContaining(permissionValues))
   })
 
-  it.skip('should return error if name is invalid', async () => {
+  it('should return error if name is invalid', async () => {
     const result = await sut.execute({
       recipientId: 'company-1',
       name: '  ', // nome inválido

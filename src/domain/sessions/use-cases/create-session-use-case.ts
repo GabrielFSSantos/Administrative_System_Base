@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
 
-import { right } from '@/core/either'
+import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 
 import { Session } from '../entities/session'
+import { AccessToken } from '../entities/value-objects/access-token'
 import { SessionsRepositoryContract } from '../repositories/contracts/sessions-repository-contract'
 import { CreateSessionContract, 
   ICreateSessionUseCaseRequest, 
@@ -22,9 +23,15 @@ export class CreateSessionUseCase implements CreateSessionContract {
     expiresAt,
   }: ICreateSessionUseCaseRequest): Promise<ICreateSessionUseCaseResponse> {
 
+    const accessTokenObject = AccessToken.create(accessToken)
+    
+    if(accessTokenObject.isLeft()) {
+      return left(accessTokenObject.value)
+    }
+
     const session = Session.create({
       recipientId: new UniqueEntityId(recipientId),
-      accessToken,
+      accessToken: accessTokenObject.value,
       expiresAt,
     })
 

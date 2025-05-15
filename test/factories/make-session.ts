@@ -1,3 +1,5 @@
+import { generateAccessTokenValueObject } from 'test/fakes/sessions/value-objects/fake-generate-access-toke'
+
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Session, SessionProps} from '@/domain/sessions/entities/session'
 
@@ -8,7 +10,7 @@ export function makeSession(
   const session = Session.create(
     {
       recipientId: new UniqueEntityId(),
-      accessToken: crypto.randomUUID(),
+      accessToken: generateAccessTokenValueObject(),
       expiresAt: new Date(Date.now() + 10 * 60 * 1000),
       ...override,
     },

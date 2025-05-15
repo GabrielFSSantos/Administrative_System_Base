@@ -101,7 +101,7 @@ describe('Create User Use Case Test', () => {
     expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 
-  it.skip('should reject weak passwords', async () => {
+  it('should reject weak passwords', async () => {
     const result = await sut.execute({
       name: 'Weak Password User',
       emailAddress: 'weak@example.com',

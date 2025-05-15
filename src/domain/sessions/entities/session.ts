@@ -5,10 +5,11 @@ import { Optional } from '@/core/types/optional'
 import { InvalidSessionDateExpiredError } from './errors/invalid-session-date-expired-error-error'
 import { InvalidSessionDateRevokedError } from './errors/invalid-session-date-revoked-error-error'
 import { SessionAlreadyRevokedError } from './errors/session-already-revoked-error'
+import { AccessToken } from './value-objects/access-token'
 
 export interface SessionProps {
   recipientId: UniqueEntityId
-  accessToken: string
+  accessToken: AccessToken
   createdAt: Date
   expiresAt: Date
   revokedAt: Date | null
@@ -19,12 +20,16 @@ export class Session extends Entity<SessionProps> {
     return this.props.recipientId
   }
 
-  get accessToken(): string {
+  get accessToken(): AccessToken {
     return this.props.accessToken
   }
 
   get createdAt(): Date {
     return this.props.createdAt
+  }
+
+  get expiresAt(): Date {
+    return this.props.expiresAt
   }
   
   public belongsTo(recipientId: string) {
