@@ -35,10 +35,14 @@ export class CreateSessionUseCase implements CreateSessionContract {
       expiresAt,
     })
 
-    await this.sessionsRepository.create(session)
+    if(session.isLeft()) {
+      return left(session.value)
+    }
+
+    await this.sessionsRepository.create(session.value)
 
     return right({
-      session, 
+      session: session.value, 
     })
   }
 }

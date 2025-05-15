@@ -6,7 +6,7 @@ export class InMemorySessionsRepository implements SessionsRepositoryContract {
   public items: Session[] = []
   
   async findByToken(accessToken: string): Promise<Session | null> {
-    const session = this.items.find((session) => session.accessToken === accessToken)
+    const session = this.items.find((session) => session.accessToken.toString() === accessToken)
 
     if (!session) return null
 

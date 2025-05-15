@@ -1,6 +1,7 @@
 import { left,right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Session } from '@/domain/sessions/entities/session'
+import { AccessToken } from '@/domain/sessions/entities/value-objects/access-token'
 import {
   CreateSessionContract,
   ICreateSessionUseCaseRequest,
@@ -20,14 +21,24 @@ export class FakeCreateSessionUseCase implements CreateSessionContract {
       return left(new SessionExpiredError())
     }
 
+    const accessTokenObject = AccessToken.create(accessToken)
+        
+    if(accessTokenObject.isLeft()) {
+      return left(accessTokenObject.value)
+    }
+
     const session = Session.create({
       recipientId: new UniqueEntityId(recipientId),
-      accessToken,
+      accessToken: accessTokenObject.value,
       expiresAt,
     })
 
+    if(session.isLeft()) {
+      return left(session.value)
+    }
+
     return right({
-      session,
+      session: session.value,
     })
   }
 }

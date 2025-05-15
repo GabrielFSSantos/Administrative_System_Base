@@ -1,4 +1,4 @@
-import { generateAccessTokenValueObject } from 'test/fakes/sessions/value-objects/fake-generate-access-toke'
+import { generateAccessTokenValueObject } from 'test/fakes/sessions/value-objects/fake-generate-access-token'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Session, SessionProps} from '@/domain/sessions/entities/session'
@@ -17,5 +17,9 @@ export function makeSession(
     id,
   )
 
-  return session
+  if(session.isLeft()) {
+    throw session.value
+  }
+
+  return session.value
 }

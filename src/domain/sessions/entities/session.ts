@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
@@ -59,17 +60,20 @@ export class Session extends Entity<SessionProps> {
   static create(
     props: Optional<SessionProps, 'createdAt' | 'revokedAt'>,
     id?: UniqueEntityId,
-  ) {
+  ): Either<
+    InvalidSessionDateExpiredError | InvalidSessionDateRevokedError,
+    Session
+  > {
 
     const createdAt = props.createdAt ?? new Date()
     const revokedAt = props.revokedAt ?? null
   
     if (props.expiresAt < createdAt) {
-      throw new InvalidSessionDateExpiredError()
+      return left(new InvalidSessionDateExpiredError())
     }
 
     if (revokedAt && revokedAt < createdAt) {
-      throw new InvalidSessionDateRevokedError()
+      return left(new InvalidSessionDateRevokedError())
     }    
   
     const session = new Session(
@@ -81,6 +85,6 @@ export class Session extends Entity<SessionProps> {
       id,
     )
 
-    return session
+    return right(session)
   }
 }
