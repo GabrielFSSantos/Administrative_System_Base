@@ -49,7 +49,7 @@ describe('Session Entity Test', () => {
     expect(result.value).toBeInstanceOf(InvalidSessionDateRevokedError)
   })
 
-  it('should revoke a session', () => {
+  it('should revoke a session successfully', () => {
     const result = Session.create({
       recipientId: new UniqueEntityId(),
       accessToken: validToken,
@@ -63,7 +63,9 @@ describe('Session Entity Test', () => {
 
       expect(session.isRevoked()).toBe(false)
 
-      session.revoke()
+      const revokeResult = session.revoke()
+
+      expect(revokeResult.isRight()).toBe(true)
       expect(session.isRevoked()).toBe(true)
     }
   })
@@ -80,9 +82,12 @@ describe('Session Entity Test', () => {
     if (result.isRight()) {
       const session = result.value
 
-      session.revoke()
+      const first = session.revoke()
+      const second = session.revoke()
 
-      expect(() => session.revoke()).toThrow(SessionAlreadyRevokedError)
+      expect(first.isRight()).toBe(true)
+      expect(second.isLeft()).toBe(true)
+      expect(second.value).toBeInstanceOf(SessionAlreadyRevokedError)
     }
   })
 

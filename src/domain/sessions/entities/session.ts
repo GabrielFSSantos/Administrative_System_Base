@@ -49,12 +49,17 @@ export class Session extends Entity<SessionProps> {
     return !this.isRevoked() && !this.isExpired()
   }
 
-  public revoke(): void {
+  public revoke(): Either<
+    SessionAlreadyRevokedError,
+    null
+    > {
     if (this.isRevoked()) {
-      throw new SessionAlreadyRevokedError()
+      return left(new SessionAlreadyRevokedError())
     }
   
     this.props.revokedAt = new Date()
+
+    return right(null)
   }
 
   static create(
