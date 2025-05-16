@@ -1,12 +1,12 @@
-import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
-import { generatePermissionValueObject } from 'test/fakes/users/value-objects/fake-generate-permissions.'
+import { generatePermissionValueObject } from 'test/factories/roles/value-objects/make-permissions'
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Role } from '@/domain/roles/entities/role'
 import { EditRoleUseCase } from '@/domain/roles/use-cases/edit-role-use-case'
 import { InvalidPermissionError } from '@/domain/roles/use-cases/errors/invalid-permission-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 import { Permissions } from '@/shared/permissions'
 import { InvalidNameError } from '@/shared/value-objects/errors/invalid-name-error'
 

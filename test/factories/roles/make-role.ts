@@ -1,5 +1,5 @@
-import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
-import { generatePermissionValueObject } from 'test/fakes/users/value-objects/fake-generate-permissions.'
+import { generatePermissionValueObject } from 'test/factories/roles/value-objects/make-permissions'
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Role } from '@/domain/roles/entities/role'

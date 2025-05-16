@@ -1,14 +1,14 @@
-import { makeUser } from 'test/factories/make-user'
-import { generateEmailValueObject } from 'test/fakes/users/value-objects/fake-generate-email'
-import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
-import { generatePasswordHashValueObject } from 'test/fakes/users/value-objects/fake-generate-password-hash'
+import { makeUser } from 'test/factories/users/make-user'
+import { generateEmailValueObject } from 'test/factories/users/value-objects/make-email'
+import { generatePasswordHashValueObject } from 'test/factories/users/value-objects/make-password-hash'
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { InvalidUpdatedAtError } from '@/domain/users/entities/errors/invalid-updated-at-error'
 import { User } from '@/domain/users/entities/user'
 import { CPF } from '@/domain/users/entities/value-objects/cpf'
 import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
 import { PasswordHash } from '@/domain/users/entities/value-objects/password-hash'
+import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
 import { Name } from '@/shared/value-objects/name'
 
 describe('User Entity Test', () => {

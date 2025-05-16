@@ -1,6 +1,6 @@
 
 import { Either } from '@/core/either'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { SamePasswordError } from '../errors/same-password-error'
 import { WrongCredentialsError } from '../errors/wrong-credentials-error'

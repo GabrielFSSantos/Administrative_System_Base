@@ -4,7 +4,8 @@ import { IFetchManySessionsUseCaseRequest } from '../../use-cases/contracts/fetc
 export abstract class SessionsRepositoryContract {
   abstract findByToken(token: string): Promise<Session | null>
   abstract findById(id: string): Promise<Session | null>
-  abstract findMany(parms: IFetchManySessionsUseCaseRequest): Promise<Session[]>
+  abstract findMany(parms: IFetchManySessionsUseCaseRequest): 
+  Promise<{sessions: Session[]; total: number }> 
   abstract findLastByRecipientId(recipientId: string): Promise<Session | null>
   abstract create(session: Session): Promise<void>
   abstract save(session: Session): Promise<void>

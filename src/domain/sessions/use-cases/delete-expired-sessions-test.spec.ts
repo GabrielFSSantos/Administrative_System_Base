@@ -1,4 +1,4 @@
-import { makeSession } from 'test/factories/make-session'
+import { makeSession } from 'test/factories/sessions/make-session'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 
 import { DeleteExpiredSessionsContract } from '@/domain/sessions/use-cases/contracts/delete-expired-sessions-contract'

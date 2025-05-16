@@ -1,4 +1,4 @@
-export class Left<L, R> {
+export class Left<L extends Error, R = never> {
   readonly value: L
 
   constructor(value: L) {
@@ -14,10 +14,10 @@ export class Left<L, R> {
   }
 }
 
-export class Right<L, R> {
+export class Right<L extends Error = never, R = unknown> {
   readonly value: R
 
-  constructor(value: R) {
+  constructor(value: Exclude<R, Error>) {
     this.value = value
   }
 
@@ -30,12 +30,12 @@ export class Right<L, R> {
   }
 }
 
-export type Either<L, R> = Left<L, R> | Right<L, R>
+export type Either<L extends Error, R> = Left<L, R> | Right<L, R>
 
-export const left = <L, R>(value: L): Either<L, R> => {
+export function left<L extends Error, R = never>(value: L): Either<L, R> {
   return new Left(value)
 }
 
-export const right = <L, R>(value: R): Either<L, R> => {
+export function right<R, L extends Error = never>(value: Exclude<R, Error>): Either<L, R> {
   return new Right(value)
 }

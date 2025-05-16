@@ -1,7 +1,7 @@
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { SetUserActivationStatusContract } from './contracts/set-user-activation-status-contract'
 import { AlreadyActivatedError } from './errors/already-activated-error'

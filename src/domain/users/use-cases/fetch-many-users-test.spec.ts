@@ -1,10 +1,11 @@
-import { makeUser } from 'test/factories/make-user'
-import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
+import { makeUser } from 'test/factories/users/make-user'
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
+import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
+
 import { FetchManyUsersContract } from './contracts/fetch-many-users-contract'
-import { InvalidPaginationParamsError } from './errors/invalid-pagination-params-error'
 import { FetchManyUsersUseCase } from './fetch-many-users-use-case'
 
 let usersRepository: InMemoryUsersRepository

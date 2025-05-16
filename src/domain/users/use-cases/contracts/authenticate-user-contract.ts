@@ -1,5 +1,5 @@
 import { Either } from '@/core/either'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
+import { NotAllowedError } from '@/shared/errors/not-allowed-error'
 
 import { WrongCredentialsError } from '../errors/wrong-credentials-error'
 

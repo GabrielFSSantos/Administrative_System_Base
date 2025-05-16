@@ -1,5 +1,6 @@
 import { Either } from '@/core/either'
 import { Role } from '@/domain/roles/entities/role'
+import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
 
 export interface IFetchManyRolesByRecipientIdRequest {
   recipientId: string
@@ -8,9 +9,14 @@ export interface IFetchManyRolesByRecipientIdRequest {
 }
 
 export type IFetchManyRolesByRecipientIdResponse = Either<
-  null,
+  InvalidPaginationParamsError,
   {
     roles: Role[]
+    pagination: {
+      page: number
+      pageSize: number
+      total: number
+    },
   }
 >
 

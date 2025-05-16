@@ -1,10 +1,10 @@
-import { makeUser } from 'test/factories/make-user'
-import { generateEmailValueObject } from 'test/fakes/users/value-objects/fake-generate-email'
-import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
+import { makeUser } from 'test/factories/users/make-user'
+import { generateEmailValueObject } from 'test/factories/users/value-objects/make-email'
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { EditUserContract } from './contracts/edit-user-contract'
 import { EditUserUseCase } from './edit-user-use-case'

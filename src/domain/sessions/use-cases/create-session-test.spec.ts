@@ -1,4 +1,4 @@
-import { generateFakeJwt } from 'test/fakes/sessions/value-objects/fake-generate-access-token'
+import { generateFakeJwt } from 'test/factories/sessions/value-objects/make-access-token'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'

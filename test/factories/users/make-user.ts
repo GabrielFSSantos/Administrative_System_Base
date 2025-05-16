@@ -1,10 +1,10 @@
-import { generateCPFValueObject } from 'test/fakes/users/value-objects/fake-generate-cpf'
-import { generateEmailValueObject } from 'test/fakes/users/value-objects/fake-generate-email'
-import { generateNameValueObject } from 'test/fakes/users/value-objects/fake-generate-name'
-import { generatePasswordHashValueObject } from 'test/fakes/users/value-objects/fake-generate-password-hash'
-
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User, UserProps} from '@/domain/users/entities/user'
+
+import { generateNameValueObject } from '../value-objects/make-name'
+import { generateCPFValueObject } from './value-objects/make-cpf'
+import { generateEmailValueObject } from './value-objects/make-email'
+import { generatePasswordHashValueObject } from './value-objects/make-password-hash'
 
 export async function makeUser(
   override: Partial<UserProps> = {},

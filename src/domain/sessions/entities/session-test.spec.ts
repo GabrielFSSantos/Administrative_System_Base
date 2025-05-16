@@ -1,4 +1,4 @@
-import { generateAccessTokenValueObject } from 'test/fakes/sessions/value-objects/fake-generate-access-token'
+import { generateAccessTokenValueObject } from 'test/factories/sessions/value-objects/make-access-token'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { InvalidSessionDateExpiredError } from '@/domain/sessions/entities/errors/invalid-session-date-expired-error-error'

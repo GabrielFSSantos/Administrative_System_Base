@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { NotAllowedError } from '@/shared/errors/not-allowed-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { SessionsRepositoryContract } from '../repositories/contracts/sessions-repository-contract'
 import { 

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
+import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
 
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import { 
@@ -8,7 +9,6 @@ import {
   IFetchManyUsersUseCaseRequest, 
   IFetchManyUsersUseCaseResponse, 
 } from './contracts/fetch-many-users-contract'
-import { InvalidPaginationParamsError } from './errors/invalid-pagination-params-error'
 
 @Injectable()
 export class FetchManyUsersUseCase implements FetchManyUsersContract{

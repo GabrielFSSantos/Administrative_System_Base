@@ -24,7 +24,6 @@ export class Name extends ValueObject<NameProps> {
 
   private static isValid(value: string): boolean {
 
-    // Regras:
     if (value.length < 3 || value.length > 50) return false
 
     // Permite letras, espaços e acentos. Rejeita números e símbolos especiais.

@@ -2,7 +2,7 @@ export abstract class ValueObject<Props> {
   protected props: Props
 
   protected constructor(props: Props) {
-    this.props = props
+    this.props = Object.freeze(props)
   }
 
   public equals(vo: ValueObject<unknown>) {

@@ -2,8 +2,8 @@ import { makeSession } from 'test/factories/make-session'
 import { FakeRevokeSessionUseCase } from 'test/fakes/sessions/fake-revoke-session-use-case'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { NotAllowedError } from '@/shared/errors/not-allowed-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
 
 import { LogoutUserContract } from './contracts/logout-user-contract'

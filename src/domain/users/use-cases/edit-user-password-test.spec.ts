@@ -1,10 +1,10 @@
-import { makeUser } from 'test/factories/make-user'
+import { makeUser } from 'test/factories/users/make-user'
+import { generatePasswordHashValueObject } from 'test/factories/users/value-objects/make-password-hash'
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
-import { generatePasswordHashValueObject } from 'test/fakes/users/value-objects/fake-generate-password-hash'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { EditUserPasswordContract } from './contracts/edit-user-password-contract'
 import { EditUserPasswordUseCase } from './edit-user-password-use-case'

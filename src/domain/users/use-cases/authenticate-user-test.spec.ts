@@ -1,7 +1,7 @@
-import { makeUser } from 'test/factories/make-user'
+import { makeUser } from 'test/factories/users/make-user'
+import { generatePasswordHashValueObject } from 'test/factories/users/value-objects/make-password-hash'
 import { FakeEncrypter } from 'test/fakes/cryptography/fake-encrypter'
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
-import { generatePasswordHashValueObject } from 'test/fakes/users/value-objects/fake-generate-password-hash'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 

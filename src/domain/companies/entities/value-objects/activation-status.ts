@@ -9,7 +9,11 @@ export class ActivationStatus extends ValueObject<ActivationStatusProps> {
     return this.props.value
   }
 
-  isActive(): boolean {
+  public toString(): string {
+    return JSON.stringify(this.value)
+  }
+
+  public isActive(): boolean {
     return this.props.value !== null
   }
 
@@ -21,13 +25,13 @@ export class ActivationStatus extends ValueObject<ActivationStatusProps> {
     return new ActivationStatus({ value: null })
   }
 
-  activate(): ActivationStatus {
+  public activate(): ActivationStatus {
     if (this.isActive()) return this
 
     return ActivationStatus.activated()
   }
 
-  deactivate(): ActivationStatus {
+  public deactivate(): ActivationStatus {
     if (!this.isActive()) return this
 
     return ActivationStatus.deactivated()

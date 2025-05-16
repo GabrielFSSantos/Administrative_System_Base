@@ -57,7 +57,9 @@ export class PasswordHash extends ValueObject<PasswordHashProps> {
       return left(new InvalidPasswordHashError())
     }
 
-    return right(new PasswordHash({ value: hash }))
+    const hashValidated = new PasswordHash({ value: hash })
+
+    return right(hashValidated)
   }
 
   public static async createFromPlain(

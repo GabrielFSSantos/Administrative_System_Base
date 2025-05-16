@@ -19,15 +19,24 @@ export class InMemoryRolesRepository implements RolesRepositoryContract {
     recipientId,
     page,
     pageSize,
-  }: IFetchManyRolesByRecipientIdRequest): Promise<Role[]> {
+  }: IFetchManyRolesByRecipientIdRequest): Promise<{
+  roles: Role[]
+  total: number
+}> {
     const filtered = this.items.filter((item) =>
       item.recipientId.toString() === recipientId,
     )
-  
+
+    const total = filtered.length
     const start = (page - 1) * pageSize
     const end = start + pageSize
-  
-    return filtered.slice(start, end)
+
+    const paginated = filtered.slice(start, end)
+
+    return {
+      roles: paginated,
+      total,
+    }
   }
 
   async create(role: Role): Promise<void> {

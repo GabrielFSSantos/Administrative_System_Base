@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
-import { right } from '@/core/either'
+import { left, right } from '@/core/either'
+import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
 
 import { SessionsRepositoryContract } from '../repositories/contracts/sessions-repository-contract'
 import {
@@ -21,7 +22,11 @@ export class FetchManySessionsUseCase implements FetchManySessionsContract {
     recipientId,
     onlyValid,
   }: IFetchManySessionsUseCaseRequest): Promise<IFetchManySessionsUseCaseResponse> {
-    const sessions = await this.sessionsRepository.findMany({
+    if (page < 1 || pageSize < 1) {
+      return left(new InvalidPaginationParamsError())
+    }
+
+    const {sessions, total} = await this.sessionsRepository.findMany({
       page,
       pageSize,
       recipientId,
@@ -30,6 +35,11 @@ export class FetchManySessionsUseCase implements FetchManySessionsContract {
 
     return right({
       sessions,
+      pagination: {
+        page,
+        pageSize,
+        total,
+      },
     })
   }
 }

@@ -1,9 +1,9 @@
-import { makeSession } from 'test/factories/make-session'
+import { makeSession } from 'test/factories/sessions/make-session'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { GetLastSessionByRecipientIdUseCase } from '@/domain/sessions/use-cases/get-last-session-by-recipient-id-use-case'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { GetLastSessionByRecipientIdContract } from './contracts/get-last-session-by-recipient-id-contract'
 

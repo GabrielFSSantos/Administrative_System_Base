@@ -1,9 +1,11 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { Optional } from '@/core/types/optional'
 
 import { ActivationStatus } from './value-objects/activation-status'
 
 export interface MemberProps {
+  companyId: UniqueEntityId
   recipientId: UniqueEntityId
   roleId: UniqueEntityId
   activationStatus: ActivationStatus
@@ -27,7 +29,11 @@ export class Member extends Entity<MemberProps> {
     return this.props.activationStatus.isActive()
   }
 
-  static create(props: MemberProps, id?: UniqueEntityId): Member {
+  static create(
+    props: Optional<
+    MemberProps,  'activationStatus'>, 
+    id?: UniqueEntityId,
+  ): Member {
     return new Member(
       {
         ...props,
