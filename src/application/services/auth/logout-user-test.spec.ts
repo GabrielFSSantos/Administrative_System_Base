@@ -1,10 +1,11 @@
-import { makeSession } from 'test/factories/make-session'
+import { makeSession } from 'test/factories/sessions/make-session'
+import { generateAccessTokenValueObject } from 'test/factories/sessions/value-objects/make-access-token'
 import { FakeRevokeSessionUseCase } from 'test/fakes/sessions/fake-revoke-session-use-case'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
 import { NotAllowedError } from '@/shared/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
-import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
 
 import { LogoutUserContract } from './contracts/logout-user-contract'
 import { LogoutUserService } from './logout-user.service'
@@ -24,17 +25,19 @@ describe('LogoutUserService', () => {
 
   it('should successfully revoke a session', async () => {
     const recipientId = new UniqueEntityId('user-1')
+    const token = 'valid.token.abc'
+    const accessToken = generateAccessTokenValueObject(token)
 
     revokeSession.session = makeSession({
       recipientId,
-      accessToken: 'valid-token',
+      accessToken,
       createdAt: now(),
       expiresAt: inFuture(5), // 5 minutos no futuro
     })
 
     const result = await service.execute({
-      recipientId: 'user-1',
-      accessToken: 'valid-token',
+      recipientId: recipientId.toString(),
+      accessToken: token,
     })
 
     expect(result.isRight()).toBe(true)

@@ -3,10 +3,10 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
+import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
 import { CPF } from './value-objects/cpf'
-import { EmailAddress } from './value-objects/email-address'
 import { PasswordHash } from './value-objects/password-hash'
 
 export interface UserProps {

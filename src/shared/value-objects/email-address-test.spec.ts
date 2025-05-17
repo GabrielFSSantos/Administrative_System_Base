@@ -1,5 +1,5 @@
-import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
-import { InvalidEmailAddressError } from '@/domain/users/entities/value-objects/errors/invalid-email-address-error'
+import { EmailAddress } from './email-address'
+import { InvalidEmailAddressError } from './errors/invalid-email-address-error'
 
 describe('EmailAddress Value Object Test', () => {
   it('should create a valid email object', () => {

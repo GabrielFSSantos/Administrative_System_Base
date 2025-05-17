@@ -1,8 +1,8 @@
 
 import { Either } from '@/core/either'
+import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
 import { NotAllowedError } from '@/shared/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
-import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
 
 export interface ILogoutUserRequest {
   recipientId: string

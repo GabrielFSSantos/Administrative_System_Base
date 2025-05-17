@@ -1,4 +1,5 @@
 import { makeSession } from 'test/factories/sessions/make-session'
+import { generateAccessTokenValueObject } from 'test/factories/sessions/value-objects/make-access-token'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
@@ -19,9 +20,10 @@ describe('Revoke Session Test', () => {
 
   it('should revoke a valid session', async () => {
     const recipientId = new UniqueEntityId('user-1')
+    const token = 'valid.token.abc'
     const session = makeSession({
       recipientId,
-      accessToken: 'valid-token',
+      accessToken: generateAccessTokenValueObject(token),
       expiresAt: new Date(Date.now() + 1000 * 60 * 10),
     })
 
@@ -29,16 +31,18 @@ describe('Revoke Session Test', () => {
 
     const result = await sut.execute({
       recipientId: recipientId.toString(),
-      accessToken: 'valid-token',
+      accessToken: token,
     })
 
     expect(result.isRight()).toBe(true)
   })
 
   it('should return ResourceNotFoundError if session does not exist', async () => {
+    const token = 'non.existent.token'
+
     const result = await sut.execute({
       recipientId: 'user-x',
-      accessToken: 'not-found-token',
+      accessToken: token,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -46,16 +50,17 @@ describe('Revoke Session Test', () => {
   })
 
   it('should return NotAllowedError if recipientId does not match', async () => {
+    const token = 'token.not.allowed'
     const session = makeSession({
       recipientId: new UniqueEntityId('user-a'),
-      accessToken: 'token-a',
+      accessToken: generateAccessTokenValueObject(token),
     })
 
     await inMemorySessionsRepository.create(session)
 
     const result = await sut.execute({
       recipientId: 'user-b',
-      accessToken: 'token-a',
+      accessToken: token,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -64,9 +69,10 @@ describe('Revoke Session Test', () => {
 
   it('should return SessionExpiredError if session is expired', async () => {
     const now = new Date()
+    const token = 'expired.token.test'
     const session = makeSession({
       recipientId: new UniqueEntityId('user-1'),
-      accessToken: 'expired-token',
+      accessToken: generateAccessTokenValueObject(token),
       createdAt: new Date(now.getTime() - 10 * 60 * 1000),
       expiresAt: new Date(now.getTime() - 5 * 60 * 1000),
     })
@@ -75,7 +81,7 @@ describe('Revoke Session Test', () => {
 
     const result = await sut.execute({
       recipientId: 'user-1',
-      accessToken: 'expired-token',
+      accessToken: token,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -84,10 +90,11 @@ describe('Revoke Session Test', () => {
 
   it('should return SessionAlreadyRevokedError if session is already revoked', async () => {
     const now = new Date()
+    const token = 'revoked.token.test'
 
     const session = makeSession({
       recipientId: new UniqueEntityId('user-1'),
-      accessToken: 'revoked-token',
+      accessToken: generateAccessTokenValueObject(token),
       createdAt: now,
       revokedAt: new Date(now.getTime() + 100),
     })
@@ -96,7 +103,7 @@ describe('Revoke Session Test', () => {
 
     const result = await sut.execute({
       recipientId: 'user-1',
-      accessToken: 'revoked-token',
+      accessToken: token,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -104,9 +111,12 @@ describe('Revoke Session Test', () => {
   })
 
   it('should persist revoked session', async () => {
+    const token = 'persist.token.abc'
+    const accessToken = generateAccessTokenValueObject(token)
+
     const session = makeSession({
       recipientId: new UniqueEntityId('user-1'),
-      accessToken: 'persist-token',
+      accessToken,
       expiresAt: new Date(Date.now() + 60 * 1000),
     })
 
@@ -114,11 +124,11 @@ describe('Revoke Session Test', () => {
 
     await sut.execute({
       recipientId: 'user-1',
-      accessToken: 'persist-token',
+      accessToken: token,
     })
 
     const stored = inMemorySessionsRepository.items.find(
-      (s) => s.accessToken === 'persist-token',
+      (s) => s.accessToken.toString() === token,
     )
 
     expect(stored?.isRevoked()).toBe(true)

@@ -3,8 +3,8 @@ import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
 import { CPF } from '@/domain/users/entities/value-objects/cpf'
-import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
 import { WeakPasswordError } from '@/domain/users/entities/value-objects/errors/weak-password-error'
+import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
 import { CreateUserContract } from './contracts/create-user-contract'

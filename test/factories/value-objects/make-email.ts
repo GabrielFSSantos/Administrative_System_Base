@@ -1,4 +1,4 @@
-import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
+import { EmailAddress } from '@/shared/value-objects/email-address'
 
 const domains = ['example.com', 'testmail.com', 'mailinator.com']
 

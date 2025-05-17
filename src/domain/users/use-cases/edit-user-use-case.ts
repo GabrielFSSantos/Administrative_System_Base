@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common'
 
 import { left,right } from '@/core/either'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
+import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
-import { EmailAddress } from '../entities/value-objects/email-address'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
   EditUserContract,

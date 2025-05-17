@@ -1,5 +1,5 @@
 import { makeUser } from 'test/factories/users/make-user'
-import { generateEmailValueObject } from 'test/factories/users/value-objects/make-email'
+import { generateEmailValueObject } from 'test/factories/value-objects/make-email'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'

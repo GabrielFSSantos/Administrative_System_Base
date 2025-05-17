@@ -12,5 +12,6 @@ export type IDeleteUserUseCaseResponse = Either<
 >
 
 export abstract class DeleteUserContract {
-  abstract execute(input: IDeleteUserUseCaseRequest): Promise<IDeleteUserUseCaseResponse> 
+  abstract execute(input: IDeleteUserUseCaseRequest): 
+  Promise<IDeleteUserUseCaseResponse> 
 }

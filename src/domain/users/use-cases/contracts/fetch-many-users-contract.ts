@@ -23,5 +23,6 @@ export type IFetchManyUsersUseCaseResponse = Either<
 >
 
 export abstract class FetchManyUsersContract {
-  abstract execute(input: IFetchManyUsersUseCaseRequest): Promise<IFetchManyUsersUseCaseResponse> 
+  abstract execute(input: IFetchManyUsersUseCaseRequest): 
+  Promise<IFetchManyUsersUseCaseResponse> 
 }

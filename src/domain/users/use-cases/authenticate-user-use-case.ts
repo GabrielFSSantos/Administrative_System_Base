@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common'
 import { left, right } from '@/core/either'
 import { EncrypterContract } from '@/shared/contracts/cryptography/encrypter-contract'
 import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
+import { EmailAddress } from '@/shared/value-objects/email-address'
 
-import { EmailAddress } from '../entities/value-objects/email-address'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import { AuthenticateUserContract, 
   IAuthenticateUserUseCaseRequest, 

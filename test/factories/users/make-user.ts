@@ -1,9 +1,9 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User, UserProps} from '@/domain/users/entities/user'
 
+import { generateEmailValueObject } from '../value-objects/make-email'
 import { generateNameValueObject } from '../value-objects/make-name'
 import { generateCPFValueObject } from './value-objects/make-cpf'
-import { generateEmailValueObject } from './value-objects/make-email'
 import { generatePasswordHashValueObject } from './value-objects/make-password-hash'
 
 export async function makeUser(
