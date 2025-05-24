@@ -1,9 +1,10 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Member } from '@/domain/companies/entities/member'
+import { ActivatableRepository } from '@/shared/ActivationStatus/repositories/contracts/activatable-repository-contract'
 
 import { IFetchManyMembersUseCaseRequest } from '../../use-cases/contracts/fetch-many-members-contract'
 
-export abstract class MembersRepositoryContract {
+export abstract class MembersRepositoryContract implements ActivatableRepository<Member> {
   abstract findById(id: string): Promise<Member | null>
   abstract findByRecipientAndCompanyId(params: {
     recipientId: string

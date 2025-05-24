@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common'
 import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Member } from '@/domain/companies/entities/member'
-import { ActivationStatus } from '@/domain/companies/entities/value-objects/activation-status'
 import { MembersRepositoryContract } from '@/domain/companies/repositories/contracts/members-repository-contract'
+import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
 
 import {
   CreateMemberContract,

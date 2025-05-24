@@ -6,21 +6,16 @@ import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activa
 import { AlreadyActivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-activated-error'
 import { AlreadyDeactivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-deactivated-error'
 
-export interface MemberProps {
-  recipientId: UniqueEntityId
-  companyId: UniqueEntityId
-  profileId: UniqueEntityId
+export interface SystemAdminProps {
+  recipientId: UniqueEntityId 
+  profileId: UniqueEntityId   
   activationStatus: ActivationStatus
 }
 
-export class Member extends Entity<MemberProps> {
+export class SystemAdmin extends Entity<SystemAdminProps> {
 
   get recipientId(): UniqueEntityId {
     return this.props.recipientId
-  }
-
-  get companyId(): UniqueEntityId {
-    return this.props.companyId
   }
 
   get profileId(): UniqueEntityId {
@@ -31,12 +26,20 @@ export class Member extends Entity<MemberProps> {
     return this.props.activationStatus
   }
 
+  public changeProfile(newProfileId: UniqueEntityId): void {
+    if (this.props.profileId.equals(newProfileId)) {
+      return
+    }
+
+    this.props.profileId = newProfileId
+  }
+
   public isActivated(): boolean {
     return this.props.activationStatus.isActive()
   }
 
   public activate(): Either<
-    AlreadyActivatedError, 
+    AlreadyActivatedError,
     null
     > {
     if (this.isActivated()) {
@@ -49,7 +52,7 @@ export class Member extends Entity<MemberProps> {
   }
 
   public deactivate(): Either<
-    AlreadyDeactivatedError, 
+    AlreadyDeactivatedError,
     null
     > {
     if (!this.isActivated()) {
@@ -62,11 +65,10 @@ export class Member extends Entity<MemberProps> {
   }
 
   static create(
-    props: Optional<
-    MemberProps,  'activationStatus'>, 
+    props: Optional<SystemAdminProps, 'activationStatus'>,
     id?: UniqueEntityId,
-  ): Member {
-    return new Member(
+  ): SystemAdmin {
+    return new SystemAdmin(
       {
         ...props,
         activationStatus: props.activationStatus ?? ActivationStatus.deactivated(),

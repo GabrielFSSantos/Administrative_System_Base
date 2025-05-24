@@ -1,21 +1,19 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { Member, MemberProps } from '@/domain/companies/entities/member'
+import { SystemAdmin, SystemAdminProps } from '@/domain/users/entities/system-admin'
 
 import { generateActivationStatusValueObject } from '../value-objects/make-activation-status'
 
-export async function makeMember(
-  override: Partial<MemberProps> = {},
+export async function makeSystemAdmin(
+  override: Partial<SystemAdminProps> = {},
   id?: UniqueEntityId,
-): Promise<Member> {
+): Promise<SystemAdmin> {
   const recipientId = override.recipientId ?? new UniqueEntityId()
-  const companyId = override.companyId ?? new UniqueEntityId()
   const profileId = override.profileId ?? new UniqueEntityId()
   const activationStatus = override.activationStatus ?? generateActivationStatusValueObject(false)
 
-  const member = Member.create(
+  const systemAdmin = SystemAdmin.create(
     {
       recipientId,
-      companyId,
       profileId,
       activationStatus,
       ...override,
@@ -23,5 +21,5 @@ export async function makeMember(
     id,
   )
 
-  return member
+  return systemAdmin
 }

@@ -1,4 +1,4 @@
-import { ActivationStatus } from '@/domain/companies/entities/value-objects/activation-status'
+import { ActivationStatus } from '@/shared/ActivationStatus//value-objects/activation-status'
 
 export function generateActivationStatusValueObject(status?: boolean): ActivationStatus {
   const resolved = status ?? Math.random() > 0.5

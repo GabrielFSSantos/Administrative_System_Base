@@ -1,8 +1,8 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { AlreadyActivatedError } from '@/domain/companies/entities/errors/already-activated-error'
-import { AlreadyDeactivatedError } from '@/domain/companies/entities/errors/already-deactivated-error'
 import { Member } from '@/domain/companies/entities/member'
-import { ActivationStatus } from '@/domain/companies/entities/value-objects/activation-status'
+import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
+import { AlreadyActivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-activated-error'
+import { AlreadyDeactivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-deactivated-error'
 
 describe('Member Entity Test', () => {
   const recipientId = new UniqueEntityId()
