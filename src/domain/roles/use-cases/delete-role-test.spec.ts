@@ -20,7 +20,7 @@ describe('Delete Role Test', () => {
 
   it('should be able to delete an existing role', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
+      recipientId: UniqueEntityId.create('company-1'),
       name: generateNameValueObject('Admin'),
       permissions: generatePermissionList(2), 
     })
@@ -34,7 +34,7 @@ describe('Delete Role Test', () => {
   })
 
   it('should return error if role does not exist', async () => {
-    const nonExistentId = new UniqueEntityId().toString()
+    const nonExistentId = UniqueEntityId.create().toString()
 
     const result = await sut.execute({ roleId: nonExistentId })
 

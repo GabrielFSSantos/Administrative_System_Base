@@ -16,7 +16,7 @@ describe('Create Session Use Case Test', () => {
   })
 
   it('should create a valid session and persist it', async () => {
-    const recipientId = new UniqueEntityId().toString()
+    const recipientId = UniqueEntityId.create().toString()
     const accessToken = generateFakeJwt()
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
 
@@ -39,7 +39,7 @@ describe('Create Session Use Case Test', () => {
 
   it('should not create session with invalid access token (wrong format)', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId().toString(),
+      recipientId: UniqueEntityId.create().toString(),
       accessToken: 'invalid-token',
       expiresAt: new Date(Date.now() + 60000),
     })
@@ -50,7 +50,7 @@ describe('Create Session Use Case Test', () => {
 
   it('should not create session with empty access token', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId().toString(),
+      recipientId: UniqueEntityId.create().toString(),
       accessToken: '',
       expiresAt: new Date(Date.now() + 60000),
     })
@@ -61,7 +61,7 @@ describe('Create Session Use Case Test', () => {
 
   it('should not create session if expiresAt is before createdAt', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId().toString(),
+      recipientId: UniqueEntityId.create().toString(),
       accessToken: generateFakeJwt(),
       expiresAt: new Date(Date.now() - 60000),
     })
@@ -72,7 +72,7 @@ describe('Create Session Use Case Test', () => {
 
   it('not should handle expiresAt < createdAt (via makeSession simulation)', async () => {
     const now = new Date()
-    const recipientId = new UniqueEntityId()
+    const recipientId = UniqueEntityId.create()
     const accessToken = generateFakeJwt()
 
     const result = await sut.execute({
@@ -86,13 +86,13 @@ describe('Create Session Use Case Test', () => {
 
   it('should allow multiple sessions with different recipientIds', async () => {
     const result1 = await sut.execute({
-      recipientId: new UniqueEntityId().toString(),
+      recipientId: UniqueEntityId.create().toString(),
       accessToken: generateFakeJwt(),
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     })
 
     const result2 = await sut.execute({
-      recipientId: new UniqueEntityId().toString(),
+      recipientId: UniqueEntityId.create().toString(),
       accessToken: generateFakeJwt(),
       expiresAt: new Date(Date.now() + 10 * 60 * 1000),
     })
@@ -104,7 +104,7 @@ describe('Create Session Use Case Test', () => {
 
   it('should return an AccessToken value object inside session', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId().toString(),
+      recipientId: UniqueEntityId.create().toString(),
       accessToken: generateFakeJwt(),
       expiresAt: new Date(Date.now() + 60000),
     })

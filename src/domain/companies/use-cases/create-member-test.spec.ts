@@ -16,9 +16,9 @@ describe('Create Member Use Case', () => {
   })
 
   it('should create a new member successfully', async () => {
-    const recipientId = new UniqueEntityId()
-    const companyId = new UniqueEntityId()
-    const profileId = new UniqueEntityId()
+    const recipientId = UniqueEntityId.create()
+    const companyId = UniqueEntityId.create()
+    const profileId = UniqueEntityId.create()
 
     const result = await sut.execute({
       recipientId: recipientId.toString(),
@@ -53,9 +53,9 @@ describe('Create Member Use Case', () => {
   })
 
   it('should persist member in repository', async () => {
-    const recipientId = new UniqueEntityId()
-    const companyId = new UniqueEntityId()
-    const profileId = new UniqueEntityId()
+    const recipientId = UniqueEntityId.create()
+    const companyId = UniqueEntityId.create()
+    const profileId = UniqueEntityId.create()
 
     await sut.execute({
       recipientId: recipientId.toString(),

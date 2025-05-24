@@ -28,7 +28,7 @@ export class FakeCreateSessionUseCase implements CreateSessionContract {
     }
 
     const session = Session.create({
-      recipientId: new UniqueEntityId(recipientId),
+      recipientId: UniqueEntityId.create(recipientId),
       accessToken: accessTokenObject.value,
       expiresAt,
     })

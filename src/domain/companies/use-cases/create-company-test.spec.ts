@@ -21,7 +21,6 @@ describe('Create Company Use Case', () => {
       cnpj: validCNPJ,
       name: 'Test Company',
       emailAddress: 'test@company.com',
-      profileIds: ['profile-id-1'],
       permissionValues: ['create_user'],
     })
 
@@ -42,7 +41,6 @@ describe('Create Company Use Case', () => {
       cnpj: validCNPJ,
       name: 'Test Company',
       emailAddress: 'test@company.com',
-      profileIds: ['profile-id-1'],
       permissionValues: ['create_user'],
     })
 
@@ -50,7 +48,6 @@ describe('Create Company Use Case', () => {
       cnpj: validCNPJ,
       name: 'Another Company',
       emailAddress: 'another@company.com',
-      profileIds: ['profile-id-2'],
       permissionValues: ['delete_user'],
     })
 
@@ -65,7 +62,6 @@ describe('Create Company Use Case', () => {
       cnpj: validCNPJ,
       name: 'Test Company',
       emailAddress: 'test@company.com',
-      profileIds: ['profile-id-1'],
       permissionValues: ['create_user'],
     })
 

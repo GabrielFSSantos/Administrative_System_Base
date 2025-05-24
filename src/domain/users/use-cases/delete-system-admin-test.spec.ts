@@ -29,7 +29,7 @@ describe('Delete System Admin Use Case Test', () => {
   })
 
   it('should return ResourceNotFoundError if system admin does not exist', async () => {
-    const result = await sut.execute({ systemAdminId: new UniqueEntityId().toString() })
+    const result = await sut.execute({ systemAdminId: UniqueEntityId.create().toString() })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)

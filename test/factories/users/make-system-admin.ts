@@ -7,8 +7,8 @@ export async function makeSystemAdmin(
   override: Partial<SystemAdminProps> = {},
   id?: UniqueEntityId,
 ): Promise<SystemAdmin> {
-  const recipientId = override.recipientId ?? new UniqueEntityId()
-  const profileId = override.profileId ?? new UniqueEntityId()
+  const recipientId = override.recipientId ?? UniqueEntityId.create()
+  const profileId = override.profileId ?? UniqueEntityId.create()
   const activationStatus = override.activationStatus ?? generateActivationStatusValueObject(false)
 
   const systemAdmin = SystemAdmin.create(

@@ -16,7 +16,7 @@ describe('Fetch Many Roles By RecipientId Test', () => {
   })
 
   it('should return paginated roles by recipientId', async () => {
-    const recipientId = new UniqueEntityId('company-1')
+    const recipientId = UniqueEntityId.create('company-1')
 
     for (let i = 0; i < 10; i++) {
       await inMemoryRolesRepository.create(
@@ -45,7 +45,7 @@ describe('Fetch Many Roles By RecipientId Test', () => {
   })
 
   it('should return all roles for recipientId when pageSize is large enough', async () => {
-    const recipientId = new UniqueEntityId('company-2')
+    const recipientId = UniqueEntityId.create('company-2')
 
     await inMemoryRolesRepository.create(
       Role.create({
@@ -82,7 +82,7 @@ describe('Fetch Many Roles By RecipientId Test', () => {
 
   it('should return empty array if no roles exist for recipientId', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId('non-existent').toString(),
+      recipientId: UniqueEntityId.create('non-existent').toString(),
       page: 1,
       pageSize: 10,
     })

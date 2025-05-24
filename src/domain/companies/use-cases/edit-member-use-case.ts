@@ -28,7 +28,7 @@ export class EditMemberUseCase implements EditMemberContract {
     }
 
     if (profileId && profileId !== member.profileId.toString()) {
-      member.changeProfile(new UniqueEntityId(profileId))
+      member.changeProfile(UniqueEntityId.create(profileId))
     }
 
     await this.membersRepository.save(member)

@@ -23,7 +23,7 @@ describe('Edit Role Test', () => {
 
   it('should be able to edit a role name and permissions', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
+      recipientId: UniqueEntityId.create('company-1'),
       name: generateNameValueObject('Old Name'),
       permissions: generatePermissionList(1),
     })
@@ -48,7 +48,7 @@ describe('Edit Role Test', () => {
 
   it('should return error if role does not exist', async () => {
     const result = await sut.execute({
-      roleId: new UniqueEntityId().toString(),
+      roleId: UniqueEntityId.create().toString(),
       name: 'Does Not Exist',
       permissionValues: [Permissions.USERS.VIEW],
     })
@@ -59,7 +59,7 @@ describe('Edit Role Test', () => {
 
   it('should return error if permissions are invalid', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
+      recipientId: UniqueEntityId.create('company-1'),
       name: generateNameValueObject('Editor'),
       permissions: generatePermissionList(1),
     })
@@ -78,7 +78,7 @@ describe('Edit Role Test', () => {
 
   it('should update only name if permissions remain the same', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
+      recipientId: UniqueEntityId.create('company-1'),
       name: generateNameValueObject('Manager'),
       permissions: generatePermissionList(2),
     })
@@ -106,7 +106,7 @@ describe('Edit Role Test', () => {
 
   it('should update only permissions if name is not provided', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
+      recipientId: UniqueEntityId.create('company-1'),
       name: generateNameValueObject('Unchanged Name'),
       permissions: generatePermissionList(1),
     })
@@ -133,7 +133,7 @@ describe('Edit Role Test', () => {
 
   it('should not update anything if no name or permissions are provided', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
+      recipientId: UniqueEntityId.create('company-1'),
       name: generateNameValueObject('No Change'),
       permissions: generatePermissionList(1),
     })
@@ -154,7 +154,7 @@ describe('Edit Role Test', () => {
 
   it('should throw if name is invalid', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
+      recipientId: UniqueEntityId.create('company-1'),
       name: generateNameValueObject('Valid Name'),
       permissions: generatePermissionList(1),
     })

@@ -25,7 +25,7 @@ describe('Entity', () => {
   })
 
   it('should return true when entities have the same ID', () => {
-    const id = new UniqueEntityId()
+    const id = UniqueEntityId.create()
 
     const entity1 = TestEntity.create('one', id)
     const entity2 = TestEntity.create('two', id)

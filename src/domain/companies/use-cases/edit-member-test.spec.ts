@@ -22,7 +22,7 @@ describe('Edit Member Use Case Test', () => {
 
     await membersRepository.create(member)
 
-    const newProfileId = new UniqueEntityId()
+    const newProfileId = UniqueEntityId.create()
 
     const result = await sut.execute({
       memberId: member.id.toString(),
@@ -52,7 +52,7 @@ describe('Edit Member Use Case Test', () => {
   it('should return error if member does not exist', async () => {
     const result = await sut.execute({
       memberId: 'non-existent-id',
-      profileId: new UniqueEntityId().toString(),
+      profileId: UniqueEntityId.create().toString(),
     })
 
     expect(result.isLeft()).toBe(true)
@@ -68,7 +68,7 @@ describe('Edit Member Use Case Test', () => {
 
     await sut.execute({
       memberId: member.id.toString(),
-      profileId: new UniqueEntityId().toString(),
+      profileId: UniqueEntityId.create().toString(),
     })
 
     expect(spy).toHaveBeenCalledWith(expect.objectContaining({ id: member.id }))

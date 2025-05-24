@@ -37,10 +37,10 @@ export class CreateRoleUseCase implements CreateRoleContract {
       return left(result.value)
     }
 
-    const permissionList = new PermissionList(result.value)
+    const permissionList = PermissionList.create(result.value)
 
     const role = Role.create({
-      recipientId: new UniqueEntityId(recipientId),
+      recipientId: UniqueEntityId.create(recipientId),
       name: nameObject.value,
       permissions: permissionList,
     })

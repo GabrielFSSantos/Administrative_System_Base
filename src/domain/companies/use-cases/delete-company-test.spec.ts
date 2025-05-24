@@ -29,7 +29,7 @@ describe('Delete Company Use Case Test', () => {
   })
 
   it('should return ResourceNotFoundError if company does not exist', async () => {
-    const result = await sut.execute({ companyId: new UniqueEntityId().toString() })
+    const result = await sut.execute({ companyId: UniqueEntityId.create().toString() })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)

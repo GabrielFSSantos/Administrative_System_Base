@@ -7,9 +7,9 @@ export async function makeMember(
   override: Partial<MemberProps> = {},
   id?: UniqueEntityId,
 ): Promise<Member> {
-  const recipientId = override.recipientId ?? new UniqueEntityId()
-  const companyId = override.companyId ?? new UniqueEntityId()
-  const profileId = override.profileId ?? new UniqueEntityId()
+  const recipientId = override.recipientId ?? UniqueEntityId.create()
+  const companyId = override.companyId ?? UniqueEntityId.create()
+  const profileId = override.profileId ?? UniqueEntityId.create()
   const activationStatus = override.activationStatus ?? generateActivationStatusValueObject(false)
 
   const member = Member.create(

@@ -30,8 +30,8 @@ export class CreateSystemAdminUseCase implements CreateSystemAdminContract {
     }
 
     const systemAdmin = SystemAdmin.create({
-      recipientId: new UniqueEntityId(recipientId),
-      profileId: new UniqueEntityId(profileId),
+      recipientId: UniqueEntityId.create(recipientId),
+      profileId: UniqueEntityId.create(profileId),
       activationStatus: ActivationStatus.deactivated(),
     })
 

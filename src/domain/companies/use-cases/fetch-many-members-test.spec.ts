@@ -23,7 +23,7 @@ describe('Fetch Many Members Use Case Test', () => {
   })
 
   it('should fetch up to pageSize members', async () => {
-    const companyId = new UniqueEntityId('company-1')
+    const companyId = UniqueEntityId.create('company-1')
 
     for (let i = 0; i < 25; i++) {
       const user = await makeUser()
@@ -44,7 +44,7 @@ describe('Fetch Many Members Use Case Test', () => {
   })
 
   it('should return correct page of members', async () => {
-    const companyId = new UniqueEntityId('company-2')
+    const companyId = UniqueEntityId.create('company-2')
 
     for (let i = 0; i < 30; i++) {
       const user = await makeUser()
@@ -112,7 +112,7 @@ describe('Fetch Many Members Use Case Test', () => {
   })
 
   it('should filter members based on search term (name)', async () => {
-    const companyId = new UniqueEntityId('company-4')
+    const companyId = UniqueEntityId.create('company-4')
 
     const userA = await makeUser({ name: generateNameValueObject('Ana Clara') })
     const userB = await makeUser({ name: generateNameValueObject('João Silva') })

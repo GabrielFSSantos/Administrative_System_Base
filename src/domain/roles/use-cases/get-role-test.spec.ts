@@ -19,7 +19,7 @@ describe('Get Role Test', () => {
   })
 
   it('should be able to get an existing role by ID', async () => {
-    const recipientId = new UniqueEntityId('company-1')
+    const recipientId = UniqueEntityId.create('company-1')
 
     const role = Role.create({
       recipientId,
@@ -43,7 +43,7 @@ describe('Get Role Test', () => {
   })
 
   it('should return error if role does not exist', async () => {
-    const invalidId = new UniqueEntityId().toString()
+    const invalidId = UniqueEntityId.create().toString()
 
     const result = await sut.execute({ roleId: invalidId })
 

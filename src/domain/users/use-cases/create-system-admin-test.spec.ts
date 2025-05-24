@@ -16,8 +16,8 @@ describe('Create SystemAdmin Use Case', () => {
   })
 
   it('should create a new system admin successfully', async () => {
-    const recipientId = new UniqueEntityId()
-    const profileId = new UniqueEntityId()
+    const recipientId = UniqueEntityId.create()
+    const profileId = UniqueEntityId.create()
 
     const result = await sut.execute({
       recipientId: recipientId.toString(),
@@ -49,8 +49,8 @@ describe('Create SystemAdmin Use Case', () => {
   })
 
   it('should persist system admin in repository', async () => {
-    const recipientId = new UniqueEntityId()
-    const profileId = new UniqueEntityId()
+    const recipientId = UniqueEntityId.create()
+    const profileId = UniqueEntityId.create()
 
     await sut.execute({
       recipientId: recipientId.toString(),

@@ -94,7 +94,7 @@ describe('User Entity Test', () => {
   })
 
   it('should preserve provided UniqueEntityId', async () => {
-    const customId = new UniqueEntityId()
+    const customId = UniqueEntityId.create()
     const user = await makeUser({}, customId)
 
     expect(user.id).toEqual(customId)

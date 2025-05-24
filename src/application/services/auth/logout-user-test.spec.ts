@@ -24,7 +24,7 @@ describe('LogoutUserService', () => {
   })
 
   it('should successfully revoke a session', async () => {
-    const recipientId = new UniqueEntityId('user-1')
+    const recipientId = UniqueEntityId.create('user-1')
     const token = 'valid.token.abc'
     const accessToken = generateAccessTokenValueObject(token)
 
@@ -57,7 +57,7 @@ describe('LogoutUserService', () => {
 
   it('should return SessionExpiredError if session is expired', async () => {
     revokeSession.session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId: UniqueEntityId.create('user-1'),
       createdAt: inPast(10),
       expiresAt: inPast(5),
     })
@@ -73,7 +73,7 @@ describe('LogoutUserService', () => {
 
   it('should return NotAllowedError if session belongs to another user', async () => {
     revokeSession.session = makeSession({
-      recipientId: new UniqueEntityId('user-x'),
+      recipientId: UniqueEntityId.create('user-x'),
       createdAt: now(),
       expiresAt: inFuture(10),
     })
@@ -89,7 +89,7 @@ describe('LogoutUserService', () => {
 
   it('should return NotAllowedError if session is already revoked', async () => {
     revokeSession.session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId: UniqueEntityId.create('user-1'),
       createdAt: inPast(10),
       expiresAt: inFuture(10),
       revokedAt: now(),

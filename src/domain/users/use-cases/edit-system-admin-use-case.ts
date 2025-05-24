@@ -29,7 +29,7 @@ export class EditSystemAdminUseCase implements EditSystemAdminContract {
     }
 
     if (profileId && profileId !== systemAdmin.profileId.toString()) {
-      systemAdmin.changeProfile(new UniqueEntityId(profileId))
+      systemAdmin.changeProfile(UniqueEntityId.create(profileId))
     }
 
     await this.systemAdminsRepository.save(systemAdmin)

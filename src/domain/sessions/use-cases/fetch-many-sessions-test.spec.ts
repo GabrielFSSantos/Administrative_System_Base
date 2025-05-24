@@ -31,8 +31,8 @@ describe('Fetch Many Sessions Test', () => {
   })
 
   it('should return sessions filtered by recipientId', async () => {
-    const userA = new UniqueEntityId('user-a')
-    const userB = new UniqueEntityId('user-b')
+    const userA = UniqueEntityId.create('user-a')
+    const userB = UniqueEntityId.create('user-b')
 
     await sessionsRepository.create(makeSession({ recipientId: userA }))
     await sessionsRepository.create(makeSession({ recipientId: userB }))

@@ -30,7 +30,6 @@ describe('Edit Company Use Case Test', () => {
       companyId: company.id.toString(),
       name: newName,
       emailAddress: newEmail,
-      profileIds: [], 
       permissionValues: [], 
     })
 
@@ -52,7 +51,6 @@ describe('Edit Company Use Case Test', () => {
     const result = await sut.execute({
       companyId: company.id.toString(),
       name: newName,
-      profileIds: [],
       permissionValues: [],
     })
 
@@ -73,7 +71,6 @@ describe('Edit Company Use Case Test', () => {
     const result = await sut.execute({
       companyId: company.id.toString(),
       emailAddress: newEmail,
-      profileIds: [],
       permissionValues: [],
     })
 
@@ -88,7 +85,6 @@ describe('Edit Company Use Case Test', () => {
     const result = await sut.execute({
       companyId: 'non-existent-id',
       name: 'Does Not Matter',
-      profileIds: [],
       permissionValues: [],
     })
 
@@ -106,7 +102,6 @@ describe('Edit Company Use Case Test', () => {
     await sut.execute({
       companyId: company.id.toString(),
       name: 'Tracked Save Call',
-      profileIds: [],
       permissionValues: [],
     })
 
@@ -123,7 +118,6 @@ describe('Edit Company Use Case Test', () => {
     await sut.execute({
       companyId: company.id.toString(),
       name: 'With Timestamp',
-      profileIds: [],
       permissionValues: [],
     })
 

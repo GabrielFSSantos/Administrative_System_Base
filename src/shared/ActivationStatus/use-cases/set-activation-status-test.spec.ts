@@ -40,7 +40,7 @@ describe('Set Activation Status Use Case', () => {
   let sut: SetActivationStatusUseCase<ActivatableEntity>
 
   const entityFactory = (props: Partial<ActivatableEntity> = {}, id?: UniqueEntityId): ActivatableEntity => {
-    const baseId = id ?? new UniqueEntityId()
+    const baseId = id ?? UniqueEntityId.create()
 
     return {
       id: baseId,

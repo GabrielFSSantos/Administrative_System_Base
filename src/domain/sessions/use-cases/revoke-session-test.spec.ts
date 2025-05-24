@@ -19,7 +19,7 @@ describe('Revoke Session Test', () => {
   })
 
   it('should revoke a valid session', async () => {
-    const recipientId = new UniqueEntityId('user-1')
+    const recipientId = UniqueEntityId.create('user-1')
     const token = 'valid.token.abc'
     const session = makeSession({
       recipientId,
@@ -52,7 +52,7 @@ describe('Revoke Session Test', () => {
   it('should return NotAllowedError if recipientId does not match', async () => {
     const token = 'token.not.allowed'
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-a'),
+      recipientId: UniqueEntityId.create('user-a'),
       accessToken: generateAccessTokenValueObject(token),
     })
 
@@ -71,7 +71,7 @@ describe('Revoke Session Test', () => {
     const now = new Date()
     const token = 'expired.token.test'
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId: UniqueEntityId.create('user-1'),
       accessToken: generateAccessTokenValueObject(token),
       createdAt: new Date(now.getTime() - 10 * 60 * 1000),
       expiresAt: new Date(now.getTime() - 5 * 60 * 1000),
@@ -93,7 +93,7 @@ describe('Revoke Session Test', () => {
     const token = 'revoked.token.test'
 
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId: UniqueEntityId.create('user-1'),
       accessToken: generateAccessTokenValueObject(token),
       createdAt: now,
       revokedAt: new Date(now.getTime() + 100),
@@ -115,7 +115,7 @@ describe('Revoke Session Test', () => {
     const accessToken = generateAccessTokenValueObject(token)
 
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId: UniqueEntityId.create('user-1'),
       accessToken,
       expiresAt: new Date(Date.now() + 60 * 1000),
     })

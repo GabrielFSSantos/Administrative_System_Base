@@ -34,9 +34,9 @@ export class CreateMemberUseCase implements CreateMemberContract {
     }
 
     const member = Member.create({
-      recipientId: new UniqueEntityId(recipientId),
-      companyId: new UniqueEntityId(companyId),
-      profileId: new UniqueEntityId(profileId),
+      recipientId: UniqueEntityId.create(recipientId),
+      companyId: UniqueEntityId.create(companyId),
+      profileId: UniqueEntityId.create(profileId),
       activationStatus: ActivationStatus.deactivated(),
     })
 

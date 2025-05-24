@@ -10,4 +10,8 @@ export class PermissionList extends WatchedList<PermissionName> {
   public has(permission: PermissionName): boolean {
     return this.getItems().some((p) => p.equals(permission))
   }
+
+  static create(initialItems?: PermissionName[]): PermissionList {
+    return new PermissionList(initialItems)
+  }
 }

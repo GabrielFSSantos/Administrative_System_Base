@@ -12,7 +12,7 @@ describe('Session Entity Test', () => {
 
   it('should create a valid session', () => {
     const result = Session.create({
-      recipientId: new UniqueEntityId(),
+      recipientId: UniqueEntityId.create(),
       accessToken: validToken,
       expiresAt: new Date(now.getTime() + 60000),
     })
@@ -26,7 +26,7 @@ describe('Session Entity Test', () => {
 
   it('should not create session if expiresAt is before createdAt', () => {
     const result = Session.create({
-      recipientId: new UniqueEntityId(),
+      recipientId: UniqueEntityId.create(),
       accessToken: validToken,
       createdAt: new Date('2025-01-01T10:00:00'),
       expiresAt: new Date('2025-01-01T09:00:00'),
@@ -38,7 +38,7 @@ describe('Session Entity Test', () => {
 
   it('should not create session if revokedAt is before createdAt', () => {
     const result = Session.create({
-      recipientId: new UniqueEntityId(),
+      recipientId: UniqueEntityId.create(),
       accessToken: validToken,
       createdAt: new Date('2025-01-01T10:00:00'),
       revokedAt: new Date('2025-01-01T09:00:00'),
@@ -51,7 +51,7 @@ describe('Session Entity Test', () => {
 
   it('should revoke a session successfully', () => {
     const result = Session.create({
-      recipientId: new UniqueEntityId(),
+      recipientId: UniqueEntityId.create(),
       accessToken: validToken,
       expiresAt: new Date(now.getTime() + 60000),
     })
@@ -72,7 +72,7 @@ describe('Session Entity Test', () => {
 
   it('should not revoke an already revoked session', () => {
     const result = Session.create({
-      recipientId: new UniqueEntityId(),
+      recipientId: UniqueEntityId.create(),
       accessToken: validToken,
       expiresAt: new Date(now.getTime() + 60000),
     })
@@ -93,7 +93,7 @@ describe('Session Entity Test', () => {
 
   it('should check if session is expired', () => {
     const result = Session.create({
-      recipientId: new UniqueEntityId(),
+      recipientId: UniqueEntityId.create(),
       accessToken: validToken,
       createdAt: new Date(Date.now() - 2 * 60000),
       expiresAt: new Date(Date.now() - 1 * 60000),
@@ -110,7 +110,7 @@ describe('Session Entity Test', () => {
 
   it('should check if session is valid', () => {
     const result = Session.create({
-      recipientId: new UniqueEntityId(),
+      recipientId: UniqueEntityId.create(),
       accessToken: validToken,
       expiresAt: new Date(Date.now() + 60000),
     })
@@ -128,8 +128,8 @@ describe('Session Entity Test', () => {
   })
 
   it('should check if session belongs to a recipient', () => {
-    const recipientId = new UniqueEntityId()
-    const otherId = new UniqueEntityId()
+    const recipientId = UniqueEntityId.create()
+    const otherId = UniqueEntityId.create()
 
     const result = Session.create({
       recipientId,

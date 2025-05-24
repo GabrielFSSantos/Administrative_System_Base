@@ -7,7 +7,6 @@ export interface ICreateCompanyUseCaseRequest {
   cnpj: string
   name: string
   emailAddress: string
-  profileIds: string[] 
   permissionValues: string[]
 }
 

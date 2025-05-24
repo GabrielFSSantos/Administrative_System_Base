@@ -15,7 +15,7 @@ export function makeRole(
   }> = {},
   id?: UniqueEntityId,
 ): Role {
-  const recipientId = override.recipientId ?? new UniqueEntityId()
+  const recipientId = override.recipientId ?? UniqueEntityId.create()
   const name = override.name ?? generateNameValueObject()
   const permissions = override.permissions ?? generatePermissionList(1)
 

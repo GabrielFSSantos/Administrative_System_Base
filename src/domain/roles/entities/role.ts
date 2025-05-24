@@ -39,7 +39,7 @@ export class Role extends Entity<RoleProps> {
     props: RoleProps,
     id?: UniqueEntityId,
   ): Role {
-    const permissionList = props.permissions ?? new PermissionList()
+    const permissionList = props.permissions ?? PermissionList.create()
 
     return new Role(
       {

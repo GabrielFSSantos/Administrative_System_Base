@@ -21,7 +21,7 @@ describe('Validate Session Test', () => {
   it('should validate a valid session successfully', async () => {
     const accessToken = generateAccessTokenValueObject()
 
-    const recipientId = new UniqueEntityId()
+    const recipientId = UniqueEntityId.create()
     const session = makeSession({
       recipientId,
       accessToken,
@@ -56,7 +56,7 @@ describe('Validate Session Test', () => {
     const accessToken = generateAccessTokenValueObject()
 
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId: UniqueEntityId.create('user-1'),
       accessToken,
     })
 
@@ -78,7 +78,7 @@ describe('Validate Session Test', () => {
     const expiresAt = new Date(Date.now() - 60 * 1000) // 1min atrás
     
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId: UniqueEntityId.create('user-1'),
       accessToken,
       createdAt,
       expiresAt,
@@ -99,7 +99,7 @@ describe('Validate Session Test', () => {
     const accessToken = generateAccessTokenValueObject()
 
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
+      recipientId: UniqueEntityId.create('user-1'),
       accessToken,
       revokedAt: new Date(),
     })

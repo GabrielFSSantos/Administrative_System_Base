@@ -18,7 +18,7 @@ describe('Create Role Test', () => {
 
   it('should be able to create a role', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId('company-1').toString(),
+      recipientId: UniqueEntityId.create('company-1').toString(),
       name: 'Manager',
       permissionValues: [Permissions.USERS.CREATE, Permissions.SESSIONS.CREATE],
     })

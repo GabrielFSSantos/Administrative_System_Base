@@ -10,7 +10,7 @@ export function makeSession(
   
   const session = Session.create(
     {
-      recipientId: new UniqueEntityId(),
+      recipientId: UniqueEntityId.create(),
       accessToken: generateAccessTokenValueObject(),
       expiresAt: new Date(Date.now() + 10 * 60 * 1000),
       ...override,

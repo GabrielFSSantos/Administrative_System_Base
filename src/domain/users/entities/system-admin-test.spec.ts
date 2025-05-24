@@ -5,8 +5,8 @@ import { AlreadyActivatedError } from '@/shared/ActivationStatus/value-objects/e
 import { AlreadyDeactivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-deactivated-error'
 
 describe('SystemAdmin Entity Test', () => {
-  const recipientId = new UniqueEntityId()
-  const profileId = new UniqueEntityId()
+  const recipientId = UniqueEntityId.create()
+  const profileId = UniqueEntityId.create()
 
   it('should create a system admin with default deactivated status', () => {
     const systemAdmin = SystemAdmin.create({ recipientId, profileId })

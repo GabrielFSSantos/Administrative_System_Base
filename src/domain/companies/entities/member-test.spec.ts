@@ -5,9 +5,9 @@ import { AlreadyActivatedError } from '@/shared/ActivationStatus/value-objects/e
 import { AlreadyDeactivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-deactivated-error'
 
 describe('Member Entity Test', () => {
-  const recipientId = new UniqueEntityId()
-  const companyId = new UniqueEntityId()
-  const profileId = new UniqueEntityId()
+  const recipientId = UniqueEntityId.create()
+  const companyId = UniqueEntityId.create()
+  const profileId = UniqueEntityId.create()
 
   it('should create a member with default deactivated status', () => {
     const member = Member.create({ recipientId, companyId, profileId })

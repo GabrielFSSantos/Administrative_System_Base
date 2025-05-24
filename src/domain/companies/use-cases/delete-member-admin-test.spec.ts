@@ -29,7 +29,7 @@ describe('Delete Member Use Case Test', () => {
   })
 
   it('should return ResourceNotFoundError if member does not exist', async () => {
-    const result = await sut.execute({ memberId: new UniqueEntityId().toString() })
+    const result = await sut.execute({ memberId: UniqueEntityId.create().toString() })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)

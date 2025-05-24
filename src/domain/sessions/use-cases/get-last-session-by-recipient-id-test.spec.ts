@@ -17,7 +17,7 @@ describe('Get Last Session By RecipientId Test', () => {
   })
 
   it('should return the most recent session for a valid recipientId', async () => {
-    const recipientId = new UniqueEntityId('recipient-01')
+    const recipientId = UniqueEntityId.create('recipient-01')
 
     const olderSession = makeSession({
       recipientId,
@@ -45,7 +45,7 @@ describe('Get Last Session By RecipientId Test', () => {
 
   it('should return ResourceNotFoundError if no session is found for recipientId', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId('non-existent-id').toString(),
+      recipientId: UniqueEntityId.create('non-existent-id').toString(),
     })
 
     expect(result.isLeft()).toBe(true)
@@ -54,11 +54,11 @@ describe('Get Last Session By RecipientId Test', () => {
 
   it('should ignore sessions from different recipientId', async () => {
     const sessionA = makeSession({
-      recipientId: new UniqueEntityId('user-A'),
+      recipientId: UniqueEntityId.create('user-A'),
     })
 
     const sessionB = makeSession({
-      recipientId: new UniqueEntityId('user-B'),
+      recipientId: UniqueEntityId.create('user-B'),
     })
 
     await inMemorySessionsRepository.create(sessionA)

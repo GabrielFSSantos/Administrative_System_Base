@@ -21,5 +21,5 @@ export function generatePermissionValueObject(value?: string): PermissionName {
 export function generatePermissionList(count = 1): PermissionList {
   const permissions = Array.from({ length: count }, () => generatePermissionValueObject())
 
-  return new PermissionList(permissions)
+  return PermissionList.create(permissions)
 }
