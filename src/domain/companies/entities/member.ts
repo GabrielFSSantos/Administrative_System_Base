@@ -31,6 +31,14 @@ export class Member extends Entity<MemberProps> {
     return this.props.activationStatus
   }
 
+  public changeProfile(newProfileId: UniqueEntityId): void {
+    if (this.props.profileId.equals(newProfileId)) {
+      return
+    }
+
+    this.props.profileId = newProfileId
+  }
+
   public isActivated(): boolean {
     return this.props.activationStatus.isActive()
   }
