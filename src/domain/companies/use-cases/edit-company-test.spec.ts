@@ -30,6 +30,8 @@ describe('Edit Company Use Case Test', () => {
       companyId: company.id.toString(),
       name: newName,
       emailAddress: newEmail,
+      profileIds: [], 
+      permissionValues: [], 
     })
 
     expect(result.isRight()).toBe(true)
@@ -50,6 +52,8 @@ describe('Edit Company Use Case Test', () => {
     const result = await sut.execute({
       companyId: company.id.toString(),
       name: newName,
+      profileIds: [],
+      permissionValues: [],
     })
 
     expect(result.isRight()).toBe(true)
@@ -69,6 +73,8 @@ describe('Edit Company Use Case Test', () => {
     const result = await sut.execute({
       companyId: company.id.toString(),
       emailAddress: newEmail,
+      profileIds: [],
+      permissionValues: [],
     })
 
     expect(result.isRight()).toBe(true)
@@ -82,6 +88,8 @@ describe('Edit Company Use Case Test', () => {
     const result = await sut.execute({
       companyId: 'non-existent-id',
       name: 'Does Not Matter',
+      profileIds: [],
+      permissionValues: [],
     })
 
     expect(result.isLeft()).toBe(true)
@@ -98,6 +106,8 @@ describe('Edit Company Use Case Test', () => {
     await sut.execute({
       companyId: company.id.toString(),
       name: 'Tracked Save Call',
+      profileIds: [],
+      permissionValues: [],
     })
 
     expect(spy).toHaveBeenCalledWith(expect.objectContaining({ id: company.id }))
@@ -113,6 +123,8 @@ describe('Edit Company Use Case Test', () => {
     await sut.execute({
       companyId: company.id.toString(),
       name: 'With Timestamp',
+      profileIds: [],
+      permissionValues: [],
     })
 
     const updatedCompany = await companiesRepository.findById(company.id.toString())

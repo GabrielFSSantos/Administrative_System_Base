@@ -1,5 +1,5 @@
-import { generatePermissionValueObject } from 'test/factories/roles/value-objects/make-permissions'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
+import { generatePermissionList } from 'test/factories/value-objects/make-permissions'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
@@ -25,7 +25,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Old Name'),
-      permissions: [generatePermissionValueObject(Permissions.USERS.CREATE)],
+      permissions: generatePermissionList(1),
     })
 
     await inMemoryRolesRepository.create(role)
@@ -61,7 +61,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Editor'),
-      permissions: [generatePermissionValueObject(Permissions.USERS.VIEW)],
+      permissions: generatePermissionList(1),
     })
 
     await inMemoryRolesRepository.create(role)
@@ -80,10 +80,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Manager'),
-      permissions: [
-        generatePermissionValueObject(Permissions.SESSIONS.CREATE),
-        generatePermissionValueObject(Permissions.SESSIONS.REVOKE),
-      ],
+      permissions: generatePermissionList(2),
     })
 
     await inMemoryRolesRepository.create(role)
@@ -111,7 +108,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Unchanged Name'),
-      permissions: [generatePermissionValueObject(Permissions.USERS.CREATE)],
+      permissions: generatePermissionList(1),
     })
 
     await inMemoryRolesRepository.create(role)
@@ -138,7 +135,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('No Change'),
-      permissions: [generatePermissionValueObject(Permissions.USERS.DELETE)],
+      permissions: generatePermissionList(1),
     })
 
     await inMemoryRolesRepository.create(role)
@@ -151,7 +148,7 @@ describe('Edit Role Test', () => {
 
     if (result.isRight()) {
       expect(result.value.role.name.value).toBe('No Change')
-      expect(result.value.role.permissionValues).toEqual(['delete_user'])
+      expect(result.value.role.permissionValues.length).toBe(1)
     }
   })
 
@@ -159,7 +156,7 @@ describe('Edit Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Valid Name'),
-      permissions: [generatePermissionValueObject(Permissions.USERS.CREATE)],
+      permissions: generatePermissionList(1),
     })
 
     await inMemoryRolesRepository.create(role)

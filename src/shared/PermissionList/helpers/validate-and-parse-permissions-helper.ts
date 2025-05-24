@@ -1,8 +1,8 @@
 import { Either, left, right } from '@/core/either'
+import { InvalidPermissionNameError } from '@/shared/PermissionList/value-objects/errors/invalid-permission-name-error'
+import { PermissionName } from '@/shared/PermissionList/value-objects/permission-name'
 
-import { InvalidPermissionNameError } from '../entities/value-objects/errors/invalid-permission-name-error'
-import { PermissionName } from '../entities/value-objects/permission-name'
-import { InvalidPermissionError } from '../use-cases/errors/invalid-permission-error'
+import { InvalidPermissionError } from '../../../domain/roles/use-cases/errors/invalid-permission-error'
 
 export function validateAndParsePermissions(
   raw: string[],

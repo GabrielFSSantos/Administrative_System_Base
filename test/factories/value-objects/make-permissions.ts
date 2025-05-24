@@ -1,4 +1,5 @@
-import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
+import { PermissionList } from '@/shared/PermissionList/permission-list'
+import { PermissionName } from '@/shared/PermissionList/value-objects/permission-name'
 import { ALL_PERMISSIONS } from '@/shared/permissions'
 
 export function generateValidPermission(): string {
@@ -15,4 +16,10 @@ export function generatePermissionValueObject(value?: string): PermissionName {
   }
 
   return result.value
+}
+
+export function generatePermissionList(count = 1): PermissionList {
+  const permissions = Array.from({ length: count }, () => generatePermissionValueObject())
+
+  return new PermissionList(permissions)
 }

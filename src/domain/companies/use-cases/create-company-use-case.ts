@@ -3,6 +3,9 @@ import { Injectable } from '@nestjs/common'
 import { left, right } from '@/core/either'
 import { Company } from '@/domain/companies/entities/company'
 import { CNPJ } from '@/domain/companies/entities/value-objects/cnpj'
+import { validateAndParsePermissions } from '@/shared/PermissionList/helpers/validate-and-parse-permissions-helper'
+import { PermissionList } from '@/shared/PermissionList/permission-list'
+import { generateUniqueEntityIdListFromStrings } from '@/shared/UniqueEntityIdList/helpers/generate-unique-entity-id-list-from-strings'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
@@ -20,7 +23,10 @@ export class CreateCompanyUseCase implements CreateCompanyContract {
     cnpj,
     name,
     emailAddress,
+    profileIds,
+    permissionValues,
   }: ICreateCompanyUseCaseRequest): Promise<ICreateCompanyUseCaseResponse> {
+
     const existing = await this.companiesRepository.findByCNPJ(cnpj)
 
     if (existing) {
@@ -45,10 +51,21 @@ export class CreateCompanyUseCase implements CreateCompanyContract {
       return left(emailAddressObject.value)
     }
 
+    const permissionsOrError = validateAndParsePermissions(permissionValues)
+
+    if (permissionsOrError.isLeft()) {
+      return left(permissionsOrError.value)
+    }
+    const permissionList = new PermissionList(permissionsOrError.value)
+
+    const uniqueEntityIdList = generateUniqueEntityIdListFromStrings(profileIds)
+
     const company = Company.create({
       cnpj: cnpjObject.value,
       name: nameObject.value,
       emailAddress: emailAddressObject.value,
+      profileIds: uniqueEntityIdList,
+      permissions: permissionList,
     })
 
     if (company.isLeft()) {

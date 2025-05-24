@@ -7,6 +7,8 @@ export interface IEditCompanyUseCaseRequest {
   companyId: string
   name?: string
   emailAddress?: string
+  profileIds?: string[]
+  permissionValues?: string[]
 }
 
 export type IEditCompanyUseCaseResponse = Either<

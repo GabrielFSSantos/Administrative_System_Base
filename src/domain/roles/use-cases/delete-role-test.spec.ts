@@ -1,5 +1,5 @@
-import { generatePermissionValueObject } from 'test/factories/roles/value-objects/make-permissions'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
+import { generatePermissionList } from 'test/factories/value-objects/make-permissions'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
@@ -22,10 +22,7 @@ describe('Delete Role Test', () => {
     const role = Role.create({
       recipientId: new UniqueEntityId('company-1'),
       name: generateNameValueObject('Admin'),
-      permissions: [
-        generatePermissionValueObject('create_user'),
-        generatePermissionValueObject('edit_user'),
-      ],
+      permissions: generatePermissionList(2), 
     })
 
     await inMemoryRolesRepository.create(role)

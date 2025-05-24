@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
+import { validateAndParsePermissions } from '@/shared/PermissionList/helpers/validate-and-parse-permissions-helper'
+import { PermissionList } from '@/shared/PermissionList/permission-list'
+import { generateUniqueEntityIdListFromStrings } from '@/shared/UniqueEntityIdList/helpers/generate-unique-entity-id-list-from-strings'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
@@ -22,7 +25,10 @@ export class EditCompanyUseCase implements EditCompanyContract {
     companyId,
     name,
     emailAddress,
+    profileIds,
+    permissionValues,
   }: IEditCompanyUseCaseRequest): Promise<IEditCompanyUseCaseResponse> {
+    
     const company = await this.companiesRepository.findById(companyId)
 
     if (!company) {
@@ -47,6 +53,23 @@ export class EditCompanyUseCase implements EditCompanyContract {
       }
 
       company.changeEmail(emailOrError.value)
+    }
+
+    if (profileIds) {
+      const profileIdList = generateUniqueEntityIdListFromStrings(profileIds)
+
+      company.updateProfileIds(profileIdList.getItems())
+    }
+
+    if (permissionValues) {
+      const permissionsOrError = validateAndParsePermissions(permissionValues)
+      
+      if (permissionsOrError.isLeft()) {
+        return left(permissionsOrError.value)
+      }
+      const permissionList = new PermissionList(permissionsOrError.value)
+
+      company.updatePermissions(permissionList.getItems())
     }
 
     await this.companiesRepository.save(company)

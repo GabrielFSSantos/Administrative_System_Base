@@ -3,6 +3,9 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
+import { PermissionList } from '@/shared/PermissionList/permission-list'
+import { PermissionName } from '@/shared/PermissionList/value-objects/permission-name'
+import { UniqueEntityIdList } from '@/shared/UniqueEntityIdList/unique-entity-id-list'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
@@ -12,6 +15,8 @@ export interface CompanyProps {
   cnpj: CNPJ
   name: Name
   emailAddress: EmailAddress
+  profileIds: UniqueEntityIdList
+  permissions: PermissionList
   createdAt: Date
   updatedAt: Date | null
 }
@@ -51,10 +56,29 @@ export class Company extends Entity<CompanyProps> {
     this.touch()
   }
 
+  public hasProfileId(profileId: UniqueEntityId): boolean {
+    return this.props.profileIds.has(profileId)
+  }
+
+  public updateProfileIds(profileIds: UniqueEntityId[]): void {
+    this.props.profileIds.update(profileIds)
+    this.touch()
+  }
+
+  public hasPermission(permissionName: PermissionName): boolean {
+    return this.props.permissions.has(permissionName)
+  }
+  
+  public updatePermissions(permissions: PermissionName[]): void {
+    this.props.permissions.update(permissions)
+  }
+
   static create(
-    props: Optional<CompanyProps, 'createdAt' | 'updatedAt'>,
+    props: Optional<CompanyProps, 
+    'profileIds' | 'permissions' | 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
   ): Either<InvalidUpdatedAtError, Company> {
+
     const createdAt = props.createdAt ?? new Date()
     const updatedAt = props.updatedAt ?? null
 
@@ -62,9 +86,16 @@ export class Company extends Entity<CompanyProps> {
       return left(new InvalidUpdatedAtError())
     }
 
+    const profileIdList = props.profileIds ?? new UniqueEntityIdList()
+    const permissionList = props.permissions ?? new PermissionList()
+
     const company = new Company(
       {
-        ...props,
+        cnpj: props.cnpj,
+        name: props.name,
+        emailAddress: props.emailAddress,
+        profileIds: profileIdList,
+        permissions: permissionList,
         createdAt,
         updatedAt,
       },

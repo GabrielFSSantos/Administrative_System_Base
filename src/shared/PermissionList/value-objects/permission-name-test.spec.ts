@@ -1,6 +1,7 @@
-import { InvalidPermissionNameError } from '@/domain/roles/entities/value-objects/errors/invalid-permission-name-error'
-import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { Permissions } from '@/shared/permissions'
+
+import { InvalidPermissionNameError } from './errors/invalid-permission-name-error'
+import { PermissionName } from './permission-name'
 
 describe('PermissionName Value Object Test', () => {
   it('should create a valid permission name object', () => {

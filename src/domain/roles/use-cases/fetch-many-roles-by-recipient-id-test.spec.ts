@@ -1,11 +1,10 @@
-import { generatePermissionValueObject } from 'test/factories/roles/value-objects/make-permissions'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
+import { generatePermissionList } from 'test/factories/value-objects/make-permissions'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Role } from '@/domain/roles/entities/role'
 import { FetchManyRolesByRecipientIdUseCase } from '@/domain/roles/use-cases/fetch-many-roles-by-recipient-id-use-case'
-import { Permissions } from '@/shared/permissions'
 
 describe('Fetch Many Roles By RecipientId Test', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
@@ -24,7 +23,7 @@ describe('Fetch Many Roles By RecipientId Test', () => {
         Role.create({
           recipientId,
           name: generateNameValueObject(),
-          permissions: [generatePermissionValueObject(Permissions.USERS.VIEW)],
+          permissions: generatePermissionList(1),
         }),
       )
     }
@@ -52,7 +51,7 @@ describe('Fetch Many Roles By RecipientId Test', () => {
       Role.create({
         recipientId,
         name: generateNameValueObject('Admin'),
-        permissions: [generatePermissionValueObject(Permissions.USERS.CREATE)],
+        permissions: generatePermissionList(1),
       }),
     )
 
@@ -60,7 +59,7 @@ describe('Fetch Many Roles By RecipientId Test', () => {
       Role.create({
         recipientId,
         name: generateNameValueObject('Editor'),
-        permissions: [generatePermissionValueObject(Permissions.USERS.EDIT)],
+        permissions: generatePermissionList(1),
       }),
     )
 

@@ -1,14 +1,13 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { PermissionList } from '@/shared/PermissionList/permission-list'
+import { PermissionName } from '@/shared/PermissionList/value-objects/permission-name'
 import { Name } from '@/shared/value-objects/name'
-
-import { RolePermissionList } from './role-permission-list'
-import { PermissionName } from './value-objects/permission-name'
 
 interface RoleProps {
   recipientId: UniqueEntityId
   name: Name
-  permissions: RolePermissionList
+  permissions: PermissionList
 }
 
 export class Role extends Entity<RoleProps> {
@@ -24,12 +23,12 @@ export class Role extends Entity<RoleProps> {
     return this.props.permissions.getItems().map((p) => p.value)
   }
 
-  public hasPermission(permissionName: PermissionName): boolean {
-    return this.props.permissions.has(permissionName)
-  }
-
   public updateName(name: Name): void {
     this.props.name = name
+  }
+
+  public hasPermission(permissionName: PermissionName): boolean {
+    return this.props.permissions.has(permissionName)
   }
 
   public updatePermissions(permissions: PermissionName[]): void {
@@ -37,14 +36,10 @@ export class Role extends Entity<RoleProps> {
   }
 
   static create(
-    props: {
-      recipientId: UniqueEntityId
-      name: Name
-      permissions: PermissionName[]
-    },
+    props: RoleProps,
     id?: UniqueEntityId,
   ): Role {
-    const permissionList = new RolePermissionList(props.permissions)
+    const permissionList = props.permissions ?? new PermissionList()
 
     return new Role(
       {
