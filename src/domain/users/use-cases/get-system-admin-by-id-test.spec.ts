@@ -58,7 +58,7 @@ describe('Get System Admin By ID Use Case Test', () => {
     const systemAdmin = await makeSystemAdmin()
 
     await systemAdminsRepository.create(systemAdmin)
-    await systemAdminsRepository.delete(systemAdmin.id)
+    await systemAdminsRepository.delete(systemAdmin.id.toString())
 
     const result = await sut.execute({ systemAdminId: systemAdmin.id.toString() })
 

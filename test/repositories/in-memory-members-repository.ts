@@ -1,4 +1,3 @@
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Member } from '@/domain/companies/entities/member'
 import { MembersRepositoryContract } from '@/domain/companies/repositories/contracts/members-repository-contract'
 import { IFetchManyMembersUseCaseRequest } from '@/domain/companies/use-cases/contracts/fetch-many-members-contract'
@@ -69,8 +68,8 @@ export class InMemoryMembersRepository implements MembersRepositoryContract {
     }
   }
 
-  async delete(id: UniqueEntityId): Promise<void> {
-    const index = this.items.findIndex((item) => item.id.equals(id))
+  async delete(id: string): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.toString() === id)
 
     if (index >= 0) {
       this.items.splice(index, 1)

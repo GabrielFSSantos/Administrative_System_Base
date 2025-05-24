@@ -23,7 +23,7 @@ export class DeleteUserUseCase implements DeleteUserContract {
       return left(new ResourceNotFoundError())
     }
 
-    await this.usersRepository.delete(user.id)
+    await this.usersRepository.delete(user.id.toString())
 
     return right(null)
   }

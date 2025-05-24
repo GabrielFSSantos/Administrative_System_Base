@@ -59,7 +59,7 @@ describe('Get User By ID Use Case Test', () => {
     const user = await makeUser()
 
     await usersRepository.create(user)
-    await usersRepository.delete(user.id)
+    await usersRepository.delete(user.id.toString())
 
     const result = await sut.execute({ userId: user.id.toString() })
 

@@ -25,7 +25,7 @@ export class DeleteSystemAdminUseCase implements DeleteSystemAdminContract {
       return left(new ResourceNotFoundError())
     }
 
-    await this.systemAdminsRepository.delete(systemAdmin.id)
+    await this.systemAdminsRepository.delete(systemAdmin.id.toString())
 
     return right(null)
   }

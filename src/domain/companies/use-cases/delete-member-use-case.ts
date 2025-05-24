@@ -25,7 +25,7 @@ export class DeleteMemberUseCase implements DeleteMemberContract {
       return left(new ResourceNotFoundError())
     }
 
-    await this.membersRepository.delete(member.id)
+    await this.membersRepository.delete(member.id.toString())
 
     return right(null)
   }

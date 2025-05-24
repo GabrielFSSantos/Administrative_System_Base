@@ -1,4 +1,3 @@
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { SystemAdmin } from '@/domain/users/entities/system-admin'
 import { SystemAdminsRepositoryContract } from '@/domain/users/repositories/contracts/system-admins-repository-contract'
 import { IFetchManySystemAdminsUseCaseRequest } from '@/domain/users/use-cases/contracts/fetch-many-system-admins-contract'
@@ -56,8 +55,8 @@ export class InMemorySystemAdminsRepository implements SystemAdminsRepositoryCon
     }
   }
 
-  async delete(id: UniqueEntityId): Promise<void> {
-    const index = this.items.findIndex((item) => item.id.equals(id))
+  async delete(id: string): Promise<void> {
+    const index = this.items.findIndex((item) => item.id.toString() === id)
 
     if (index >= 0) {
       this.items.splice(index, 1)

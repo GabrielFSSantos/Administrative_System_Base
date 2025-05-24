@@ -1,4 +1,3 @@
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Member } from '@/domain/companies/entities/member'
 import { ActivatableRepository } from '@/shared/ActivationStatus/repositories/contracts/activatable-repository-contract'
 
@@ -16,5 +15,5 @@ export abstract class MembersRepositoryContract implements ActivatableRepository
   }>
   abstract create(member: Member): Promise<void>
   abstract save(member: Member): Promise<void>
-  abstract delete(id: UniqueEntityId): Promise<void>
+  abstract delete(id: string): Promise<void>
 }

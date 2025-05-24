@@ -44,7 +44,7 @@ describe('Delete User Use Case Test', () => {
 
     await sut.execute({ userId: user.id.toString() })
 
-    expect(deleteSpy).toHaveBeenCalledWith(user.id)
+    expect(deleteSpy).toHaveBeenCalledWith(user.id.toString())
   })
 
   it('should preserve other users after deletion', async () => {

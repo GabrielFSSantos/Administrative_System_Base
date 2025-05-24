@@ -1,4 +1,3 @@
-import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { SystemAdmin } from '@/domain/users/entities/system-admin'
 import { ActivatableRepository } from '@/shared/ActivationStatus/repositories/contracts/activatable-repository-contract'
 
@@ -13,5 +12,5 @@ export abstract class SystemAdminsRepositoryContract implements ActivatableRepos
   }>
   abstract create(systemAdmin: SystemAdmin): Promise<void>
   abstract save(systemAdmin: SystemAdmin): Promise<void>
-  abstract delete(id: UniqueEntityId): Promise<void>
+  abstract delete(id: string): Promise<void>
 }

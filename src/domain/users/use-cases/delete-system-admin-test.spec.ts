@@ -44,7 +44,7 @@ describe('Delete System Admin Use Case Test', () => {
 
     await sut.execute({ systemAdminId: systemAdmin.id.toString() })
 
-    expect(deleteSpy).toHaveBeenCalledWith(systemAdmin.id)
+    expect(deleteSpy).toHaveBeenCalledWith(systemAdmin.id.toString())
   })
 
   it('should preserve other system admins after deletion', async () => {

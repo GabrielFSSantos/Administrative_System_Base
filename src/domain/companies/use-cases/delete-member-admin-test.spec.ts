@@ -44,6 +44,6 @@ describe('Delete Member Use Case Test', () => {
 
     await sut.execute({ memberId: member.id.toString() })
 
-    expect(deleteSpy).toHaveBeenCalledWith(member.id)
+    expect(deleteSpy).toHaveBeenCalledWith(member.id.toString())
   })
 })
