@@ -1,10 +1,11 @@
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
+import { generatePermissionList } from 'test/factories/value-objects/make-permissions'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Role } from '@/domain/roles/entities/role'
-import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { DeleteRoleUseCase } from '@/domain/roles/use-cases/delete-role-use-case'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { DeleteRoleContract } from './contracts/delete-role-contract'
 
@@ -19,12 +20,9 @@ describe('Delete Role Test', () => {
 
   it('should be able to delete an existing role', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
-      name: 'Admin',
-      permissions: [
-        PermissionName.parse('create_user'),
-        PermissionName.parse('edit_user'),
-      ],
+      recipientId: UniqueEntityId.create('company-1'),
+      name: generateNameValueObject('Admin'),
+      permissions: generatePermissionList(2), 
     })
 
     await inMemoryRolesRepository.create(role)
@@ -36,7 +34,7 @@ describe('Delete Role Test', () => {
   })
 
   it('should return error if role does not exist', async () => {
-    const nonExistentId = new UniqueEntityId().toString()
+    const nonExistentId = UniqueEntityId.create().toString()
 
     const result = await sut.execute({ roleId: nonExistentId })
 

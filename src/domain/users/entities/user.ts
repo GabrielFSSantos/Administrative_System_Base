@@ -1,11 +1,12 @@
+import { Either, left, right } from '@/core/either'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
+import { EmailAddress } from '@/shared/value-objects/email-address'
+import { Name } from '@/shared/value-objects/name'
 
-import { InvalidUpdatedAtError } from './errors/invalid-updated-at-error'
 import { CPF } from './value-objects/cpf'
-import { EmailAddress } from './value-objects/email-address'
-import { Name } from './value-objects/name'
 import { PasswordHash } from './value-objects/password-hash'
 
 export interface UserProps {
@@ -64,16 +65,20 @@ export class User extends Entity<UserProps> {
   static create(
     props: Optional<UserProps,  'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
-  ): User {
+  ): Either<
+      InvalidUpdatedAtError,
+      User
+    > {
 
     const createdAt = props.createdAt ?? new Date()
     const updatedAt = props.updatedAt ?? null
 
     if (updatedAt && updatedAt < createdAt) {
-      throw new InvalidUpdatedAtError()
+      return left(new InvalidUpdatedAtError())
+
     }
-  
-    return new User(
+
+    const user = new User(
       {
         ...props,
         createdAt,
@@ -81,5 +86,7 @@ export class User extends Entity<UserProps> {
       },
       id,
     )
+    
+    return right(user)
   }
 }

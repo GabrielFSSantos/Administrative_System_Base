@@ -1,60 +1,119 @@
+import { generateFakeJwt } from 'test/factories/sessions/value-objects/make-access-token'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
+import { InvalidSessionDateExpiredError } from '@/domain/sessions/entities/errors/invalid-session-date-expired-error-error'
+import { InvalidAccessTokenError } from '@/domain/sessions/entities/value-objects/errors/invalid-access-token-error'
+import { CreateSessionUseCase } from '@/domain/sessions/use-cases/create-session-use-case'
 
-import { InvalidSessionDateExpiredError } from '../entities/errors/invalid-session-date-expired-error-error'
-import { CreateSessionContract } from './contracts/create-session-contract'
-import { CreateSessionUseCase } from './create-session-use-case'
+let inMemorySessionsRepository: InMemorySessionsRepository
+let sut: CreateSessionUseCase
 
-describe('Create Session Test', () => {
-  let inMemorySessionsRepository: InMemorySessionsRepository
-  let sut: CreateSessionContract
-
+describe('Create Session Use Case Test', () => {
   beforeEach(() => {
     inMemorySessionsRepository = new InMemorySessionsRepository()
     sut = new CreateSessionUseCase(inMemorySessionsRepository)
   })
 
-  it('should create a new valid session', async () => {
-    const recipientId = new UniqueEntityId('user-1')
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000)
+  it('should create a valid session and persist it', async () => {
+    const recipientId = UniqueEntityId.create().toString()
+    const accessToken = generateFakeJwt()
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
 
     const result = await sut.execute({
-      recipientId: recipientId.toString(),
-      accessToken: 'access-token',
-      expiresAt,
-    })
-
-    expect(result.isRight()).toBe(true)
-  })
-
-  it('should throw if expiresAt is in the past', async () => {
-    const recipientId = new UniqueEntityId('user-2')
-    const expiresAt = new Date(Date.now() - 1000)
-  
-    await expect(
-      sut.execute({
-        recipientId: recipientId.toString(),
-        accessToken: 'expired-token',
-        expiresAt,
-      }),
-    ).rejects.toThrow(InvalidSessionDateExpiredError)
-  })
-
-  it('should persist the session with correct values', async () => {
-    const recipientId = new UniqueEntityId('user-3')
-    const accessToken = 'stored-token'
-    const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
-
-    await sut.execute({
-      recipientId: recipientId.toString(),
+      recipientId,
       accessToken,
       expiresAt,
     })
 
-    const stored = inMemorySessionsRepository.items[0]
+    expect(result.isRight()).toBe(true)
 
-    expect(stored.recipientId.toString()).toBe(recipientId.toString())
-    expect(stored.accessToken).toBe(accessToken)
+    if (result.isRight()) {
+      const session = result.value.session
+
+      expect(session.accessToken.value).toBe(accessToken)
+      expect(session.recipientId.toString()).toBe(recipientId)
+      expect(inMemorySessionsRepository.items).toContainEqual(session)
+    }
+  })
+
+  it('should not create session with invalid access token (wrong format)', async () => {
+    const result = await sut.execute({
+      recipientId: UniqueEntityId.create().toString(),
+      accessToken: 'invalid-token',
+      expiresAt: new Date(Date.now() + 60000),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(InvalidAccessTokenError)
+  })
+
+  it('should not create session with empty access token', async () => {
+    const result = await sut.execute({
+      recipientId: UniqueEntityId.create().toString(),
+      accessToken: '',
+      expiresAt: new Date(Date.now() + 60000),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(InvalidAccessTokenError)
+  })
+
+  it('should not create session if expiresAt is before createdAt', async () => {
+    const result = await sut.execute({
+      recipientId: UniqueEntityId.create().toString(),
+      accessToken: generateFakeJwt(),
+      expiresAt: new Date(Date.now() - 60000),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(InvalidSessionDateExpiredError)
+  })
+
+  it('not should handle expiresAt < createdAt (via makeSession simulation)', async () => {
+    const now = new Date()
+    const recipientId = UniqueEntityId.create()
+    const accessToken = generateFakeJwt()
+
+    const result = await sut.execute({
+      recipientId: recipientId.toString(),
+      accessToken,
+      expiresAt: new Date(now.getTime() - 1000), // 1 segundo no passado
+    })
+
+    expect(result.isLeft()).toBe(true)
+  })
+
+  it('should allow multiple sessions with different recipientIds', async () => {
+    const result1 = await sut.execute({
+      recipientId: UniqueEntityId.create().toString(),
+      accessToken: generateFakeJwt(),
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    })
+
+    const result2 = await sut.execute({
+      recipientId: UniqueEntityId.create().toString(),
+      accessToken: generateFakeJwt(),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    })
+
+    expect(result1.isRight()).toBe(true)
+    expect(result2.isRight()).toBe(true)
+    expect(inMemorySessionsRepository.items).toHaveLength(2)
+  })
+
+  it('should return an AccessToken value object inside session', async () => {
+    const result = await sut.execute({
+      recipientId: UniqueEntityId.create().toString(),
+      accessToken: generateFakeJwt(),
+      expiresAt: new Date(Date.now() + 60000),
+    })
+
+    expect(result.isRight()).toBe(true)
+
+    if (result.isRight()) {
+      expect(result.value.session.accessToken).toHaveProperty('value')
+      expect(typeof result.value.session.accessToken.value).toBe('string')
+    }
   })
 })

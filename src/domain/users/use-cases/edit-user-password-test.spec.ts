@@ -1,11 +1,11 @@
-import { makeUser } from 'test/factories/make-user'
+import { makeUser } from 'test/factories/users/make-user'
+import { generatePasswordHashValueObject } from 'test/factories/users/value-objects/make-password-hash'
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
-import { PasswordHash } from '../entities/value-objects/password-hash'
 import { EditUserPasswordContract } from './contracts/edit-user-password-contract'
 import { EditUserPasswordUseCase } from './edit-user-password-use-case'
 import { SamePasswordError } from './errors/same-password-error'
@@ -25,7 +25,7 @@ describe('Edit User Password Use Case Test', () => {
   it('should update user password when current is valid and new is different', async () => {
     const currentPassword = 'OldPass@1'
     const newPassword = 'NewPass@1'
-    const hashedPassword = await PasswordHash.generateFromPlain(currentPassword, hasher)
+    const hashedPassword = await generatePasswordHashValueObject(currentPassword)
 
     const user = await makeUser({ passwordHash: hashedPassword })
 
@@ -52,7 +52,7 @@ describe('Edit User Password Use Case Test', () => {
   })
 
   it('should return error if current password is incorrect', async () => {
-    const hashedPassword = await PasswordHash.generateFromPlain('Valid@123', hasher)
+    const hashedPassword = await generatePasswordHashValueObject('Valid@123')
 
     const user = await makeUser({ passwordHash: hashedPassword })
 
@@ -70,7 +70,7 @@ describe('Edit User Password Use Case Test', () => {
 
   it('should return error if new password matches current', async () => {
     const samePassword = 'SamePass@1'
-    const hash = await PasswordHash.generateFromPlain(samePassword, hasher)
+    const hash = await generatePasswordHashValueObject(samePassword)
 
     const user = await makeUser({ passwordHash: hash })
 
@@ -89,7 +89,7 @@ describe('Edit User Password Use Case Test', () => {
   it('should store new hashed password on success', async () => {
     const oldPassword = 'OldOne@1'
     const newPassword = 'NewOne@1'
-    const oldHash = await PasswordHash.generateFromPlain(oldPassword, hasher)
+    const oldHash = await generatePasswordHashValueObject(oldPassword)
 
     const user = await makeUser({ passwordHash: oldHash })
 
@@ -101,14 +101,15 @@ describe('Edit User Password Use Case Test', () => {
       newPassword,
     })
 
-    const isUpdated = await user.passwordHash.compareWith(newPassword, hasher)
+    const isUpdated = await user.passwordHash.compareWith(hasher, newPassword)
 
-    expect(isUpdated).toBe(true)
+    expect(isUpdated.isRight()).toBe(true)
+    expect(isUpdated.value).toBe(true)
   })
 
   it('should call save repository method', async () => {
     const spy = vi.spyOn(usersRepository, 'save')
-    const hashed = await PasswordHash.generateFromPlain('Initial@1', hasher)
+    const hashed = await generatePasswordHashValueObject('Initial@1')
 
     const user = await makeUser({ passwordHash: hashed })
 

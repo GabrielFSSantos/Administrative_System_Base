@@ -20,7 +20,7 @@ describe('Login User Service Test', () => {
 
   it('should return accessToken if authentication and session creation succeed', async () => {
     const result = await service.execute({
-      email: 'user@test.com',
+      emailAddress: 'user@test.com',
       password: '123456',
     })
 
@@ -35,7 +35,7 @@ describe('Login User Service Test', () => {
     authenticateUser.shouldFail = true
 
     const result = await service.execute({
-      email: 'user@test.com',
+      emailAddress: 'user@test.com',
       password: 'wrong',
     })
 
@@ -47,7 +47,7 @@ describe('Login User Service Test', () => {
     const spy = vi.spyOn(createSession, 'execute')
 
     const result = await service.execute({
-      email: 'user@test.com',
+      emailAddress: 'user@test.com',
       password: '123456',
     })
 

@@ -1,12 +1,14 @@
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
+import { generatePermissionList } from 'test/factories/value-objects/make-permissions'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Role } from '@/domain/roles/entities/role'
-import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { EditRoleUseCase } from '@/domain/roles/use-cases/edit-role-use-case'
 import { InvalidPermissionError } from '@/domain/roles/use-cases/errors/invalid-permission-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 import { Permissions } from '@/shared/permissions'
+import { InvalidNameError } from '@/shared/value-objects/errors/invalid-name-error'
 
 import { EditRoleContract } from './contracts/edit-role-contract'
 
@@ -21,11 +23,9 @@ describe('Edit Role Test', () => {
 
   it('should be able to edit a role name and permissions', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
-      name: 'Old Name',
-      permissions: [
-        PermissionName.parse(Permissions.USERS.CREATE),
-      ],
+      recipientId: UniqueEntityId.create('company-1'),
+      name: generateNameValueObject('Old Name'),
+      permissions: generatePermissionList(1),
     })
 
     await inMemoryRolesRepository.create(role)
@@ -40,18 +40,15 @@ describe('Edit Role Test', () => {
     })
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryRolesRepository.items[0].name).toBe('New Name')
+    expect(inMemoryRolesRepository.items[0].name.value).toBe('New Name')
     expect(inMemoryRolesRepository.items[0].permissionValues).toEqual(
-      expect.arrayContaining([
-        'edit_user',
-        'delete_user',
-      ]),
+      expect.arrayContaining(['edit_user', 'delete_user']),
     )
   })
 
   it('should return error if role does not exist', async () => {
     const result = await sut.execute({
-      roleId: new UniqueEntityId().toString(),
+      roleId: UniqueEntityId.create().toString(),
       name: 'Does Not Exist',
       permissionValues: [Permissions.USERS.VIEW],
     })
@@ -62,9 +59,9 @@ describe('Edit Role Test', () => {
 
   it('should return error if permissions are invalid', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
-      name: 'Editor',
-      permissions: [PermissionName.parse(Permissions.USERS.VIEW)],
+      recipientId: UniqueEntityId.create('company-1'),
+      name: generateNameValueObject('Editor'),
+      permissions: generatePermissionList(1),
     })
 
     await inMemoryRolesRepository.create(role)
@@ -81,16 +78,13 @@ describe('Edit Role Test', () => {
 
   it('should update only name if permissions remain the same', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
-      name: 'Manager',
-      permissions: [
-        PermissionName.parse(Permissions.SESSIONS.CREATE),
-        PermissionName.parse(Permissions.SESSIONS.REVOKE),
-      ],
+      recipientId: UniqueEntityId.create('company-1'),
+      name: generateNameValueObject('Manager'),
+      permissions: generatePermissionList(2),
     })
-  
+
     await inMemoryRolesRepository.create(role)
-  
+
     const result = await sut.execute({
       roleId: role.id.toString(),
       name: 'Updated Manager',
@@ -99,28 +93,26 @@ describe('Edit Role Test', () => {
         Permissions.SESSIONS.REVOKE,
       ],
     })
-  
+
     expect(result.isRight()).toBe(true)
-  
+
     if (result.isRight()) {
-      expect(result.value.role.name).toBe('Updated Manager')
+      expect(result.value.role.name.value).toBe('Updated Manager')
       expect(result.value.role.permissionValues).toEqual(
         expect.arrayContaining(['create_session', 'revoke_session']),
       )
     }
   })
-  
+
   it('should update only permissions if name is not provided', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
-      name: 'Unchanged Name',
-      permissions: [
-        PermissionName.parse(Permissions.USERS.CREATE),
-      ],
+      recipientId: UniqueEntityId.create('company-1'),
+      name: generateNameValueObject('Unchanged Name'),
+      permissions: generatePermissionList(1),
     })
-  
+
     await inMemoryRolesRepository.create(role)
-  
+
     const result = await sut.execute({
       roleId: role.id.toString(),
       permissionValues: [
@@ -128,11 +120,11 @@ describe('Edit Role Test', () => {
         Permissions.USERS.EDIT,
       ],
     })
-  
+
     expect(result.isRight()).toBe(true)
-  
+
     if (result.isRight()) {
-      expect(result.value.role.name).toBe('Unchanged Name')
+      expect(result.value.role.name.value).toBe('Unchanged Name')
       expect(result.value.role.permissionValues).toEqual(
         expect.arrayContaining(['view_user', 'edit_user']),
       )
@@ -141,43 +133,40 @@ describe('Edit Role Test', () => {
 
   it('should not update anything if no name or permissions are provided', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
-      name: 'No Change',
-      permissions: [
-        PermissionName.parse(Permissions.USERS.DELETE),
-      ],
+      recipientId: UniqueEntityId.create('company-1'),
+      name: generateNameValueObject('No Change'),
+      permissions: generatePermissionList(1),
     })
-  
+
     await inMemoryRolesRepository.create(role)
-  
+
     const result = await sut.execute({
       roleId: role.id.toString(),
     })
-  
+
     expect(result.isRight()).toBe(true)
-  
+
     if (result.isRight()) {
-      expect(result.value.role.name).toBe('No Change')
-      expect(result.value.role.permissionValues).toEqual(['delete_user'])
+      expect(result.value.role.name.value).toBe('No Change')
+      expect(result.value.role.permissionValues.length).toBe(1)
     }
   })
-  
+
   it('should throw if name is invalid', async () => {
     const role = Role.create({
-      recipientId: new UniqueEntityId('company-1'),
-      name: 'Valid Name',
-      permissions: [
-        PermissionName.parse(Permissions.USERS.CREATE),
-      ],
+      recipientId: UniqueEntityId.create('company-1'),
+      name: generateNameValueObject('Valid Name'),
+      permissions: generatePermissionList(1),
     })
-  
+
     await inMemoryRolesRepository.create(role)
-  
-    await expect(() =>
-      sut.execute({
-        roleId: role.id.toString(),
-        name: '   ',
-      }),
-    ).rejects.toThrow()
+
+    const result = await sut.execute({
+      roleId: role.id.toString(),
+      name: '   ',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(InvalidNameError)
   })
 })

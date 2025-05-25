@@ -1,11 +1,11 @@
+import { generateValidCPF } from 'test/factories/users/value-objects/make-cpf'
 import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
-import { generateValidCPF } from 'test/fakes/users/value-objects/fake-generate-valid-cpf'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
 import { CPF } from '@/domain/users/entities/value-objects/cpf'
-import { EmailAddress } from '@/domain/users/entities/value-objects/email-address'
 import { WeakPasswordError } from '@/domain/users/entities/value-objects/errors/weak-password-error'
-import { Name } from '@/domain/users/entities/value-objects/name'
+import { EmailAddress } from '@/shared/value-objects/email-address'
+import { Name } from '@/shared/value-objects/name'
 
 import { CreateUserContract } from './contracts/create-user-contract'
 import { CreateUserUseCase } from './create-user-use-case'
@@ -101,7 +101,7 @@ describe('Create User Use Case Test', () => {
     expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 
-  it.skip('should reject weak passwords', async () => {
+  it('should reject weak passwords', async () => {
     const result = await sut.execute({
       name: 'Weak Password User',
       emailAddress: 'weak@example.com',

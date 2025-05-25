@@ -10,7 +10,7 @@ export abstract class Entity<Props> {
 
   protected constructor(props: Props, id?: UniqueEntityId) {
     this.props = props
-    this._id = id ?? new UniqueEntityId()
+    this._id = id ?? UniqueEntityId.create()
   }
 
   public equals(entity: Entity<unknown>): boolean {

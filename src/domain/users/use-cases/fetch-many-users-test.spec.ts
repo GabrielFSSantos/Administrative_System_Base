@@ -1,10 +1,11 @@
-import { makeUser } from 'test/factories/make-user'
+import { makeUser } from 'test/factories/users/make-user'
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
-import { Name } from '../entities/value-objects/name'
+import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
+
 import { FetchManyUsersContract } from './contracts/fetch-many-users-contract'
-import { InvalidPaginationParamsError } from './errors/invalid-pagination-params-error'
 import { FetchManyUsersUseCase } from './fetch-many-users-use-case'
 
 let usersRepository: InMemoryUsersRepository
@@ -92,8 +93,8 @@ describe('Fetch Many Users Use Case Test', () => {
   })
 
   it('should filter users based on search term', async () => {
-    const matchingUser = await makeUser({ name: Name.create('Ana Clara')})
-    const otherUser = await makeUser({ name: Name.create('João Silva')})
+    const matchingUser = await makeUser({ name: generateNameValueObject('Ana Clara')})
+    const otherUser = await makeUser({ name: generateNameValueObject('João Silva')})
 
     await usersRepository.create(matchingUser)
     await usersRepository.create(otherUser)

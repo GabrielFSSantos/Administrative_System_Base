@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
-import { right } from '@/core/either'
+import { left, right } from '@/core/either'
+import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
 
 import { RolesRepositoryContract } from '../repositories/contracts/roles-repository-contract'
 import {
@@ -22,7 +23,12 @@ implements FetchManyRolesByRecipientIdContract
     page,
     pageSize,
   }: IFetchManyRolesByRecipientIdRequest): Promise<IFetchManyRolesByRecipientIdResponse> {
-    const roles = await this.rolesRepository.findManyByRecipientId({
+
+    if (page < 1 || pageSize < 1) {
+      return left(new InvalidPaginationParamsError())
+    }
+        
+    const {roles, total} = await this.rolesRepository.findManyByRecipientId({
       recipientId,
       page,
       pageSize,
@@ -30,6 +36,11 @@ implements FetchManyRolesByRecipientIdContract
 
     return right({ 
       roles,
+      pagination: {
+        page,
+        pageSize,
+        total,
+      },
     })
   }
 }

@@ -1,6 +1,6 @@
-import { UseCaseError } from '@/core/errors/use-case-error'
+import { DomainError } from '@/core/errors/domain-error'
 
-export class SessionExpiredError extends Error implements UseCaseError {
+export class SessionExpiredError extends Error implements DomainError {
   constructor() {
     super('Session has already expired.')
   }

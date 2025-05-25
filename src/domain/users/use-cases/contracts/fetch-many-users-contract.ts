@@ -1,8 +1,8 @@
 
 import { Either } from '@/core/either'
+import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
 
 import { User } from '../../entities/user'
-import { InvalidPaginationParamsError } from '../errors/invalid-pagination-params-error'
 
 export interface IFetchManyUsersUseCaseRequest {
   page: number
@@ -23,5 +23,6 @@ export type IFetchManyUsersUseCaseResponse = Either<
 >
 
 export abstract class FetchManyUsersContract {
-  abstract execute(input: IFetchManyUsersUseCaseRequest): Promise<IFetchManyUsersUseCaseResponse> 
+  abstract execute(input: IFetchManyUsersUseCaseRequest): 
+  Promise<IFetchManyUsersUseCaseResponse> 
 }

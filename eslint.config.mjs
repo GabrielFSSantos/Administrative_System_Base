@@ -7,7 +7,7 @@ import unusedImports from 'eslint-plugin-unused-imports'
 
 export default [
   {
-    ignores: ['eslint.config.mjs', 'node_modules', 'dist'],
+    ignores: ['eslint.config.mjs', 'node_modules', 'dist', 'coverage'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

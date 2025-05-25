@@ -1,8 +1,8 @@
-import { makeUser } from 'test/factories/make-user'
+import { makeUser } from 'test/factories/users/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { GetUserByIdContract } from './contracts/get-user-by-id-contract'
 import { GetUserByIdUseCase } from './get-user-by-id-use-case'
@@ -59,7 +59,7 @@ describe('Get User By ID Use Case Test', () => {
     const user = await makeUser()
 
     await usersRepository.create(user)
-    await usersRepository.delete(user.id)
+    await usersRepository.delete(user.id.toString())
 
     const result = await sut.execute({ userId: user.id.toString() })
 

@@ -1,9 +1,9 @@
-import { makeUser } from 'test/factories/make-user'
+import { makeUser } from 'test/factories/users/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { DeleteUserContract } from './contracts/delete-user-contract'
 import { DeleteUserUseCase } from './delete-user-use-case'
@@ -29,7 +29,7 @@ describe('Delete User Use Case Test', () => {
   })
 
   it('should return ResourceNotFoundError if user does not exist', async () => {
-    const result = await sut.execute({ userId: new UniqueEntityId().toString() })
+    const result = await sut.execute({ userId: UniqueEntityId.create().toString() })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
@@ -44,7 +44,7 @@ describe('Delete User Use Case Test', () => {
 
     await sut.execute({ userId: user.id.toString() })
 
-    expect(deleteSpy).toHaveBeenCalledWith(user.id)
+    expect(deleteSpy).toHaveBeenCalledWith(user.id.toString())
   })
 
   it('should preserve other users after deletion', async () => {

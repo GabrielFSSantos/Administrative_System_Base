@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
 
-import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-generator-contract'
 import { left,right } from '@/core/either'
+import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
+import { EmailAddress } from '@/shared/value-objects/email-address'
+import { Name } from '@/shared/value-objects/name'
 
 import { User } from '../entities/user'
 import { CPF } from '../entities/value-objects/cpf'
-import { EmailAddress } from '../entities/value-objects/email-address'
-import { Name } from '../entities/value-objects/name'
 import { PasswordHash } from '../entities/value-objects/password-hash'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
@@ -31,35 +31,58 @@ export class CreateUserUseCase implements CreateUserContract {
   }: ICreateUserUseCaseRequest): Promise<ICreateUserUseCaseResponse> {
 
     const nameObject = Name.create(name)
+
+    if(nameObject.isLeft()) {
+      return left(nameObject.value)
+    }
+
     const cpfObject = CPF.create(cpf)
+
+    if(cpfObject.isLeft()) {
+      return left(cpfObject.value)
+    }
+
     const emailObject = EmailAddress.create(emailAddress)
-    const passwordObject = await PasswordHash.generateFromPlain(password, this.hashGenerator)
+
+    if(emailObject.isLeft()) {
+      return left(emailObject.value)
+    }
+
+    const passwordObject = await PasswordHash.createFromPlain(this.hashGenerator, password)
+
+    if(passwordObject.isLeft()) {
+      return left(passwordObject.value)
+    }
 
     const existingCpfUser =
-      await this.usersRepository.findByCpf(cpfObject.value)
+      await this.usersRepository.findByCpf(cpfObject.value.toString())
 
     if (existingCpfUser) {
-      return left(new UserAlreadyExistsError(cpfObject.value))
+      return left(new UserAlreadyExistsError(cpfObject.value.toString()))
     }
     
     const existingEmailUser =
-      await this.usersRepository.findByEmail(emailObject.value)
+      await this.usersRepository.findByEmail(emailObject.value.toString())
 
     if (existingEmailUser) {
-      return left(new UserAlreadyExistsError(emailObject.value))
+      return left(new UserAlreadyExistsError(emailObject.value.toString()))
     }
 
     const user = User.create({
-      cpf: cpfObject,
-      name: nameObject,
-      emailAddress: emailObject,
-      passwordHash: passwordObject,
+      cpf: cpfObject.value,
+      name: nameObject.value,
+      emailAddress: emailObject.value,
+      passwordHash: passwordObject.value,
     })
 
-    await this.usersRepository.create(user)
+    if(user.isLeft()) {
+      return left(user.value)
+    }
+
+    await this.usersRepository.create(user.value)
 
     return right({
-      user,
+      user: user.value,
     })
   }
 }

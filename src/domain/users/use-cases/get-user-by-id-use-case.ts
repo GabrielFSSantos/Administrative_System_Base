@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import { left,right } from '@/core/either'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {

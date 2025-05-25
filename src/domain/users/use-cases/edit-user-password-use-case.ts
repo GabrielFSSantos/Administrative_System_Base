@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
-import { HashComparerContract } from '@/core/contracts/cryptography/hash-comparer-contract'
-import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-generator-contract'
 import { left,right } from '@/core/either'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
+import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { PasswordHash } from '../entities/value-objects/password-hash'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
@@ -13,7 +13,6 @@ import {
   IEditUserPasswordUseCaseResponse, 
 } from './contracts/edit-user-password-contract'
 import { SamePasswordError } from './errors/same-password-error'
-import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 @Injectable()
 export class EditUserPasswordUseCase implements EditUserPasswordContract{
@@ -35,21 +34,25 @@ export class EditUserPasswordUseCase implements EditUserPasswordContract{
       return left(new ResourceNotFoundError())
     }
 
-    const isPasswordValid = await user.passwordHash.compareWith(password, this.hashComparer)
+    const isPasswordValid = await user.passwordHash.compareWith(this.hashComparer, password)
 
-    if (!isPasswordValid) {
-      return left(new WrongCredentialsError())
+    if (isPasswordValid.isLeft()) {
+      return left(isPasswordValid.value)
     }
 
-    const isSamePassword = await user.passwordHash.compareWith(newPassword, this.hashComparer)
+    const isSamePassword = await user.passwordHash.compareWith(this.hashComparer, newPassword)
 
-    if (isSamePassword) {
+    if (isSamePassword.isRight()) {
       return left(new SamePasswordError())
     }
 
-    const newPasswordHash = await PasswordHash.generateFromPlain(newPassword, this.hashGenerator)
+    const newPasswordHash = await PasswordHash.createFromPlain(this.hashGenerator, newPassword)
 
-    user.changePasswordHash(newPasswordHash)
+    if (newPasswordHash.isLeft()) {
+      return left(newPasswordHash.value)
+    }
+
+    user.changePasswordHash(newPasswordHash.value)
 
     await this.usersRepository.save(user)
 

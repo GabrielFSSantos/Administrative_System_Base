@@ -1,11 +1,11 @@
 import { left,right } from '@/core/either'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { 
   AuthenticateUserContract, 
   IAuthenticateUserUseCaseRequest, 
   IAuthenticateUserUseCaseResponse, 
 } from '@/domain/users/use-cases/contracts/authenticate-user-contract'
 import { WrongCredentialsError } from '@/domain/users/use-cases/errors/wrong-credentials-error'
+import { NotAllowedError } from '@/shared/errors/not-allowed-error'
 
 export class FakeAuthenticateUserUseCase implements AuthenticateUserContract {
   public shouldFail: boolean = false

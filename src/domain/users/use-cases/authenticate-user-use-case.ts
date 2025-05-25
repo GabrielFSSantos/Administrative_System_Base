@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 
-import { EncrypterContract } from '@/core/contracts/cryptography/encrypter-contract'
-import { HashComparerContract } from '@/core/contracts/cryptography/hash-comparer-contract'
 import { left, right } from '@/core/either'
+import { EncrypterContract } from '@/shared/contracts/cryptography/encrypter-contract'
+import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
+import { EmailAddress } from '@/shared/value-objects/email-address'
 
-import { EmailAddress } from '../entities/value-objects/email-address'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import { AuthenticateUserContract, 
   IAuthenticateUserUseCaseRequest, 
@@ -25,17 +25,21 @@ export class AuthenticateUserUseCase implements AuthenticateUserContract {
     password,
   }: IAuthenticateUserUseCaseRequest): Promise<IAuthenticateUserUseCaseResponse> {
     const emailObject = EmailAddress.create(emailAddress)
+    
+    if(emailObject.isLeft()) {
+      return left(emailObject.value)
+    }
 
-    const user = await this.usersRepository.findByEmail(emailObject.value)
+    const user = await this.usersRepository.findByEmail(emailObject.value.toString())
 
     if (!user) {
       return left(new WrongCredentialsError())
     }
 
-    const isPasswordValid = await user.passwordHash.compareWith(password, this.hashComparer)
+    const isPasswordValid = await user.passwordHash.compareWith(this.hashComparer, password)
   
-    if (!isPasswordValid) {
-      return left(new WrongCredentialsError())
+    if (isPasswordValid.isLeft()) {
+      return left(isPasswordValid.value)
     }
 
     const {accessToken, expiresAt} = await this.encrypter.encrypt({

@@ -1,23 +1,41 @@
 import { Either, left, right } from './either'
 
-function doSomething(result: boolean): Either<string, string> {
+class CustomError extends Error {
+  constructor() {
+    super('Custom error occurred')
+  }
+}
+
+function doSomething(result: boolean): Either<CustomError, string> {
   if (result) {
     return right('success')
   }
 
-  return left('error')
+  return left(new CustomError())
 }
 
-test('success result', () => {
-  const result = doSomething(true)
+describe('Either Type Test', () => {
+  it('should return Right on success', () => {
+    const result = doSomething(true)
 
-  expect(result.isRight()).toBe(true)
-  expect(result.isLeft()).toBe(false)
-})
+    expect(result.isRight()).toBe(true)
+    expect(result.isLeft()).toBe(false)
 
-test('error result', () => {
-  const result = doSomething(false)
+    if (result.isRight()) {
+      expect(result.value).toBe('success')
+    }
+  })
 
-  expect(result.isRight()).toBe(false)
-  expect(result.isLeft()).toBe(true)
+  it('should return Left on failure', () => {
+    const result = doSomething(false)
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.isRight()).toBe(false)
+
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(CustomError)
+      expect(result.value.message).toBe('Custom error occurred')
+    }
+  })
+
 })

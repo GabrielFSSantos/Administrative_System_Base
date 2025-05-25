@@ -1,14 +1,13 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-
-import { InvalidRoleNameError } from './errors/invalid-role-name-error'
-import { RolePermissionList } from './role-permission-list'
-import { PermissionName } from './value-objects/permission-name'
+import { PermissionList } from '@/shared/PermissionList/permission-list'
+import { PermissionName } from '@/shared/PermissionList/value-objects/permission-name'
+import { Name } from '@/shared/value-objects/name'
 
 interface RoleProps {
   recipientId: UniqueEntityId
-  name: string
-  permissions: RolePermissionList
+  name: Name
+  permissions: PermissionList
 }
 
 export class Role extends Entity<RoleProps> {
@@ -16,7 +15,7 @@ export class Role extends Entity<RoleProps> {
     return this.props.recipientId
   }
 
-  get name(): string {
+  get name(): Name {
     return this.props.name
   }
 
@@ -24,45 +23,30 @@ export class Role extends Entity<RoleProps> {
     return this.props.permissions.getItems().map((p) => p.value)
   }
 
-  public hasPermission(permissionName: PermissionName): boolean {
-    return this.props.permissions.has(permissionName)
+  public updateName(name: Name): void {
+    this.props.name = name
   }
 
-  public updateName(name: string): void {
-    if (!Role.isValidName(name)) {
-      throw new InvalidRoleNameError(name)
-    }
-
-    this.props.name = name
+  public hasPermission(permissionName: PermissionName): boolean {
+    return this.props.permissions.has(permissionName)
   }
 
   public updatePermissions(permissions: PermissionName[]): void {
     this.props.permissions.update(permissions)
   }
 
-  static isValidName(name: string): boolean {
-    return !!name && name.trim().length > 0
-  }
-
   static create(
-    props: { 
-      recipientId: UniqueEntityId, 
-      name: string; 
-      permissions: PermissionName[] },
+    props: RoleProps,
     id?: UniqueEntityId,
   ): Role {
-    if (!Role.isValidName(props.name)) {
-      throw new InvalidRoleNameError(props.name)
-    }
+    const permissionList = props.permissions ?? PermissionList.create()
 
-    const permissionList = new RolePermissionList(props.permissions)
-  
     return new Role(
       {
-        recipientId: props.recipientId, 
-        name: props.name, 
-        permissions: permissionList, 
-      }, 
+        recipientId: props.recipientId,
+        name: props.name,
+        permissions: permissionList,
+      },
       id,
     )
   }

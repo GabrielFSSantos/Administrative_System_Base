@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
+import { Name } from '@/shared/value-objects/name'
 
-import { validateAndParsePermissions } from '../helpers/validate-and-parse-permissions-helper'
+import { validateAndParsePermissions } from '../../../shared/PermissionList/helpers/validate-and-parse-permissions-helper'
 import { RolesRepositoryContract } from '../repositories/contracts/roles-repository-contract'
 import {
   EditRoleContract,
@@ -29,7 +30,13 @@ export class EditRoleUseCase implements EditRoleContract {
     }
 
     if (name) {
-      role.updateName(name)
+      const nameObject = Name.create(name)
+
+      if(nameObject.isLeft()) {
+        return left(nameObject.value)
+      }
+
+      role.updateName(nameObject.value)
     }
 
     if (permissionValues) {

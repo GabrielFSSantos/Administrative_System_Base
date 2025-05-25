@@ -6,19 +6,15 @@ export class InMemorySessionsRepository implements SessionsRepositoryContract {
   public items: Session[] = []
   
   async findByToken(accessToken: string): Promise<Session | null> {
-    const session = this.items.find((session) => session.accessToken === accessToken)
+    const session = this.items.find((session) => session.accessToken.toString() === accessToken)
 
-    if (!session) return null
-
-    return session
+    return session ?? null
   }
 
   async findById(id: string): Promise<Session | null> {
     const session = this.items.find((session) => session.id.toString() === id)
 
-    if (!session) return null
-
-    return session
+    return session ?? null
   }
 
   async findMany({
@@ -26,7 +22,8 @@ export class InMemorySessionsRepository implements SessionsRepositoryContract {
     pageSize,
     recipientId,
     onlyValid,
-  }: IFetchManySessionsUseCaseRequest): Promise<Session[]> {
+  }: IFetchManySessionsUseCaseRequest): 
+  Promise<{ sessions: Session[]; total: number }> {
     let results = this.items
 
     if (recipientId) {
@@ -39,14 +36,20 @@ export class InMemorySessionsRepository implements SessionsRepositoryContract {
       results = results.filter((session) => session.isValid())
     }
 
-    return results.slice((page - 1) * pageSize, page * pageSize)
+    const total = results.length
+    const paginated = results.slice((page - 1) * pageSize, page * pageSize)
+
+    return {
+      sessions: paginated,
+      total,
+    }
   }
 
   async findLastByRecipientId(recipientId: string): Promise<Session | null> {
     const sessions = this.items
       .filter((session) => session.recipientId.toString() === recipientId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-  
+
     return sessions[0] ?? null
   }
 
@@ -55,13 +58,14 @@ export class InMemorySessionsRepository implements SessionsRepositoryContract {
   }
 
   async save(session: Session): Promise<void> {
-    const itemIndex = this.items.findIndex((item) => item.id === session.id)
+    const itemIndex = this.items.findIndex((item) => item.id.equals(session.id))
 
-    this.items[itemIndex] = session
+    if (itemIndex >= 0) {
+      this.items[itemIndex] = session
+    }
   }
 
   async deleteExpiredSessions(): Promise<void> {
     this.items = this.items.filter((session) => !session.isExpired())
   }
-  
 }

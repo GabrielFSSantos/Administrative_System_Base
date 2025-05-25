@@ -1,12 +1,13 @@
-import { makeSession } from 'test/factories/make-session'
+import { makeSession } from 'test/factories/sessions/make-session'
+import { generateAccessTokenValueObject } from 'test/factories/sessions/value-objects/make-access-token'
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { SessionAlreadyRevokedError } from '@/domain/sessions/entities/errors/session-already-revoked-error'
 import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'
 import { ValidateSessionUseCase } from '@/domain/sessions/use-cases/validate-session-use-case'
+import { NotAllowedError } from '@/shared/errors/not-allowed-error'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 describe('Validate Session Test', () => {
   let inMemorySessionsRepository: InMemorySessionsRepository
@@ -18,24 +19,26 @@ describe('Validate Session Test', () => {
   })
 
   it('should validate a valid session successfully', async () => {
-    const recipientId = new UniqueEntityId()
+    const accessToken = generateAccessTokenValueObject()
+
+    const recipientId = UniqueEntityId.create()
     const session = makeSession({
       recipientId,
-      accessToken: 'valid-token',
+      accessToken,
       expiresAt: new Date(Date.now() + 1000 * 60 * 10),
     })
 
     await inMemorySessionsRepository.create(session)
 
     const result = await sut.execute({
-      accessToken: 'valid-token',
+      accessToken: accessToken.toString(),
       recipientId: recipientId.toString(),
     })
 
     expect(result.isRight()).toBe(true)
 
     if (result.isRight()) {
-      expect(result.value.session.accessToken).toBe('valid-token')
+      expect(result.value.session.accessToken.value).toBe(accessToken.value)
     }
   })
 
@@ -50,15 +53,17 @@ describe('Validate Session Test', () => {
   })
 
   it('should return NotAllowedError for mismatched recipientId', async () => {
+    const accessToken = generateAccessTokenValueObject()
+
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
-      accessToken: 'token',
+      recipientId: UniqueEntityId.create('user-1'),
+      accessToken,
     })
 
     await inMemorySessionsRepository.create(session)
 
     const result = await sut.execute({
-      accessToken: 'token',
+      accessToken: accessToken.toString(),
       recipientId: 'user-2',
     })
 
@@ -67,12 +72,14 @@ describe('Validate Session Test', () => {
   })
 
   it('should return SessionExpiredError for expired session', async () => {
+    const accessToken = generateAccessTokenValueObject()
+    
     const createdAt = new Date(Date.now() - 2 * 60 * 1000) // 2min atrás
     const expiresAt = new Date(Date.now() - 60 * 1000) // 1min atrás
     
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
-      accessToken: 'expired-token',
+      recipientId: UniqueEntityId.create('user-1'),
+      accessToken,
       createdAt,
       expiresAt,
     })
@@ -80,7 +87,7 @@ describe('Validate Session Test', () => {
     await inMemorySessionsRepository.create(session)
 
     const result = await sut.execute({
-      accessToken: 'expired-token',
+      accessToken: accessToken.toString(),
       recipientId: 'user-1',
     })
 
@@ -89,16 +96,18 @@ describe('Validate Session Test', () => {
   })
 
   it('should return SessionAlreadyRevokedError for revoked session', async () => {
+    const accessToken = generateAccessTokenValueObject()
+
     const session = makeSession({
-      recipientId: new UniqueEntityId('user-1'),
-      accessToken: 'revoked-token',
+      recipientId: UniqueEntityId.create('user-1'),
+      accessToken,
       revokedAt: new Date(),
     })
 
     await inMemorySessionsRepository.create(session)
 
     const result = await sut.execute({
-      accessToken: 'revoked-token',
+      accessToken: accessToken.toString(),
       recipientId: 'user-1',
     })
 

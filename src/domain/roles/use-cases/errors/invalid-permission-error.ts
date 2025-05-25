@@ -1,6 +1,6 @@
-import { UseCaseError } from '@/core/errors/use-case-error'
+import { DomainError } from '@/core/errors/domain-error'
 
-export class InvalidPermissionError extends Error implements UseCaseError {
+export class InvalidPermissionError extends Error implements DomainError {
   constructor(invalidPermissions: string[]) {
     super(`Invalid permissions: ${invalidPermissions.join(', ')}`)
   }

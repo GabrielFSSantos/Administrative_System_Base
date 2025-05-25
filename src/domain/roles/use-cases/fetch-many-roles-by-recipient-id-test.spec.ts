@@ -1,16 +1,14 @@
+import { generateNameValueObject } from 'test/factories/value-objects/make-name'
+import { generatePermissionList } from 'test/factories/value-objects/make-permissions'
 import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Role } from '@/domain/roles/entities/role'
-import { PermissionName } from '@/domain/roles/entities/value-objects/permission-name'
 import { FetchManyRolesByRecipientIdUseCase } from '@/domain/roles/use-cases/fetch-many-roles-by-recipient-id-use-case'
-import { Permissions } from '@/shared/permissions'
-
-import { FetchManyRolesByRecipientIdContract } from './contracts/fetch-many-roles-by-recipient-id-contract'
 
 describe('Fetch Many Roles By RecipientId Test', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
-  let sut: FetchManyRolesByRecipientIdContract
+  let sut: FetchManyRolesByRecipientIdUseCase
 
   beforeEach(() => {
     inMemoryRolesRepository = new InMemoryRolesRepository()
@@ -18,14 +16,14 @@ describe('Fetch Many Roles By RecipientId Test', () => {
   })
 
   it('should return paginated roles by recipientId', async () => {
-    const recipientId = new UniqueEntityId('company-1')
+    const recipientId = UniqueEntityId.create('company-1')
 
     for (let i = 0; i < 10; i++) {
       await inMemoryRolesRepository.create(
         Role.create({
           recipientId,
-          name: `Role ${i + 1}`,
-          permissions: [PermissionName.parse(Permissions.USERS.VIEW)],
+          name: generateNameValueObject(),
+          permissions: generatePermissionList(1),
         }),
       )
     }
@@ -40,26 +38,28 @@ describe('Fetch Many Roles By RecipientId Test', () => {
 
     if (result.isRight()) {
       expect(result.value.roles).toHaveLength(5)
-      expect(result.value.roles[0].recipientId.toString()).toBe(recipientId.toString())
+      expect(result.value.pagination.page).toBe(1)
+      expect(result.value.pagination.pageSize).toBe(5)
+      expect(result.value.pagination.total).toBe(10)
     }
   })
 
   it('should return all roles for recipientId when pageSize is large enough', async () => {
-    const recipientId = new UniqueEntityId('company-2')
+    const recipientId = UniqueEntityId.create('company-2')
 
     await inMemoryRolesRepository.create(
       Role.create({
         recipientId,
-        name: 'Admin',
-        permissions: [PermissionName.parse(Permissions.USERS.CREATE)],
+        name: generateNameValueObject('Admin'),
+        permissions: generatePermissionList(1),
       }),
     )
 
     await inMemoryRolesRepository.create(
       Role.create({
         recipientId,
-        name: 'Editor',
-        permissions: [PermissionName.parse(Permissions.USERS.EDIT)],
+        name: generateNameValueObject('Editor'),
+        permissions: generatePermissionList(1),
       }),
     )
 
@@ -73,13 +73,16 @@ describe('Fetch Many Roles By RecipientId Test', () => {
 
     if (result.isRight()) {
       expect(result.value.roles).toHaveLength(2)
-      expect(result.value.roles.map((r) => r.name)).toEqual(expect.arrayContaining(['Admin', 'Editor']))
+      expect(result.value.pagination.total).toBe(2)
+      expect(result.value.roles.map((r) => r.name.value)).toEqual(
+        expect.arrayContaining(['Admin', 'Editor']),
+      )
     }
   })
 
   it('should return empty array if no roles exist for recipientId', async () => {
     const result = await sut.execute({
-      recipientId: new UniqueEntityId('non-existent').toString(),
+      recipientId: UniqueEntityId.create('non-existent').toString(),
       page: 1,
       pageSize: 10,
     })
@@ -88,6 +91,17 @@ describe('Fetch Many Roles By RecipientId Test', () => {
 
     if (result.isRight()) {
       expect(result.value.roles).toHaveLength(0)
+      expect(result.value.pagination.total).toBe(0)
     }
+  })
+
+  it('should return error for invalid pagination parameters', async () => {
+    const result = await sut.execute({
+      recipientId: 'some-id',
+      page: 0,
+      pageSize: 0,
+    })
+
+    expect(result.isLeft()).toBe(true)
   })
 })

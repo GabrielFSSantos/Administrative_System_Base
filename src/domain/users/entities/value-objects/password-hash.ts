@@ -1,7 +1,9 @@
-import { HashComparerContract } from '@/core/contracts/cryptography/hash-comparer-contract'
-import { HashGeneratorContract } from '@/core/contracts/cryptography/hash-generator-contract'
+import { Either, left, right } from '@/core/either'
 import { ValueObject } from '@/core/entities/value-object'
+import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
+import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
 
+import { WrongCredentialsError } from '../../use-cases/errors/wrong-credentials-error'
 import { InvalidPasswordHashError } from './errors/invalid-password-hash-error'
 import { WeakPasswordError } from './errors/weak-password-error'
 
@@ -28,31 +30,59 @@ export class PasswordHash extends ValueObject<PasswordHashProps> {
     return password.length >= minLength && hasUppercase && hasNumber && hasSpecial
   }
 
-  public async compareWith(
-    plain: string,
-    comparer: HashComparerContract,
-  ): Promise<boolean> {
-    return comparer.compare(plain, this.value)
+  public toString(): string {
+    return this.value
   }
 
-  public static fromHashed(hash: string): PasswordHash {
-    if (!this.isValidHash(hash)) {
-      throw new InvalidPasswordHashError()
+  public async compareWith(
+    comparer: HashComparerContract,
+    plain: string,
+  ): Promise<Either<
+    WrongCredentialsError, 
+    boolean
+  >> {
+    const result = await comparer.compare(plain, this.value)
+
+    if(!result) {
+      return left(new WrongCredentialsError())
     }
 
-    return new PasswordHash({ value: hash })
+    return right(result)
   }
 
-  public static async generateFromPlain(
-    plain: string,
+  public static createFromHashed(
+    hash: string,
+  ): Either<InvalidPasswordHashError, PasswordHash> {
+    if (!this.isValidHash(hash)) {
+      return left(new InvalidPasswordHashError())
+    }
+
+    const hashValidated = new PasswordHash({ value: hash })
+
+    return right(hashValidated)
+  }
+
+  public static async createFromPlain(
     hasher: HashGeneratorContract,
-  ): Promise<PasswordHash> {
+    plain: string,
+  ): Promise<Either<
+    WeakPasswordError | 
+    InvalidPasswordHashError, 
+    PasswordHash
+  >> {
     if (!this.isStrongPassword(plain)) {
-      throw new WeakPasswordError()
+      return left(new WeakPasswordError())
     }
 
     const hashed = await hasher.generate(plain)
 
-    return this.fromHashed(hashed)
+    const hashedvalidat = this.createFromHashed(hashed)
+
+    if(hashedvalidat.isLeft()) {
+      return left(hashedvalidat.value)
+    }
+
+    return right(hashedvalidat.value)
   }
+
 }
