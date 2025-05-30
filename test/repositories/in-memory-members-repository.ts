@@ -1,6 +1,6 @@
-import { Member } from '@/domain/companies/entities/member'
-import { MembersRepositoryContract } from '@/domain/companies/repositories/contracts/members-repository-contract'
-import { IFetchManyMembersUseCaseRequest } from '@/domain/companies/use-cases/contracts/fetch-many-members-contract'
+import { Member } from '@/domain/members/entities/member'
+import { MembersRepositoryContract } from '@/domain/members/repositories/contracts/members-repository-contract'
+import { IFetchManyMembersUseCaseRequest } from '@/domain/members/use-cases/contracts/fetch-many-members-contract'
 
 export class InMemoryMembersRepository implements MembersRepositoryContract {
   public items: Member[] = []

@@ -1,6 +1,6 @@
 import { Either } from '@/core/either'
-import { SystemAdmin } from '@/domain/users/entities/system-admin'
-import { SystemAdminAlreadyExistsError } from '@/domain/users/use-cases/errors/system-admin-already-exists-error'
+import { SystemAdmin } from '@/domain/system-admins/entities/system-admin'
+import { SystemAdminAlreadyExistsError } from '@/domain/system-admins/use-cases/errors/system-admin-already-exists-error'
 
 export interface ICreateSystemAdminUseCaseRequest {
   recipientId: string

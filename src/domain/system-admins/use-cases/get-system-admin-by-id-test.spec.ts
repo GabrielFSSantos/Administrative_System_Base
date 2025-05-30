@@ -1,4 +1,4 @@
-import { makeSystemAdmin } from 'test/factories/users/make-system-admin'
+import { makeSystemAdmin } from 'test/factories/system-admins/make-system-admin'
 import { InMemorySystemAdminsRepository } from 'test/repositories/in-memory-system-admins-repository'
 import { vi } from 'vitest'
 

@@ -1,10 +1,10 @@
-import { makeMember } from 'test/factories/companies/make-member'
+import { makeMember } from 'test/factories/members/make-member'
 import { InMemoryMembersRepository } from 'test/repositories/in-memory-members-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { CreateMemberContract } from '@/domain/companies/use-cases/contracts/create-member-contract'
-import { CreateMemberUseCase } from '@/domain/companies/use-cases/create-member-use-case'
-import { MemberAlreadyExistsError } from '@/domain/companies/use-cases/errors/member-already-exists-error'
+import { CreateMemberContract } from '@/domain/members/use-cases/contracts/create-member-contract'
+import { CreateMemberUseCase } from '@/domain/members/use-cases/create-member-use-case'
+import { MemberAlreadyExistsError } from '@/domain/members/use-cases/errors/member-already-exists-error'
 
 let membersRepository: InMemoryMembersRepository
 let sut: CreateMemberContract

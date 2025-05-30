@@ -1,4 +1,4 @@
-import { makeMember } from 'test/factories/companies/make-member'
+import { makeMember } from 'test/factories/members/make-member'
 import { makeUser } from 'test/factories/users/make-user'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { InMemoryMembersWithUsersRepository } from 'test/repositories/in-memory-members-with-users-repository'

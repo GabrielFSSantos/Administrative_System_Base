@@ -1,5 +1,5 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { SystemAdmin, SystemAdminProps } from '@/domain/users/entities/system-admin'
+import { SystemAdmin, SystemAdminProps } from '@/domain/system-admins/entities/system-admin'
 
 import { generateActivationStatusValueObject } from '../value-objects/make-activation-status'
 

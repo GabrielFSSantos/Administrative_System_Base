@@ -1,5 +1,5 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { SystemAdmin } from '@/domain/users/entities/system-admin'
+import { SystemAdmin } from '@/domain/system-admins/entities/system-admin'
 import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
 import { AlreadyActivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-activated-error'
 import { AlreadyDeactivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-deactivated-error'

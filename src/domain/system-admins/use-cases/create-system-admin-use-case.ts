@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { SystemAdmin } from '@/domain/users/entities/system-admin'
-import { SystemAdminsRepositoryContract } from '@/domain/users/repositories/contracts/system-admins-repository-contract'
+import { SystemAdmin } from '@/domain/system-admins/entities/system-admin'
+import { SystemAdminsRepositoryContract } from '@/domain/system-admins/repositories/contracts/system-admins-repository-contract'
 import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
 
 import {

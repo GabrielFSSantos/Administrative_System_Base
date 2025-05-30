@@ -1,5 +1,5 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { Member } from '@/domain/companies/entities/member'
+import { Member } from '@/domain/members/entities/member'
 import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
 import { AlreadyActivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-activated-error'
 import { AlreadyDeactivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-deactivated-error'

@@ -1,6 +1,6 @@
-import { SystemAdmin } from '@/domain/users/entities/system-admin'
-import { SystemAdminsRepositoryContract } from '@/domain/users/repositories/contracts/system-admins-repository-contract'
-import { IFetchManySystemAdminsUseCaseRequest } from '@/domain/users/use-cases/contracts/fetch-many-system-admins-contract'
+import { SystemAdmin } from '@/domain/system-admins/entities/system-admin'
+import { SystemAdminsRepositoryContract } from '@/domain/system-admins/repositories/contracts/system-admins-repository-contract'
+import { IFetchManySystemAdminsUseCaseRequest } from '@/domain/system-admins/use-cases/contracts/fetch-many-system-admins-contract'
 
 export class InMemorySystemAdminsRepository implements SystemAdminsRepositoryContract {
   public items: SystemAdmin[] = []

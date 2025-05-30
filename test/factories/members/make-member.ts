@@ -1,5 +1,5 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { Member, MemberProps } from '@/domain/companies/entities/member'
+import { Member, MemberProps } from '@/domain/members/entities/member'
 
 import { generateActivationStatusValueObject } from '../value-objects/make-activation-status'
 

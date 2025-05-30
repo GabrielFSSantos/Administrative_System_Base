@@ -1,10 +1,10 @@
-import { makeSystemAdmin } from 'test/factories/users/make-system-admin'
+import { makeSystemAdmin } from 'test/factories/system-admins/make-system-admin'
 import { InMemorySystemAdminsRepository } from 'test/repositories/in-memory-system-admins-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { CreateSystemAdminContract } from '@/domain/users/use-cases/contracts/create-system-admin-contract'
-import { CreateSystemAdminUseCase } from '@/domain/users/use-cases/create-system-admin-use-case'
-import { SystemAdminAlreadyExistsError } from '@/domain/users/use-cases/errors/system-admin-already-exists-error'
+import { CreateSystemAdminContract } from '@/domain/system-admins/use-cases/contracts/create-system-admin-contract'
+import { CreateSystemAdminUseCase } from '@/domain/system-admins/use-cases/create-system-admin-use-case'
+import { SystemAdminAlreadyExistsError } from '@/domain/system-admins/use-cases/errors/system-admin-already-exists-error'
 
 let systemAdminsRepository: InMemorySystemAdminsRepository
 let sut: CreateSystemAdminContract

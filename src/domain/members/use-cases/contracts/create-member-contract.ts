@@ -1,6 +1,6 @@
 import { Either } from '@/core/either'
-import { Member } from '@/domain/companies/entities/member'
-import { MemberAlreadyExistsError } from '@/domain/companies/use-cases/errors/member-already-exists-error'
+import { Member } from '@/domain/members/entities/member'
+import { MemberAlreadyExistsError } from '@/domain/members/use-cases/errors/member-already-exists-error'
 
 export interface ICreateMemberUseCaseRequest {
   recipientId: string

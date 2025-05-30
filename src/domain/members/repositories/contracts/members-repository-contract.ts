@@ -1,4 +1,4 @@
-import { Member } from '@/domain/companies/entities/member'
+import { Member } from '@/domain/members/entities/member'
 import { ActivatableRepository } from '@/shared/ActivationStatus/repositories/contracts/activatable-repository-contract'
 
 import { IFetchManyMembersUseCaseRequest } from '../../use-cases/contracts/fetch-many-members-contract'

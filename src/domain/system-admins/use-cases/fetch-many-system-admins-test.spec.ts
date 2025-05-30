@@ -1,8 +1,8 @@
-import { makeSystemAdmin } from 'test/factories/users/make-system-admin'
+import { makeSystemAdmin } from 'test/factories/system-admins/make-system-admin'
 import { InMemorySystemAdminsRepository } from 'test/repositories/in-memory-system-admins-repository'
 
-import { FetchManySystemAdminsContract } from '@/domain/users/use-cases/contracts/fetch-many-system-admins-contract'
-import { FetchManySystemAdminsUseCase } from '@/domain/users/use-cases/fetch-many-system-admins-use-case'
+import { FetchManySystemAdminsContract } from '@/domain/system-admins/use-cases/contracts/fetch-many-system-admins-contract'
+import { FetchManySystemAdminsUseCase } from '@/domain/system-admins/use-cases/fetch-many-system-admins-use-case'
 import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
 
 let systemAdminsRepository: InMemorySystemAdminsRepository

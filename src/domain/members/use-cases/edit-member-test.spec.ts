@@ -1,4 +1,4 @@
-import { makeMember } from 'test/factories/companies/make-member'
+import { makeMember } from 'test/factories/members/make-member'
 import { InMemoryMembersRepository } from 'test/repositories/in-memory-members-repository'
 import { vi } from 'vitest'
 

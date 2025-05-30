@@ -1,6 +1,6 @@
-import { SystemAdmin } from '@/domain/users/entities/system-admin'
+import { SystemAdmin } from '@/domain/system-admins/entities/system-admin'
+import { IFetchManySystemAdminsUseCaseRequest } from '@/domain/system-admins/use-cases/contracts/fetch-many-system-admins-contract'
 import { User } from '@/domain/users/entities/user'
-import { IFetchManySystemAdminsUseCaseRequest } from '@/domain/users/use-cases/contracts/fetch-many-system-admins-contract'
 
 import { InMemorySystemAdminsRepository } from './in-memory-system-admins-repository' 
 

@@ -1,5 +1,5 @@
-import { Member } from '@/domain/companies/entities/member'
-import { IFetchManyMembersUseCaseRequest } from '@/domain/companies/use-cases/contracts/fetch-many-members-contract'
+import { Member } from '@/domain/members/entities/member'
+import { IFetchManyMembersUseCaseRequest } from '@/domain/members/use-cases/contracts/fetch-many-members-contract'
 import { User } from '@/domain/users/entities/user'
 
 import { InMemoryMembersRepository } from './in-memory-members-repository'
