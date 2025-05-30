@@ -30,6 +30,7 @@ describe('Company Entity Test', () => {
         cnpj: base.cnpj,
         name: base.name,
         emailAddress: base.emailAddress,
+        activationStatus: base.activationStatus,
         createdAt,
         updatedAt,
       },

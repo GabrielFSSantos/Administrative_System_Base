@@ -2,6 +2,9 @@ import { Either, left, right } from '@/core/either'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
+import { AlreadyActivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-activated-error'
+import { AlreadyDeactivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-deactivated-error'
 import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
 import { PermissionList } from '@/shared/PermissionList/permission-list'
 import { PermissionName } from '@/shared/PermissionList/value-objects/permission-name'
@@ -15,6 +18,7 @@ export interface CompanyProps {
   name: Name
   emailAddress: EmailAddress
   permissions: PermissionList
+  activationStatus: ActivationStatus
   createdAt: Date
   updatedAt: Date | null
 }
@@ -30,6 +34,10 @@ export class Company extends Entity<CompanyProps> {
 
   get emailAddress(): EmailAddress {
     return this.props.emailAddress
+  }
+
+  get activationStatus(): ActivationStatus {
+    return this.props.activationStatus
   }
 
   get createdAt(): Date {
@@ -62,9 +70,40 @@ export class Company extends Entity<CompanyProps> {
     this.props.permissions.update(permissions)
   }
 
+  public isActivated(): boolean {
+    return this.props.activationStatus.isActive()
+  }
+  
+  public activate(): Either<
+      AlreadyActivatedError, 
+      null
+      > {
+    if (this.isActivated()) {
+      return left(new AlreadyActivatedError())
+    }
+  
+    this.props.activationStatus = ActivationStatus.activated()
+  
+    return right(null)
+  }
+  
+  public deactivate(): Either<
+      AlreadyDeactivatedError, 
+      null
+      > {
+    if (!this.isActivated()) {
+      return left(new AlreadyDeactivatedError())
+    }
+  
+    this.props.activationStatus = ActivationStatus.deactivated()
+  
+    return right(null)
+  }
+
   static create(
     props: Optional<CompanyProps, 
-    | 'permissions' | 'createdAt' | 'updatedAt'>,
+    'permissions' | 'activationStatus'
+    | 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
   ): Either<InvalidUpdatedAtError, Company> {
 
@@ -75,6 +114,7 @@ export class Company extends Entity<CompanyProps> {
       return left(new InvalidUpdatedAtError())
     }
 
+    const activationStatus = props.activationStatus ?? ActivationStatus.deactivated()
     const permissionList = props.permissions ?? PermissionList.create()
 
     const company = new Company(
@@ -83,6 +123,7 @@ export class Company extends Entity<CompanyProps> {
         name: props.name,
         emailAddress: props.emailAddress,
         permissions: permissionList,
+        activationStatus,
         createdAt,
         updatedAt,
       },

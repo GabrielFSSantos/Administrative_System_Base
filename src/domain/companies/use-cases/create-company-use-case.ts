@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { left, right } from '@/core/either'
 import { Company } from '@/domain/companies/entities/company'
 import { CNPJ } from '@/domain/companies/entities/value-objects/cnpj'
+import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
 import { validateAndParsePermissions } from '@/shared/PermissionList/helpers/validate-and-parse-permissions-helper'
 import { PermissionList } from '@/shared/PermissionList/permission-list'
 import { EmailAddress } from '@/shared/value-objects/email-address'
@@ -61,6 +62,7 @@ export class CreateCompanyUseCase implements CreateCompanyContract {
       name: nameObject.value,
       emailAddress: emailAddressObject.value,
       permissions: permissionList,
+      activationStatus: ActivationStatus.deactivated(),
     })
 
     if (company.isLeft()) {

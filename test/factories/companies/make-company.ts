@@ -1,6 +1,7 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Company, CompanyProps } from '@/domain/companies/entities/company'
 
+import { generateActivationStatusValueObject } from '../value-objects/make-activation-status'
 import { generateEmailValueObject } from '../value-objects/make-email'
 import { generateNameValueObject } from '../value-objects/make-name'
 import { generatePermissionList } from '../value-objects/make-permissions'
@@ -14,6 +15,7 @@ export async function makeCompany(
   const name = override.name ?? generateNameValueObject()
   const emailAddress = override.emailAddress ?? generateEmailValueObject()
   const permissions = override.permissions ?? generatePermissionList(1)
+  const activationStatus = override.activationStatus ?? generateActivationStatusValueObject(false)
 
   const companyOrError = Company.create(
     {
@@ -21,6 +23,7 @@ export async function makeCompany(
       name,
       emailAddress,
       permissions,
+      activationStatus,
       ...override,
     },
     id,
