@@ -1,5 +1,5 @@
 import { Either } from '@/core/either'
-import { InvalidPermissionError } from '@/shared/watched-lists/PermissionList/helpers/errors/invalid-permission-error'
+import { InvalidPermissionError } from '@/shared/watched-lists/permission-list/helpers/errors/invalid-permission-error'
 
 import { Role } from '../../entities/role'
 

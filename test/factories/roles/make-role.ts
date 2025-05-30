@@ -3,7 +3,7 @@ import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Role } from '@/domain/roles/entities/role'
 import { Name } from '@/shared/value-objects/name'
-import { PermissionList } from '@/shared/watched-lists/PermissionList/permission-list'
+import { PermissionList } from '@/shared/watched-lists/permission-list/permission-list'
 
 import { generatePermissionList } from '../value-objects/make-permissions'
 

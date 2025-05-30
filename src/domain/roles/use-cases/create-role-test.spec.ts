@@ -5,7 +5,7 @@ import { CreateRoleContract } from '@/domain/roles/use-cases/contracts/create-ro
 import { CreateRoleUseCase } from '@/domain/roles/use-cases/create-role-use-case'
 import { Permissions } from '@/shared/permissions'
 import { InvalidNameError } from '@/shared/value-objects/errors/invalid-name-error'
-import { InvalidPermissionError } from '@/shared/watched-lists/PermissionList/helpers/errors/invalid-permission-error'
+import { InvalidPermissionError } from '@/shared/watched-lists/permission-list/helpers/errors/invalid-permission-error'
 
 describe('Create Role Test', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository

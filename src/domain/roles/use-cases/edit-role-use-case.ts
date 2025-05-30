@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 import { Name } from '@/shared/value-objects/name'
-import { validateAndParsePermissions } from '@/shared/watched-lists/PermissionList/helpers/validate-and-parse-permissions-helper'
+import { validateAndParsePermissions } from '@/shared/watched-lists/permission-list/helpers/validate-and-parse-permissions-helper'
 
 import { RolesRepositoryContract } from '../repositories/contracts/roles-repository-contract'
 import {

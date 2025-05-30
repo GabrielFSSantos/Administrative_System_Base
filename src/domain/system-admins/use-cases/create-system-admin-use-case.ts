@@ -4,7 +4,7 @@ import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { SystemAdmin } from '@/domain/system-admins/entities/system-admin'
 import { SystemAdminsRepositoryContract } from '@/domain/system-admins/repositories/contracts/system-admins-repository-contract'
-import { ActivationStatus } from '@/shared/value-objects/ActivationStatus/activation-status'
+import { ActivationStatus } from '@/shared/value-objects/activation-status/activation-status'
 
 import {
   CreateSystemAdminContract,

@@ -2,9 +2,9 @@ import { Either, left, right } from '@/core/either'
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
-import { ActivationStatus } from '@/shared/value-objects/ActivationStatus/activation-status'
-import { AlreadyActivatedError } from '@/shared/value-objects/ActivationStatus/errors/already-activated-error'
-import { AlreadyDeactivatedError } from '@/shared/value-objects/ActivationStatus/errors/already-deactivated-error'
+import { ActivationStatus } from '@/shared/value-objects/activation-status/activation-status'
+import { AlreadyActivatedError } from '@/shared/value-objects/activation-status/errors/already-activated-error'
+import { AlreadyDeactivatedError } from '@/shared/value-objects/activation-status/errors/already-deactivated-error'
 
 export interface MemberProps {
   recipientId: UniqueEntityId

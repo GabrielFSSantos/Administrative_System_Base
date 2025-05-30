@@ -8,7 +8,7 @@ import { EditRoleUseCase } from '@/domain/roles/use-cases/edit-role-use-case'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 import { Permissions } from '@/shared/permissions'
 import { InvalidNameError } from '@/shared/value-objects/errors/invalid-name-error'
-import { InvalidPermissionError } from '@/shared/watched-lists/PermissionList/helpers/errors/invalid-permission-error'
+import { InvalidPermissionError } from '@/shared/watched-lists/permission-list/helpers/errors/invalid-permission-error'
 
 import { EditRoleContract } from './contracts/edit-role-contract'
 

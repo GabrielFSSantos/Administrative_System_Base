@@ -1,5 +1,5 @@
 import { SystemAdmin } from '@/domain/system-admins/entities/system-admin'
-import { ActivatableRepository } from '@/shared/value-objects/ActivationStatus/repositories/contracts/activatable-repository-contract'
+import { ActivatableRepository } from '@/shared/value-objects/activation-status/repositories/contracts/activatable-repository-contract'
 
 import { IFetchManySystemAdminsUseCaseRequest } from '../../use-cases/contracts/fetch-many-system-admins-contract'
 

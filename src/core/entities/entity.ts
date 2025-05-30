@@ -22,7 +22,7 @@ export abstract class Entity<Props> {
       return true
     }
   
-    if (entity.id === this._id) {
+    if (entity.id.equals(this._id)) {
       return true
     }
   

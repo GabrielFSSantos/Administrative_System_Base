@@ -4,8 +4,8 @@ import { left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
-import { validateAndParsePermissions } from '@/shared/watched-lists/PermissionList/helpers/validate-and-parse-permissions-helper'
-import { PermissionList } from '@/shared/watched-lists/PermissionList/permission-list'
+import { validateAndParsePermissions } from '@/shared/watched-lists/permission-list/helpers/validate-and-parse-permissions-helper'
+import { PermissionList } from '@/shared/watched-lists/permission-list/permission-list'
 
 import { CompaniesRepositoryContract } from '../repositories/contracts/companies-repository-contract'
 import {

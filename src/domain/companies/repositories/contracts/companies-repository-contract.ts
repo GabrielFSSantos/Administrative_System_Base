@@ -1,5 +1,5 @@
 import { Company } from '@/domain/companies/entities/company'
-import { ActivatableRepository } from '@/shared/value-objects/ActivationStatus/repositories/contracts/activatable-repository-contract'
+import { ActivatableRepository } from '@/shared/value-objects/activation-status/repositories/contracts/activatable-repository-contract'
 
 import { IFetchManyCompaniesUseCaseRequest } from '../../use-cases/contracts/fetch-many-companies-contract'
 

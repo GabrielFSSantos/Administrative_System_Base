@@ -1,8 +1,8 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { SystemAdmin } from '@/domain/system-admins/entities/system-admin'
-import { ActivationStatus } from '@/shared/value-objects/ActivationStatus/activation-status'
-import { AlreadyActivatedError } from '@/shared/value-objects/ActivationStatus/errors/already-activated-error'
-import { AlreadyDeactivatedError } from '@/shared/value-objects/ActivationStatus/errors/already-deactivated-error'
+import { ActivationStatus } from '@/shared/value-objects/activation-status/activation-status'
+import { AlreadyActivatedError } from '@/shared/value-objects/activation-status/errors/already-activated-error'
+import { AlreadyDeactivatedError } from '@/shared/value-objects/activation-status/errors/already-deactivated-error'
 
 describe('SystemAdmin Entity Test', () => {
   const recipientId = UniqueEntityId.create()

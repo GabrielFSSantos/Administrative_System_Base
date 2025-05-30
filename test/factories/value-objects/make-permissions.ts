@@ -1,6 +1,6 @@
 import { ALL_PERMISSIONS } from '@/shared/permissions'
 import { PermissionName } from '@/shared/value-objects/permission-name'
-import { PermissionList } from '@/shared/watched-lists/PermissionList/permission-list'
+import { PermissionList } from '@/shared/watched-lists/permission-list/permission-list'
 
 export function generateValidPermission(): string {
   const index = Math.floor(Math.random() * ALL_PERMISSIONS.length)

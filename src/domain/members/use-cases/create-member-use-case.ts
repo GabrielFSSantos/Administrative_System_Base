@@ -4,7 +4,7 @@ import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Member } from '@/domain/members/entities/member'
 import { MembersRepositoryContract } from '@/domain/members/repositories/contracts/members-repository-contract'
-import { ActivationStatus } from '@/shared/value-objects/ActivationStatus/activation-status'
+import { ActivationStatus } from '@/shared/value-objects/activation-status/activation-status'
 
 import {
   CreateMemberContract,
