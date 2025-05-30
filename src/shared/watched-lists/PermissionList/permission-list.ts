@@ -1,6 +1,5 @@
 import { WatchedList } from '@/core/entities/watched-list'
-
-import { PermissionName } from './value-objects/permission-name'
+import { PermissionName } from '@/shared/value-objects/permission-name'
 
 export class PermissionList extends WatchedList<PermissionName> {
   public compareItems(a: PermissionName, b: PermissionName): boolean {

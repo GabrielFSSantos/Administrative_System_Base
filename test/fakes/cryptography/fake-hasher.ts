@@ -1,5 +1,5 @@
-import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
-import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
+import { HashComparerContract } from '@/shared/services/cryptography/contracts/hash-comparer-contract'
+import { HashGeneratorContract } from '@/shared/services/cryptography/contracts/hash-generator-contract'
 
 export class FakeHasher implements HashGeneratorContract, HashComparerContract {
   private readonly prefix = '$2a$10$'

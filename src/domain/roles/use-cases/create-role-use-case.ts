@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { validateAndParsePermissions } from '@/shared/PermissionList/helpers/validate-and-parse-permissions-helper'
-import { PermissionList } from '@/shared/PermissionList/permission-list'
 import { Name } from '@/shared/value-objects/name'
+import { validateAndParsePermissions } from '@/shared/watched-lists/PermissionList/helpers/validate-and-parse-permissions-helper'
+import { PermissionList } from '@/shared/watched-lists/PermissionList/permission-list'
 
 import { Role } from '../entities/role'
 import { RolesRepositoryContract } from '../repositories/contracts/roles-repository-contract'

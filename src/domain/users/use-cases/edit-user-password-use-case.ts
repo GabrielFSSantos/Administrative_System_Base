@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 
 import { left,right } from '@/core/either'
-import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
-import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
+import { HashComparerContract } from '@/shared/services/cryptography/contracts/hash-comparer-contract'
+import { HashGeneratorContract } from '@/shared/services/cryptography/contracts/hash-generator-contract'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { PasswordHash } from '../entities/value-objects/password-hash'

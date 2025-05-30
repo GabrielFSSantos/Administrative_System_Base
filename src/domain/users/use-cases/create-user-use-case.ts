@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import { left,right } from '@/core/either'
-import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
+import { HashGeneratorContract } from '@/shared/services/cryptography/contracts/hash-generator-contract'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 

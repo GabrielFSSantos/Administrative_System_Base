@@ -1,7 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { ValueObject } from '@/core/entities/value-object'
-import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
-import { HashGeneratorContract } from '@/shared/contracts/cryptography/hash-generator-contract'
+import { HashComparerContract } from '@/shared/services/cryptography/contracts/hash-comparer-contract'
+import { HashGeneratorContract } from '@/shared/services/cryptography/contracts/hash-generator-contract'
 
 import { WrongCredentialsError } from '../../use-cases/errors/wrong-credentials-error'
 import { InvalidPasswordHashError } from './errors/invalid-password-hash-error'

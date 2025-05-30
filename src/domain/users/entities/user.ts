@@ -1,11 +1,12 @@
 import { Either, left, right } from '@/core/either'
-import { Entity } from '@/core/entities/entity'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
+import { UserPasswordChangedEvent } from '../events/user-password-changed-event'
 import { CPF } from './value-objects/cpf'
 import { PasswordHash } from './value-objects/password-hash'
 
@@ -18,7 +19,7 @@ export interface UserProps {
   updatedAt: Date | null
 }
 
-export class User extends Entity<UserProps> {
+export class User extends AggregateRoot<UserProps> {
   get cpf(): CPF {
     return this.props.cpf
   }
@@ -60,6 +61,8 @@ export class User extends Entity<UserProps> {
   public changePasswordHash(newPasswordHash: PasswordHash): void {
     this.props.passwordHash = newPasswordHash
     this.touch()
+
+    this.addDomainEvent(UserPasswordChangedEvent.create(this))
   }
 
   static create(

@@ -1,3 +1,4 @@
+import { DomainEvents } from '@/core/events/domain-events'
 import { User } from '@/domain/users/entities/user'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
 import { IFetchManyUsersUseCaseRequest } from '@/domain/users/use-cases/contracts/fetch-many-users-contract'
@@ -6,40 +7,24 @@ export class InMemoryUsersRepository implements UsersRepositoryContract {
   public items: User[] = []
 
   async findById(id: string): Promise<User | null> {
-    const user = this.items.find((item) => item.id.toString() === id)
-
-    if (!user) {
-      return null
-    }
-
-    return user
+    return this.items.find((item) => item.id.toString() === id) ?? null
   }
 
   async findByCpf(cpf: string): Promise<User | null> {
-    const user = this.items.find((item) => item.cpf.value === cpf)
-
-    if (!user) {
-      return null
-    }
-
-    return user
+    return this.items.find((item) => item.cpf.value === cpf) ?? null
   }
 
   async findByEmail(emailAddress: string): Promise<User | null> {
-    const user = this.items.find((item) => item.emailAddress.value === emailAddress)
-
-    if (!user) {
-      return null
-    }
-
-    return user
+    return this.items.find((item) => item.emailAddress.value === emailAddress) ?? null
   }
 
-  async findMany({ page, pageSize, search}: IFetchManyUsersUseCaseRequest): 
-  Promise<{ users: User[]; total: number }> {
-  
+  async findMany({
+    page,
+    pageSize,
+    search,
+  }: IFetchManyUsersUseCaseRequest): Promise<{ users: User[]; total: number }> {
     let results = this.items
-  
+
     if (search) {
       const term = search.toLowerCase()
 
@@ -50,23 +35,23 @@ export class InMemoryUsersRepository implements UsersRepositoryContract {
     }
 
     const total = results.length
-
     const paginated = results.slice((page - 1) * pageSize, page * pageSize)
 
-    return {
-      users: paginated,
-      total,
-    }
+    return { users: paginated, total }
   }
 
   async create(user: User): Promise<void> {
     this.items.push(user)
+    DomainEvents.dispatchEventsForAggregate(user.id)
   }
 
   async save(user: User): Promise<void> {
-    const itemIndex = this.items.findIndex((item) => item.id === user.id)
+    const itemIndex = this.items.findIndex((item) => item.id.equals(user.id))
 
-    this.items[itemIndex] = user
+    if (itemIndex >= 0) {
+      this.items[itemIndex] = user
+      DomainEvents.dispatchEventsForAggregate(user.id)
+    }
   }
 
   async delete(id: string): Promise<void> {

@@ -11,6 +11,8 @@ import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
+import { UserPasswordChangedEvent } from '../events/user-password-changed-event'
+
 describe('User Entity Test', () => {
   it('should create a valid user with makeUser()', async () => {
     const user = await makeUser()
@@ -98,5 +100,15 @@ describe('User Entity Test', () => {
     const user = await makeUser({}, customId)
 
     expect(user.id).toEqual(customId)
+  })
+
+  it('should register UserPasswordChangedEvent when password changes', async () => {
+    const user = await makeUser()
+    const newPasswordHash = await generatePasswordHashValueObject()
+
+    user.changePasswordHash(newPasswordHash)
+
+    expect(user.domainEvents.length).toBeGreaterThan(0)
+    expect(user.domainEvents[0]).toBeInstanceOf(UserPasswordChangedEvent)
   })
 })

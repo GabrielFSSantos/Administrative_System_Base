@@ -3,9 +3,9 @@ import { InMemoryRolesRepository } from 'test/repositories/in-memory-roles-repos
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { CreateRoleContract } from '@/domain/roles/use-cases/contracts/create-role-contract'
 import { CreateRoleUseCase } from '@/domain/roles/use-cases/create-role-use-case'
-import { InvalidPermissionError } from '@/domain/roles/use-cases/errors/invalid-permission-error'
 import { Permissions } from '@/shared/permissions'
 import { InvalidNameError } from '@/shared/value-objects/errors/invalid-name-error'
+import { InvalidPermissionError } from '@/shared/watched-lists/PermissionList/helpers/errors/invalid-permission-error'
 
 describe('Create Role Test', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository

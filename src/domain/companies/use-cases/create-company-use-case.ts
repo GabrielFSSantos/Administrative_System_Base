@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common'
 import { left, right } from '@/core/either'
 import { Company } from '@/domain/companies/entities/company'
 import { CNPJ } from '@/domain/companies/entities/value-objects/cnpj'
-import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
-import { validateAndParsePermissions } from '@/shared/PermissionList/helpers/validate-and-parse-permissions-helper'
-import { PermissionList } from '@/shared/PermissionList/permission-list'
+import { ActivationStatus } from '@/shared/value-objects/ActivationStatus/activation-status'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
+import { validateAndParsePermissions } from '@/shared/watched-lists/PermissionList/helpers/validate-and-parse-permissions-helper'
+import { PermissionList } from '@/shared/watched-lists/PermissionList/permission-list'
 
 import { CompaniesRepositoryContract } from '../repositories/contracts/companies-repository-contract'
 import { CreateCompanyContract, ICreateCompanyUseCaseRequest, ICreateCompanyUseCaseResponse } from './contracts/create-company-contract'
@@ -55,6 +55,7 @@ export class CreateCompanyUseCase implements CreateCompanyContract {
     if (permissionsOrError.isLeft()) {
       return left(permissionsOrError.value)
     }
+    
     const permissionList = PermissionList.create(permissionsOrError.value)
 
     const company = Company.create({

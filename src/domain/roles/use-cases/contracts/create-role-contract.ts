@@ -1,7 +1,7 @@
 import { Either } from '@/core/either'
+import { InvalidPermissionError } from '@/shared/watched-lists/PermissionList/helpers/errors/invalid-permission-error'
 
 import { Role } from '../../entities/role'
-import { InvalidPermissionError } from '../errors/invalid-permission-error'
 
 export interface ICreateRoleUseCaseRequest {
   recipientId: string

@@ -1,8 +1,8 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { PermissionList } from '@/shared/PermissionList/permission-list'
-import { PermissionName } from '@/shared/PermissionList/value-objects/permission-name'
 import { Name } from '@/shared/value-objects/name'
+import { PermissionName } from '@/shared/value-objects/permission-name'
+import { PermissionList } from '@/shared/watched-lists/PermissionList/permission-list'
 
 interface RoleProps {
   recipientId: UniqueEntityId

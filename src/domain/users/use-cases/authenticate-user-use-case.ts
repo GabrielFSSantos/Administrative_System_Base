@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 
 import { left, right } from '@/core/either'
-import { EncrypterContract } from '@/shared/contracts/cryptography/encrypter-contract'
-import { HashComparerContract } from '@/shared/contracts/cryptography/hash-comparer-contract'
+import { EncrypterContract } from '@/shared/services/cryptography/contracts/encrypter-contract'
+import { HashComparerContract } from '@/shared/services/cryptography/contracts/hash-comparer-contract'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'

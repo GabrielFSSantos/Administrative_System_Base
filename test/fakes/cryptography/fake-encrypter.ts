@@ -1,4 +1,4 @@
-import { EncrypterContract, IEncrypterResponse } from '@/shared/contracts/cryptography/encrypter-contract'
+import { EncrypterContract, IEncrypterResponse } from '@/shared/services/cryptography/contracts/encrypter-contract'
 
 export class FakeEncrypter implements EncrypterContract {
   async encrypt(payload: Record<string, unknown>): Promise<IEncrypterResponse> {

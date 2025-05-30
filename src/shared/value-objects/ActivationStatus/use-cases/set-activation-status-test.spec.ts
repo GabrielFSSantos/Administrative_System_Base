@@ -2,11 +2,11 @@ import { vi } from 'vitest'
 
 import { left, right } from '@/core/either'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { ActivationStatus } from '@/shared/ActivationStatus/value-objects/activation-status'
-import { AlreadyActivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-activated-error'
-import { AlreadyDeactivatedError } from '@/shared/ActivationStatus/value-objects/errors/already-deactivated-error'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
+import { ActivationStatus } from '../activation-status'
+import { AlreadyActivatedError } from '../errors/already-activated-error'
+import { AlreadyDeactivatedError } from '../errors/already-deactivated-error'
 import { ActivatableEntity,ActivatableRepository } from '../repositories/contracts/activatable-repository-contract'
 import { SetActivationStatusUseCase } from './set-activation-status-use-case'
 
