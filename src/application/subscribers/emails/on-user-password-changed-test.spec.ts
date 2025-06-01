@@ -16,7 +16,7 @@ let sendEmailUseCase: SendEmailUseCase
 let createSpy: any
 let sendSpy: any
 
-describe('OnUserPasswordChanged', () => {
+describe('OnUserPasswordChangedTests', () => {
   beforeEach(() => {
     fakeEmailService = new FakeEmailService()
 

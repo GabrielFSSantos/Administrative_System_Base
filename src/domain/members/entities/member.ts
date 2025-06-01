@@ -1,10 +1,12 @@
 import { Either, left, right } from '@/core/either'
-import { Entity } from '@/core/entities/entity'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { ActivationStatus } from '@/shared/value-objects/activation-status/activation-status'
 import { AlreadyActivatedError } from '@/shared/value-objects/activation-status/errors/already-activated-error'
 import { AlreadyDeactivatedError } from '@/shared/value-objects/activation-status/errors/already-deactivated-error'
+
+import { MemberActivatedEvent } from '../events/member-activated-event'
 
 export interface MemberProps {
   recipientId: UniqueEntityId
@@ -13,7 +15,7 @@ export interface MemberProps {
   activationStatus: ActivationStatus
 }
 
-export class Member extends Entity<MemberProps> {
+export class Member extends AggregateRoot<MemberProps> {
 
   get recipientId(): UniqueEntityId {
     return this.props.recipientId
@@ -52,6 +54,8 @@ export class Member extends Entity<MemberProps> {
     }
 
     this.props.activationStatus = ActivationStatus.activated()
+
+    this.addDomainEvent(MemberActivatedEvent.create(this))
 
     return right(null)
   }

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
 import { left,right } from '@/core/either'
+import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 import { HashComparerContract } from '@/shared/services/cryptography/contracts/hash-comparer-contract'
 import { HashGeneratorContract } from '@/shared/services/cryptography/contracts/hash-generator-contract'
-import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { PasswordHash } from '../entities/value-objects/password-hash'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'

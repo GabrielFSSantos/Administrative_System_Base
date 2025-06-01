@@ -1,5 +1,5 @@
 import { Either, left, right } from '@/core/either'
-import { Entity } from '@/core/entities/entity'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
@@ -11,6 +11,7 @@ import { Name } from '@/shared/value-objects/name'
 import { PermissionName } from '@/shared/value-objects/permission-name'
 import { PermissionList } from '@/shared/watched-lists/permission-list/permission-list'
 
+import { CompanyActivatedEvent } from '../events/company-activated-event'
 import { CNPJ } from './value-objects/cnpj'
 
 export interface CompanyProps {
@@ -23,7 +24,7 @@ export interface CompanyProps {
   updatedAt: Date | null
 }
 
-export class Company extends Entity<CompanyProps> {
+export class Company extends AggregateRoot<CompanyProps> {
   get cnpj(): CNPJ {
     return this.props.cnpj
   }
@@ -83,6 +84,8 @@ export class Company extends Entity<CompanyProps> {
     }
   
     this.props.activationStatus = ActivationStatus.activated()
+
+    this.addDomainEvent(CompanyActivatedEvent.create(this))
   
     return right(null)
   }

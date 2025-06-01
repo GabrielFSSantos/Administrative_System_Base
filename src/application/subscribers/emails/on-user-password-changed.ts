@@ -23,15 +23,14 @@ export class OnUserPasswordChanged implements EventHandler {
   }
 
   private async sendPasswordChangedEmail(
-    event: UserPasswordChangedEvent,
+    {user, ocurredAt}: UserPasswordChangedEvent,
   ): Promise<void> {
-    const user = event.user
 
     const createEmailResult = await this.createEmail.execute({
       to: user.emailAddress.value,
       subject: 'Sua senha foi alterada',
       title: 'Alteração de senha',
-      body: `Olá ${user.name.value}, sua senha foi alterada em ${event.ocurredAt.toLocaleString()}. Se não foi você, entre em contato conosco imediatamente.`,
+      body: `Olá ${user.name.value}, sua senha foi alterada em ${ocurredAt.toLocaleString()}. Se não foi você, entre em contato conosco imediatamente.`,
     })
 
     if (createEmailResult.isLeft()) {
