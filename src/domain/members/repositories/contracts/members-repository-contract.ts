@@ -5,9 +5,9 @@ import { IFetchManyMembersUseCaseRequest } from '../../use-cases/contracts/fetch
 
 export abstract class MembersRepositoryContract implements ActivatableRepository<Member> {
   abstract findById(id: string): Promise<Member | null>
-  abstract findByRecipientAndCompanyId(params: {
+  abstract findByRecipientAndOwnerId(params: {
     recipientId: string
-    companyId: string
+    ownerId: string
   }): Promise<Member | null>
   abstract findMany(params: IFetchManyMembersUseCaseRequest): Promise<{
     members: Member[]

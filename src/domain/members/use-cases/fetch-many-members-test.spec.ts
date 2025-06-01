@@ -23,17 +23,17 @@ describe('Fetch Many Members Use Case Test', () => {
   })
 
   it('should fetch up to pageSize members', async () => {
-    const companyId = UniqueEntityId.create('company-1')
+    const ownerId = UniqueEntityId.create('owner-1')
 
     for (let i = 0; i < 25; i++) {
       const user = await makeUser()
-      const member = await makeMember({ recipientId: user.id, companyId })
+      const member = await makeMember({ recipientId: user.id, ownerId })
 
       membersRepository['userMap'].set(user.id.toString(), user)
       await membersRepository.create(member)
     }
 
-    const result = await sut.execute({ companyId: companyId.toString(), page: 1, pageSize: 20 })
+    const result = await sut.execute({ ownerId: ownerId.toString(), page: 1, pageSize: 20 })
 
     expect(result.isRight()).toBe(true)
 
@@ -44,17 +44,17 @@ describe('Fetch Many Members Use Case Test', () => {
   })
 
   it('should return correct page of members', async () => {
-    const companyId = UniqueEntityId.create('company-2')
+    const ownerId = UniqueEntityId.create('owner-2')
 
     for (let i = 0; i < 30; i++) {
       const user = await makeUser()
-      const member = await makeMember({ recipientId: user.id, companyId })
+      const member = await makeMember({ recipientId: user.id, ownerId })
 
       membersRepository['userMap'].set(user.id.toString(), user)
       await membersRepository.create(member)
     }
 
-    const result = await sut.execute({ companyId: companyId.toString(), page: 2, pageSize: 10 })
+    const result = await sut.execute({ ownerId: ownerId.toString(), page: 2, pageSize: 10 })
 
     expect(result.isRight()).toBe(true)
 
@@ -66,7 +66,7 @@ describe('Fetch Many Members Use Case Test', () => {
 
   it('should return empty list if no members exist', async () => {
     const result = await sut.execute({
-      companyId: 'non-existent',
+      ownerId: 'non-existent',
       page: 1,
       pageSize: 10,
     })
@@ -81,10 +81,10 @@ describe('Fetch Many Members Use Case Test', () => {
   it('should call repository with correct arguments', async () => {
     const spy = vi.spyOn(membersRepository, 'findMany')
 
-    await sut.execute({ companyId: 'company-3', page: 3, pageSize: 15 })
+    await sut.execute({ ownerId: 'owner-3', page: 3, pageSize: 15 })
 
     expect(spy).toHaveBeenCalledWith({
-      companyId: 'company-3',
+      ownerId: 'owner-3',
       page: 3,
       pageSize: 15,
       search: undefined,
@@ -92,7 +92,7 @@ describe('Fetch Many Members Use Case Test', () => {
   })
 
   it('should return error when page is less than 1', async () => {
-    const result = await sut.execute({ companyId: 'x', page: 0, pageSize: 10 })
+    const result = await sut.execute({ ownerId: 'x', page: 0, pageSize: 10 })
 
     expect(result.isLeft()).toBe(true)
 
@@ -102,7 +102,7 @@ describe('Fetch Many Members Use Case Test', () => {
   })
 
   it('should return error when pageSize is less than 1', async () => {
-    const result = await sut.execute({ companyId: 'x', page: 1, pageSize: 0 })
+    const result = await sut.execute({ ownerId: 'x', page: 1, pageSize: 0 })
 
     expect(result.isLeft()).toBe(true)
 
@@ -112,13 +112,13 @@ describe('Fetch Many Members Use Case Test', () => {
   })
 
   it('should filter members based on search term (name)', async () => {
-    const companyId = UniqueEntityId.create('company-4')
+    const ownerId = UniqueEntityId.create('owner-4')
 
     const userA = await makeUser({ name: generateNameValueObject('Ana Clara') })
     const userB = await makeUser({ name: generateNameValueObject('João Silva') })
 
-    const memberA = await makeMember({ companyId, recipientId: userA.id })
-    const memberB = await makeMember({ companyId, recipientId: userB.id })
+    const memberA = await makeMember({ ownerId, recipientId: userA.id })
+    const memberB = await makeMember({ ownerId, recipientId: userB.id })
 
     membersRepository['userMap'].set(userA.id.toString(), userA)
     membersRepository['userMap'].set(userB.id.toString(), userB)
@@ -127,7 +127,7 @@ describe('Fetch Many Members Use Case Test', () => {
     await membersRepository.create(memberB)
 
     const result = await sut.execute({
-      companyId: companyId.toString(),
+      ownerId: ownerId.toString(),
       page: 1,
       pageSize: 10,
       search: 'ana',

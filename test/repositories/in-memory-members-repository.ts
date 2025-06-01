@@ -11,18 +11,18 @@ export class InMemoryMembersRepository implements MembersRepositoryContract {
     return member ?? null
   }
 
-  async findByRecipientAndCompanyId({
+  async findByRecipientAndOwnerId({
     recipientId,
-    companyId,
+    ownerId,
   }: {
     recipientId: string
-    companyId: string
+    ownerId: string
   }): Promise<Member | null> {
     return (
       this.items.find(
         (item) =>
           item.recipientId.toString() === recipientId &&
-          item.companyId.toString() === companyId,
+          item.ownerId.toString() === ownerId,
       ) ?? null
     )
   }
@@ -30,13 +30,13 @@ export class InMemoryMembersRepository implements MembersRepositoryContract {
   async findMany({
     page,
     pageSize,
-    companyId,
+    ownerId,
     search,
   }: IFetchManyMembersUseCaseRequest): Promise<{ members: Member[]; total: number }> {
     let results = this.items
 
-    if (companyId) {
-      results = results.filter((item) => item.companyId.toString() === companyId)
+    if (ownerId) {
+      results = results.filter((item) => item.ownerId.toString() === ownerId)
     }
 
     if (search) {

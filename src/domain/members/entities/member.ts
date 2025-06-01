@@ -10,7 +10,7 @@ import { MemberActivatedEvent } from '../events/member-activated-event'
 
 export interface MemberProps {
   recipientId: UniqueEntityId
-  companyId: UniqueEntityId
+  ownerId: UniqueEntityId
   profileId: UniqueEntityId
   activationStatus: ActivationStatus
 }
@@ -21,8 +21,8 @@ export class Member extends AggregateRoot<MemberProps> {
     return this.props.recipientId
   }
 
-  get companyId(): UniqueEntityId {
-    return this.props.companyId
+  get ownerId(): UniqueEntityId {
+    return this.props.ownerId
   }
 
   get profileId(): UniqueEntityId {

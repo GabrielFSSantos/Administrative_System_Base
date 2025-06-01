@@ -46,14 +46,14 @@ describe('OnMemberActivatedTests', () => {
 
   it('should create and send email when member is activated', async () => {
     const user = await makeUser()
-    const company = await makeCompany()
+    const owner = await makeCompany()
     const member = await makeMember({
       recipientId: user.id,
-      companyId: company.id,
+      ownerId: owner.id,
     })
 
     await usersRepository.create(user)
-    await companiesRepository.create(company)
+    await companiesRepository.create(owner)
     await membersRepository.create(member)
 
     member.activate()
@@ -71,14 +71,14 @@ describe('OnMemberActivatedTests', () => {
         value: 'invalid-email',
       } as any,
     })
-    const company = await makeCompany()
+    const owner = await makeCompany()
     const member = await makeMember({
       recipientId: user.id,
-      companyId: company.id,
+      ownerId: owner.id,
     })
 
     await usersRepository.create(user)
-    await companiesRepository.create(company)
+    await companiesRepository.create(owner)
     await membersRepository.create(member)
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})

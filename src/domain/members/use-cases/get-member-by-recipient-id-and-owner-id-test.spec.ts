@@ -4,26 +4,26 @@ import { vi } from 'vitest'
 
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
-import { GetMemberByRecipientIdAndCompanyIdContract } from './contracts/get-member-by-recipient-id-and-company-id-contract'
-import { GetMemberByRecipientIdAndCompanyIdUseCase } from './get-member-by-recipient-id-and-company-id-use-case'
+import { GetMemberByRecipientIdAndOwnerIdContract } from './contracts/get-member-by-recipient-id-and-owner-id-contract'
+import { GetMemberByRecipientIdAndOwnerIdUseCase } from './get-member-by-recipient-id-and-owner-id-use-case'
 
 let membersRepository: InMemoryMembersRepository
-let sut: GetMemberByRecipientIdAndCompanyIdContract
+let sut: GetMemberByRecipientIdAndOwnerIdContract
 
-describe('Get Member By RecipientId and CompanyId Use Case Test', () => {
+describe('Get Member By RecipientId and OwnerId Use Case Test', () => {
   beforeEach(() => {
     membersRepository = new InMemoryMembersRepository()
-    sut = new GetMemberByRecipientIdAndCompanyIdUseCase(membersRepository)
+    sut = new GetMemberByRecipientIdAndOwnerIdUseCase(membersRepository)
   })
 
-  it('should retrieve a member by recipientId and companyId', async () => {
+  it('should retrieve a member by recipientId and ownerId', async () => {
     const member = await makeMember()
 
     await membersRepository.create(member)
 
     const result = await sut.execute({
       recipientId: member.recipientId.toString(),
-      companyId: member.companyId.toString(),
+      ownerId: member.ownerId.toString(),
     })
 
     expect(result.isRight()).toBe(true)
@@ -36,7 +36,7 @@ describe('Get Member By RecipientId and CompanyId Use Case Test', () => {
   it('should return error if member does not exist', async () => {
     const result = await sut.execute({
       recipientId: 'non-existent-id',
-      companyId: 'non-existent-id',
+      ownerId: 'non-existent-id',
     })
 
     expect(result.isLeft()).toBe(true)
@@ -48,16 +48,16 @@ describe('Get Member By RecipientId and CompanyId Use Case Test', () => {
 
     await membersRepository.create(member)
 
-    const spy = vi.spyOn(membersRepository, 'findByRecipientAndCompanyId')
+    const spy = vi.spyOn(membersRepository, 'findByRecipientAndOwnerId')
 
     await sut.execute({
       recipientId: member.recipientId.toString(),
-      companyId: member.companyId.toString(),
+      ownerId: member.ownerId.toString(),
     })
 
     expect(spy).toHaveBeenCalledWith({
       recipientId: member.recipientId.toString(),
-      companyId: member.companyId.toString(),
+      ownerId: member.ownerId.toString(),
     })
   })
 })

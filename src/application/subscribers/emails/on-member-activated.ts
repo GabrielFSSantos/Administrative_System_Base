@@ -37,10 +37,10 @@ export class OnMemberActivated implements EventHandler {
       return
     }
 
-    const company = await this.companiesRepository.findById(member.companyId.toString())
+    const owner = await this.companiesRepository.findById(member.ownerId.toString())
 
-    if (!company) {
-      console.error(`Company with ID ${member.companyId.toString()} not found.`)
+    if (!owner) {
+      console.error(`Owner with ID ${member.ownerId.toString()} not found.`)
 
       return
     }
@@ -49,7 +49,7 @@ export class OnMemberActivated implements EventHandler {
       to: user.emailAddress.value,
       subject: 'Você foi ativado como membro de uma empresa',
       title: 'Acesso liberado',
-      body: `Olá ${user.name.value}, seu acesso como membro da empresa ${company.name.value} foi ativado em ${ocurredAt.toLocaleString()}. Você já pode acessar o sistema normalmente.`,
+      body: `Olá ${user.name.value}, seu acesso como membro da empresa ${owner.name.value} foi ativado em ${ocurredAt.toLocaleString()}. Você já pode acessar o sistema normalmente.`,
     })
 
     if (createEmailResult.isLeft()) {

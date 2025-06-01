@@ -8,14 +8,14 @@ export async function makeMember(
   id?: UniqueEntityId,
 ): Promise<Member> {
   const recipientId = override.recipientId ?? UniqueEntityId.create()
-  const companyId = override.companyId ?? UniqueEntityId.create()
+  const ownerId = override.ownerId ?? UniqueEntityId.create()
   const profileId = override.profileId ?? UniqueEntityId.create()
   const activationStatus = override.activationStatus ?? generateActivationStatusValueObject(false)
 
   const member = Member.create(
     {
       recipientId,
-      companyId,
+      ownerId,
       profileId,
       activationStatus,
       ...override,

@@ -21,21 +21,21 @@ export class CreateMemberUseCase implements CreateMemberContract {
 
   async execute({
     recipientId,
-    companyId,
+    ownerId,
     profileId,
   }: ICreateMemberUseCaseRequest): Promise<ICreateMemberUseCaseResponse> {
-    const existing = await this.membersRepository.findByRecipientAndCompanyId({
+    const existing = await this.membersRepository.findByRecipientAndOwnerId({
       recipientId,
-      companyId,
+      ownerId,
     })
 
     if (existing) {
-      return left(new MemberAlreadyExistsError(recipientId, companyId))
+      return left(new MemberAlreadyExistsError(recipientId, ownerId))
     }
 
     const member = Member.create({
       recipientId: UniqueEntityId.create(recipientId),
-      companyId: UniqueEntityId.create(companyId),
+      ownerId: UniqueEntityId.create(ownerId),
       profileId: UniqueEntityId.create(profileId),
       activationStatus: ActivationStatus.deactivated(),
     })

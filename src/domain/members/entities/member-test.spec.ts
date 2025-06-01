@@ -6,11 +6,11 @@ import { AlreadyDeactivatedError } from '@/shared/value-objects/activation-statu
 
 describe('Member Entity Test', () => {
   const recipientId = UniqueEntityId.create()
-  const companyId = UniqueEntityId.create()
+  const ownerId = UniqueEntityId.create()
   const profileId = UniqueEntityId.create()
 
   it('should create a member with default deactivated status', () => {
-    const member = Member.create({ recipientId, companyId, profileId })
+    const member = Member.create({ recipientId, ownerId, profileId })
 
     expect(member).toBeInstanceOf(Member)
     expect(member.isActivated()).toBe(false)
@@ -19,7 +19,7 @@ describe('Member Entity Test', () => {
   it('should create a member with activated status', () => {
     const member = Member.create({
       recipientId,
-      companyId,
+      ownerId,
       profileId,
       activationStatus: ActivationStatus.activated(),
     })
@@ -29,7 +29,7 @@ describe('Member Entity Test', () => {
   })
 
   it('should activate a deactivated member', () => {
-    const member = Member.create({ recipientId, companyId, profileId })
+    const member = Member.create({ recipientId, ownerId, profileId })
 
     const result = member.activate()
 
@@ -40,7 +40,7 @@ describe('Member Entity Test', () => {
   it('should not activate an already active member', () => {
     const member = Member.create({
       recipientId,
-      companyId,
+      ownerId,
       profileId,
       activationStatus: ActivationStatus.activated(),
     })
@@ -54,7 +54,7 @@ describe('Member Entity Test', () => {
   it('should deactivate an active member', () => {
     const member = Member.create({
       recipientId,
-      companyId,
+      ownerId,
       profileId,
       activationStatus: ActivationStatus.activated(),
     })
@@ -66,7 +66,7 @@ describe('Member Entity Test', () => {
   })
 
   it('should not deactivate an already deactivated member', () => {
-    const member = Member.create({ recipientId, companyId, profileId })
+    const member = Member.create({ recipientId, ownerId, profileId })
 
     const result = member.deactivate()
 

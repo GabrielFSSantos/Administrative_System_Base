@@ -1,9 +1,9 @@
 import { DomainError } from '@/core/errors/domain-error'
 
 export class MemberAlreadyExistsError extends Error implements DomainError {
-  constructor(recipientId: string, companyId: string) {
+  constructor(recipientId: string, ownerId: string) {
     super(
-      `A member with recipientId "${recipientId}" already exists in company "${companyId}".`,
+      `A member with recipientId "${recipientId}" already exists in owner "${ownerId}".`,
     )
   }
 }

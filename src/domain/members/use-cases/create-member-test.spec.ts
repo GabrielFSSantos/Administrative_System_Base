@@ -17,12 +17,12 @@ describe('Create Member Use Case', () => {
 
   it('should create a new member successfully', async () => {
     const recipientId = UniqueEntityId.create()
-    const companyId = UniqueEntityId.create()
+    const ownerId = UniqueEntityId.create()
     const profileId = UniqueEntityId.create()
 
     const result = await sut.execute({
       recipientId: recipientId.toString(),
-      companyId: companyId.toString(),
+      ownerId: ownerId.toString(),
       profileId: profileId.toString(),
     })
 
@@ -31,20 +31,20 @@ describe('Create Member Use Case', () => {
     if (result.isRight()) {
       expect(result.value.member).toBeDefined()
       expect(result.value.member.recipientId.toString()).toBe(recipientId.toString())
-      expect(result.value.member.companyId.toString()).toBe(companyId.toString())
+      expect(result.value.member.ownerId.toString()).toBe(ownerId.toString())
       expect(result.value.member.profileId.toString()).toBe(profileId.toString())
       expect(result.value.member.isActivated()).toBe(false)
     }
   })
 
-  it('should not allow duplicate member for same recipient and company', async () => {
+  it('should not allow duplicate member for same recipient and owner', async () => {
     const existing = await makeMember()
 
     await membersRepository.create(existing)
 
     const result = await sut.execute({
       recipientId: existing.recipientId.toString(),
-      companyId: existing.companyId.toString(),
+      ownerId: existing.ownerId.toString(),
       profileId: existing.profileId.toString(),
     })
 
@@ -54,22 +54,22 @@ describe('Create Member Use Case', () => {
 
   it('should persist member in repository', async () => {
     const recipientId = UniqueEntityId.create()
-    const companyId = UniqueEntityId.create()
+    const ownerId = UniqueEntityId.create()
     const profileId = UniqueEntityId.create()
 
     await sut.execute({
       recipientId: recipientId.toString(),
-      companyId: companyId.toString(),
+      ownerId: ownerId.toString(),
       profileId: profileId.toString(),
     })
 
-    const stored = await membersRepository.findByRecipientAndCompanyId({
+    const stored = await membersRepository.findByRecipientAndOwnerId({
       recipientId: recipientId.toString(),
-      companyId: companyId.toString(),
+      ownerId: ownerId.toString(),
     })
 
     expect(stored).not.toBeNull()
     expect(stored?.recipientId.toString()).toBe(recipientId.toString())
-    expect(stored?.companyId.toString()).toBe(companyId.toString())
+    expect(stored?.ownerId.toString()).toBe(ownerId.toString())
   })
 })

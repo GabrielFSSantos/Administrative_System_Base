@@ -17,7 +17,7 @@ export class FetchManyMembersUseCase implements FetchManyMembersContract {
   ) {}
 
   async execute({
-    companyId,
+    ownerId,
     page,
     pageSize,
     search,
@@ -27,7 +27,7 @@ export class FetchManyMembersUseCase implements FetchManyMembersContract {
     }
 
     const { members, total } = await this.membersRepository.findMany({
-      companyId,
+      ownerId,
       page,
       pageSize,
       search,

@@ -5,7 +5,7 @@ import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination
 import { Member } from '../../entities/member'
 
 export interface IFetchManyMembersUseCaseRequest {
-  companyId: string
+  ownerId: string
   page: number
   pageSize: number
   search?: string

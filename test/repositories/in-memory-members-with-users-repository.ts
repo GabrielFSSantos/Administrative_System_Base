@@ -14,10 +14,10 @@ export class InMemoryMembersWithUsersRepository extends InMemoryMembersRepositor
   override async findMany({
     page,
     pageSize,
-    companyId,
+    ownerId,
     search,
   }: IFetchManyMembersUseCaseRequest): Promise<{ members: Member[]; total: number }> {
-    let results = this.items.filter((item) => item.companyId.toString() === companyId)
+    let results = this.items.filter((item) => item.ownerId.toString() === ownerId)
 
     if (search) {
       const term = search.toLowerCase()

@@ -4,7 +4,7 @@ import { MemberAlreadyExistsError } from '@/domain/members/use-cases/errors/memb
 
 export interface ICreateMemberUseCaseRequest {
   recipientId: string
-  companyId: string
+  ownerId: string
   profileId: string
 }
 
