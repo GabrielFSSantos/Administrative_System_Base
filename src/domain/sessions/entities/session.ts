@@ -1,8 +1,9 @@
 import { Either, left, right } from '@/core/either'
-import { Entity } from '@/core/entities/entity'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
+import { SessionCreatedEvent } from '../events/create-session-event'
 import { InvalidSessionDateExpiredError } from './errors/invalid-session-date-expired-error-error'
 import { InvalidSessionDateRevokedError } from './errors/invalid-session-date-revoked-error-error'
 import { SessionAlreadyRevokedError } from './errors/session-already-revoked-error'
@@ -16,7 +17,7 @@ export interface SessionProps {
   revokedAt: Date | null
 }
 
-export class Session extends Entity<SessionProps> {
+export class Session extends AggregateRoot<SessionProps> {
   get recipientId(): UniqueEntityId {
     return this.props.recipientId
   }
@@ -89,6 +90,8 @@ export class Session extends Entity<SessionProps> {
       }, 
       id,
     )
+
+    session.addDomainEvent(SessionCreatedEvent.create(session))
 
     return right(session)
   }
