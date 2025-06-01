@@ -7,12 +7,15 @@ import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
 import { SystemAdminActivatedEvent } from '@/domain/system-admins/events/system-admin-activated-event'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
 
+import { EnvServiceContract } from './services/contracts/env-service-contract'
+
 @Injectable()
 export class OnSystemAdminActivated implements EventHandler {
   constructor(
     private readonly usersRepository: UsersRepositoryContract,
     private readonly createEmail: CreateEmailUseCase,
     private readonly sendEmail: SendEmailUseCase,
+    private readonly envService: EnvServiceContract,
   ) {
     this.setupSubscriptions()
   }
@@ -35,7 +38,10 @@ export class OnSystemAdminActivated implements EventHandler {
       return
     }
 
+    const from = this.envService.get('DEFAULT_SYSTEM_EMAIL_FROM')
+
     const createEmailResult = await this.createEmail.execute({
+      from,
       to: user.emailAddress.value,
       subject: 'Você foi ativado como administrador do sistema',
       title: 'Acesso liberado',

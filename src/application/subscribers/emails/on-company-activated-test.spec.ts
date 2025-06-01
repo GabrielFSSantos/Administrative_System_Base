@@ -1,6 +1,6 @@
 import { makeCompany } from 'test/factories/companies/make-company'
 import { FakeEmailService } from 'test/fakes/emails/fake-send-email'
-import { InMemoryCompaniesRepository } from 'test/repositories/in-memory-companies-repository'
+import { FakeEnvService } from 'test/fakes/env/fake-env-service'
 import { waitFor } from 'test/utils/wait.for'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -13,7 +13,7 @@ import { OnCompanyActivated } from './on-company-activated'
 let fakeEmailService: FakeEmailService
 let createEmailUseCase: CreateEmailUseCase
 let sendEmailUseCase: SendEmailUseCase
-let companiesRepository: InMemoryCompaniesRepository
+let fakeEnvService: FakeEnvService
 let createSpy: any
 let sendSpy: any
 
@@ -22,8 +22,7 @@ describe('OnCompanyActivatedTests', () => {
     fakeEmailService = new FakeEmailService()
     createEmailUseCase = new CreateEmailUseCase()
     sendEmailUseCase = new SendEmailUseCase(fakeEmailService)
-
-    companiesRepository = new InMemoryCompaniesRepository()
+    fakeEnvService = new FakeEnvService()
 
     createSpy = vi.spyOn(createEmailUseCase, 'execute')
     sendSpy = vi.spyOn(sendEmailUseCase, 'execute')
@@ -31,13 +30,12 @@ describe('OnCompanyActivatedTests', () => {
     new OnCompanyActivated(
       createEmailUseCase,
       sendEmailUseCase,
+      fakeEnvService,
     )
   })
 
   it('should create and send email when company is activated', async () => {
     const company = await makeCompany()
-
-    await companiesRepository.create(company)
 
     company.activate()
     DomainEvents.dispatchEventsForAggregate(company.id)
@@ -54,8 +52,6 @@ describe('OnCompanyActivatedTests', () => {
         value: 'invalid-email',
       } as any,
     })
-
-    await companiesRepository.create(company)
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 

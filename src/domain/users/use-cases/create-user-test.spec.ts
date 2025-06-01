@@ -15,7 +15,7 @@ let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
 let sut: CreateUserContract
 
-describe('Create User Use Case Test', () => {
+describe('CreateUserUseCaseTest', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     fakeHasher = new FakeHasher()

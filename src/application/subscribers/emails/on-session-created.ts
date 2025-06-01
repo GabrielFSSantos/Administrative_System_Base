@@ -7,12 +7,15 @@ import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
 import { SessionCreatedEvent } from '@/domain/sessions/events/create-session-event'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
 
+import { EnvServiceContract } from './services/contracts/env-service-contract'
+
 @Injectable()
 export class OnSessionCreated implements EventHandler {
   constructor(
     private readonly usersRepository: UsersRepositoryContract,
     private readonly createEmail: CreateEmailUseCase,
     private readonly sendEmail: SendEmailUseCase,
+    private readonly envService: EnvServiceContract,
   ) {
     this.setupSubscriptions()
   }
@@ -35,7 +38,10 @@ export class OnSessionCreated implements EventHandler {
       return
     }
 
+    const from = this.envService.get('DEFAULT_SYSTEM_EMAIL_FROM')
+
     const createEmailResult = await this.createEmail.execute({
+      from,
       to: user.emailAddress.value,
       subject: 'Novo login detectado',
       title: 'Nova sessão iniciada',

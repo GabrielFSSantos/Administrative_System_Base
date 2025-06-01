@@ -1,6 +1,7 @@
 import { makeUser } from 'test/factories/users/make-user'
 import { generatePasswordHashValueObject } from 'test/factories/users/value-objects/make-password-hash'
 import { FakeEmailService } from 'test/fakes/emails/fake-send-email'
+import { FakeEnvService } from 'test/fakes/env/fake-env-service'
 import { waitFor } from 'test/utils/wait.for'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -13,20 +14,21 @@ import { OnUserPasswordChanged } from './on-user-password-changed'
 let fakeEmailService: FakeEmailService
 let createEmailUseCase: CreateEmailUseCase
 let sendEmailUseCase: SendEmailUseCase
+let fakeEnvService: FakeEnvService
 let createSpy: any
 let sendSpy: any
 
 describe('OnUserPasswordChangedTests', () => {
   beforeEach(() => {
     fakeEmailService = new FakeEmailService()
-
     createEmailUseCase = new CreateEmailUseCase()
     sendEmailUseCase = new SendEmailUseCase(fakeEmailService)
+    fakeEnvService = new FakeEnvService()
 
     createSpy = vi.spyOn(createEmailUseCase, 'execute')
     sendSpy = vi.spyOn(sendEmailUseCase, 'execute')
 
-    new OnUserPasswordChanged(createEmailUseCase, sendEmailUseCase)
+    new OnUserPasswordChanged(createEmailUseCase, sendEmailUseCase, fakeEnvService)
   })
 
   it('should create and send email when user password is changed', async () => {

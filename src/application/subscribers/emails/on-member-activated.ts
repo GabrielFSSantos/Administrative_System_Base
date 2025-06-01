@@ -46,10 +46,11 @@ export class OnMemberActivated implements EventHandler {
     }
 
     const createEmailResult = await this.createEmail.execute({
-      to: user.emailAddress.value,
+      from: owner.emailAddress.toString(),
+      to: user.emailAddress.toString(),
       subject: 'Você foi ativado como membro de uma empresa',
       title: 'Acesso liberado',
-      body: `Olá ${user.name.value}, seu acesso como membro da empresa ${owner.name.value} foi ativado em ${ocurredAt.toLocaleString()}. Você já pode acessar o sistema normalmente.`,
+      body: `Olá ${user.name.toString()}, seu acesso como membro da empresa ${owner.name.toString()} foi ativado em ${ocurredAt.toLocaleString()}. Você já pode acessar o sistema normalmente.`,
     })
 
     if (createEmailResult.isLeft()) {

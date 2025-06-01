@@ -1,7 +1,7 @@
 import { makeSession } from 'test/factories/sessions/make-session'
 import { makeUser } from 'test/factories/users/make-user'
 import { FakeEmailService } from 'test/fakes/emails/fake-send-email'
-import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
+import { FakeEnvService } from 'test/fakes/env/fake-env-service'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { waitFor } from 'test/utils/wait.for'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -16,7 +16,7 @@ let fakeEmailService: FakeEmailService
 let createEmailUseCase: CreateEmailUseCase
 let sendEmailUseCase: SendEmailUseCase
 let usersRepository: InMemoryUsersRepository
-let sessionsRepository: InMemorySessionsRepository
+let fakeEnvService: FakeEnvService
 let createSpy: any
 let sendSpy: any
 
@@ -25,9 +25,8 @@ describe('OnSessionCreatedTests', () => {
     fakeEmailService = new FakeEmailService()
     createEmailUseCase = new CreateEmailUseCase()
     sendEmailUseCase = new SendEmailUseCase(fakeEmailService)
-
     usersRepository = new InMemoryUsersRepository()
-    sessionsRepository = new InMemorySessionsRepository()
+    fakeEnvService = new FakeEnvService()
 
     createSpy = vi.spyOn(createEmailUseCase, 'execute')
     sendSpy = vi.spyOn(sendEmailUseCase, 'execute')
@@ -36,6 +35,7 @@ describe('OnSessionCreatedTests', () => {
       usersRepository,
       createEmailUseCase,
       sendEmailUseCase,
+      fakeEnvService,
     )
   })
 
@@ -44,7 +44,6 @@ describe('OnSessionCreatedTests', () => {
     const session = await makeSession({ recipientId: user.id })
 
     await usersRepository.create(user)
-    await sessionsRepository.create(session)
 
     DomainEvents.dispatchEventsForAggregate(session.id)
 
@@ -60,10 +59,10 @@ describe('OnSessionCreatedTests', () => {
         value: 'invalid-email',
       } as any,
     })
+
     const session = await makeSession({ recipientId: user.id })
 
     await usersRepository.create(user)
-    await sessionsRepository.create(session)
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 

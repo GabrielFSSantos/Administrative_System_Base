@@ -1,6 +1,7 @@
 import { makeSystemAdmin } from 'test/factories/system-admins/make-system-admin'
 import { makeUser } from 'test/factories/users/make-user'
 import { FakeEmailService } from 'test/fakes/emails/fake-send-email'
+import { FakeEnvService } from 'test/fakes/env/fake-env-service'
 import { InMemorySystemAdminsRepository } from 'test/repositories/in-memory-system-admins-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { waitFor } from 'test/utils/wait.for'
@@ -17,6 +18,7 @@ let createEmailUseCase: CreateEmailUseCase
 let sendEmailUseCase: SendEmailUseCase
 let usersRepository: InMemoryUsersRepository
 let systemAdminsRepository: InMemorySystemAdminsRepository
+let fakeEnvService: FakeEnvService
 let createSpy: any
 let sendSpy: any
 
@@ -28,6 +30,7 @@ describe('OnSystemAdminActivatedTests', () => {
 
     usersRepository = new InMemoryUsersRepository()
     systemAdminsRepository = new InMemorySystemAdminsRepository()
+    fakeEnvService = new FakeEnvService()
 
     createSpy = vi.spyOn(createEmailUseCase, 'execute')
     sendSpy = vi.spyOn(sendEmailUseCase, 'execute')
@@ -36,6 +39,7 @@ describe('OnSystemAdminActivatedTests', () => {
       usersRepository,
       createEmailUseCase,
       sendEmailUseCase,
+      fakeEnvService,
     )
   })
 

@@ -6,11 +6,14 @@ import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-c
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
 import { UserPasswordChangedEvent } from '@/domain/users/events/user-password-changed-event'
 
+import { EnvServiceContract } from './services/contracts/env-service-contract'
+
 @Injectable()
 export class OnUserPasswordChanged implements EventHandler {
   constructor(
     private readonly createEmail: CreateEmailUseCase,
     private readonly sendEmail: SendEmailUseCase,
+    private readonly envService: EnvServiceContract,
   ) {
     this.setupSubscriptions()
   }
@@ -26,7 +29,10 @@ export class OnUserPasswordChanged implements EventHandler {
     {user, ocurredAt}: UserPasswordChangedEvent,
   ): Promise<void> {
 
+    const from = this.envService.get('DEFAULT_SYSTEM_EMAIL_FROM')
+
     const createEmailResult = await this.createEmail.execute({
+      from,
       to: user.emailAddress.value,
       subject: 'Sua senha foi alterada',
       title: 'Alteração de senha',

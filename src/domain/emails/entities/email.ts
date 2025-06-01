@@ -2,38 +2,47 @@ import { Either, left, right } from '@/core/either'
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { ActionLink } from '@/domain/emails/entities/value-objects/action-link'
+import { Body } from '@/domain/emails/entities/value-objects/body'
+import { Subject } from '@/domain/emails/entities/value-objects/subject'
+import { Title } from '@/domain/emails/entities/value-objects/title'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 
 import { InvalidSentAtError } from './errors/invalid-sent-at-error'
 
 export interface EmailProps {
+  from: EmailAddress
   to: EmailAddress
-  subject: string
-  title: string
-  body: string
-  actionLink?: string | null
+  subject: Subject
+  title: Title
+  body: Body
+  actionLink?: ActionLink | null
   createdAt: Date
   sentAt?: Date | null
 }
 
 export class Email extends AggregateRoot<EmailProps> {
+  get from(): EmailAddress {
+    return this.props.from
+  }
+
   get to(): EmailAddress {
     return this.props.to
   }
 
-  get subject(): string {
+  get subject(): Subject {
     return this.props.subject
   }
 
-  get title(): string {
+  get title(): Title {
     return this.props.title
   }
 
-  get body(): string {
+  get body(): Body {
     return this.props.body
   }
 
-  get actionLink(): string | null | undefined {
+  get actionLink(): ActionLink | null | undefined {
     return this.props.actionLink
   }
 

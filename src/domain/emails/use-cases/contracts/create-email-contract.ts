@@ -4,6 +4,7 @@ import { InvalidEmailAddressError } from '@/shared/value-objects/errors/invalid-
 
 export interface ICreateEmailUseCaseRequest {
   to: string
+  from: string
   subject: string
   title: string
   body: string

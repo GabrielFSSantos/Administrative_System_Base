@@ -13,7 +13,7 @@ import { Name } from '@/shared/value-objects/name'
 
 import { UserPasswordChangedEvent } from '../events/user-password-changed-event'
 
-describe('User Entity Test', () => {
+describe('UserEntityTest', () => {
   it('should create a valid user with makeUser()', async () => {
     const user = await makeUser()
 
