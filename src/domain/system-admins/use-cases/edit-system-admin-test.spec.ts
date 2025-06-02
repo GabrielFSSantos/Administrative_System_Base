@@ -10,7 +10,7 @@ import { EditSystemAdminUseCase } from './edit-system-admin-use-case'
 let systemAdminsRepository: InMemorySystemAdminsRepository
 let sut: EditSystemAdminContract
 
-describe('Edit System Admin Use Case Test', () => {
+describe('EditSystemAdminUseCaseTest', () => {
   beforeEach(() => {
     systemAdminsRepository = new InMemorySystemAdminsRepository()
     sut = new EditSystemAdminUseCase(systemAdminsRepository)

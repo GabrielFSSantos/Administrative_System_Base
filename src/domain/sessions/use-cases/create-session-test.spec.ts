@@ -9,7 +9,7 @@ import { CreateSessionUseCase } from '@/domain/sessions/use-cases/create-session
 let inMemorySessionsRepository: InMemorySessionsRepository
 let sut: CreateSessionUseCase
 
-describe('Create Session Use Case Test', () => {
+describe('CreateSessionUseCaseTest', () => {
   beforeEach(() => {
     inMemorySessionsRepository = new InMemorySessionsRepository()
     sut = new CreateSessionUseCase(inMemorySessionsRepository)

@@ -9,7 +9,7 @@ import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { GetRoleContract } from './contracts/get-role-contract'
 
-describe('Get Role Test', () => {
+describe('GetRoleTest', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
   let sut: GetRoleContract
 

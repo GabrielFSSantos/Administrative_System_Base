@@ -35,7 +35,7 @@ function makeFakeEntity<T extends ActivatableEntity>(
   } as Partial<T>)
 }
 
-describe('Set Activation Status Use Case', () => {
+describe('SetActivationStatusUseCase', () => {
   let repository: InMemoryActivatableRepository<ActivatableEntity>
   let sut: SetActivationStatusUseCase<ActivatableEntity>
 

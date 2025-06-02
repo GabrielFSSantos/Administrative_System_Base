@@ -11,7 +11,7 @@ import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination
 import { FetchManyMembersContract } from './contracts/fetch-many-members-contract'
 import { FetchManyMembersUseCase } from './fetch-many-members-use-case'
 
-describe('Fetch Many Members Use Case Test', () => {
+describe('FetchManyMembersUseCaseTest', () => {
   let membersRepository: InMemoryMembersWithUsersRepository
   let sut: FetchManyMembersContract
 

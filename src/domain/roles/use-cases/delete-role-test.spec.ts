@@ -9,7 +9,7 @@ import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { DeleteRoleContract } from './contracts/delete-role-contract'
 
-describe('Delete Role Test', () => {
+describe('DeleteRoleTest', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
   let sut: DeleteRoleContract
 

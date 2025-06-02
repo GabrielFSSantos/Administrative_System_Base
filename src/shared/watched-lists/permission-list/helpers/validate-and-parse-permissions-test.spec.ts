@@ -3,7 +3,7 @@ import { PermissionName } from '@/shared/value-objects/permission-name'
 import { InvalidPermissionError } from './errors/invalid-permission-error'
 import { validateAndParsePermissions } from './validate-and-parse-permissions-helper'
 
-describe('Validate And Parse Permissions Tests', () => {
+describe('ValidateAndParsePermissionsTests', () => {
   it('should return all valid permissions', () => {
     const raw = ['CREATE_USER', 'VIEW_USER']
     const result = validateAndParsePermissions(raw)

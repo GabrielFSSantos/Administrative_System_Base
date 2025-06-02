@@ -9,7 +9,7 @@ import { RevokeSessionUseCase } from '@/domain/sessions/use-cases/revoke-session
 import { NotAllowedError } from '@/shared/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
-describe('Revoke Session Test', () => {
+describe('RevokeSessionTest', () => {
   let inMemorySessionsRepository: InMemorySessionsRepository
   let sut: RevokeSessionUseCase
 

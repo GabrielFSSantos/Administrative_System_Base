@@ -1,7 +1,7 @@
 import { EmailAddress } from './email-address'
 import { InvalidEmailAddressError } from './errors/invalid-email-address-error'
 
-describe('EmailAddress Value Object Test', () => {
+describe('EmailAddressValueObjectTest', () => {
   it('should create a valid email object', () => {
     const result = EmailAddress.create('user@example.com')
 

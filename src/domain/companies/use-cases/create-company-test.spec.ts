@@ -8,7 +8,7 @@ import { CompanyAlreadyExistsError } from '@/domain/companies/use-cases/errors/c
 let companiesRepository: InMemoryCompaniesRepository
 let sut: CreateCompanyContract
 
-describe('Create Company Use Case', () => {
+describe('CreateCompanyUseCase', () => {
   beforeEach(() => {
     companiesRepository = new InMemoryCompaniesRepository()
     sut = new CreateCompanyUseCase(companiesRepository)

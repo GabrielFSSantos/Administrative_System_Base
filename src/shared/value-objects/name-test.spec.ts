@@ -1,7 +1,7 @@
 import { InvalidNameError } from '@/shared/value-objects/errors/invalid-name-error'
 import { Name } from '@/shared/value-objects/name'
 
-describe('Name Value Object Test', () => {
+describe('NameValueObjectTest', () => {
   it('should create a valid name object', () => {
     const result = Name.create('João Silva')
 

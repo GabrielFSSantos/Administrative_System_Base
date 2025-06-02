@@ -6,7 +6,7 @@ import { WrongCredentialsError } from '@/domain/users/use-cases/errors/wrong-cre
 import { LoginUserContract } from './contracts/login-user-contract'
 import { LoginUserService } from './login-user.service'
 
-describe('Login User Service Test', () => {
+describe('LoginUserServiceTest', () => {
   let service: LoginUserContract
   let authenticateUser: FakeAuthenticateUserUseCase 
   let createSession: FakeCreateSessionUseCase

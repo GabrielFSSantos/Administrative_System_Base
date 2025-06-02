@@ -12,7 +12,7 @@ import { EditCompanyUseCase } from './edit-company-use-case'
 let companiesRepository: InMemoryCompaniesRepository
 let sut: EditCompanyContract
 
-describe('Edit Company Use Case Test', () => {
+describe('EditCompanyUseCaseTest', () => {
   beforeEach(() => {
     companiesRepository = new InMemoryCompaniesRepository()
     sut = new EditCompanyUseCase(companiesRepository)

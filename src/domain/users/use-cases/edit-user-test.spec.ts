@@ -13,7 +13,7 @@ import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 let usersRepository: InMemoryUsersRepository
 let sut: EditUserContract
 
-describe('Edit User Use Case Test', () => {
+describe('EditUserUseCaseTest', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     sut = new EditUserUseCase(usersRepository)

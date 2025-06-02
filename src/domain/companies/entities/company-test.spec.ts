@@ -9,7 +9,7 @@ import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
 import { Name } from '@/shared/value-objects/name'
 
-describe('Company Entity Test', () => {
+describe('CompanyEntityTest', () => {
   it('should create a valid company with makeCompany()', async () => {
     const company = await makeCompany()
 

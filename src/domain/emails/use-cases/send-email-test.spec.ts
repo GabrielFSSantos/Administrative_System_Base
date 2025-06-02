@@ -8,7 +8,7 @@ import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
 let fakeEmailService: FakeEmailService
 let sut: SendEmailContract
 
-describe('Send Email Use Case Tests', () => {
+describe('SendEmailUseCaseTests', () => {
   beforeEach(() => {
     fakeEmailService = new FakeEmailService()
     sut = new SendEmailUseCase(fakeEmailService)

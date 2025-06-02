@@ -1,7 +1,7 @@
 import { CPF } from '@/domain/users/entities/value-objects/cpf'
 import { InvalidCPFError } from '@/domain/users/entities/value-objects/errors/invalid-cpf-error'
 
-describe('CPF Value Object Test', () => {
+describe('CPFValueObjectTest', () => {
   it('should create a valid CPF object', () => {
     const result = CPF.create('123.456.789-09') // CPF valido fictício
 

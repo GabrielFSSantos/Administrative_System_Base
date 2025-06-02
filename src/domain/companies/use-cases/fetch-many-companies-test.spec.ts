@@ -11,7 +11,7 @@ import { FetchManyCompaniesUseCase } from './fetch-many-companies-use-case'
 let companiesRepository: InMemoryCompaniesRepository
 let sut: FetchManyCompaniesContract
 
-describe('Fetch Many Companies Use Case Test', () => {
+describe('FetchManyCompaniesUseCaseTest', () => {
   beforeEach(() => {
     companiesRepository = new InMemoryCompaniesRepository()
     sut = new FetchManyCompaniesUseCase(companiesRepository)

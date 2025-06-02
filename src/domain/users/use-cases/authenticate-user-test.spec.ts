@@ -14,7 +14,7 @@ let hashComparer: FakeHasher
 let encrypter: FakeEncrypter
 let sut: AuthenticateUserContract
 
-describe('Authenticate User Use Case Test', () => {
+describe('AuthenticateUserUseCaseTest', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     hashComparer = new FakeHasher()

@@ -10,7 +10,7 @@ import { GetMemberByIdUseCase } from './get-member-by-id-use-case'
 let membersRepository: InMemoryMembersRepository
 let sut: GetMemberByIdContract
 
-describe('Get Member By ID Use Case Test', () => {
+describe('GetMemberByIdUseCaseTest', () => {
   beforeEach(() => {
     membersRepository = new InMemoryMembersRepository()
     sut = new GetMemberByIdUseCase(membersRepository)

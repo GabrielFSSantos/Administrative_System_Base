@@ -16,7 +16,7 @@ class FakeHasher {
   }
 }
 
-describe('PasswordHash Value Object Test', () => {
+describe('PasswordHashValueObjectTest', () => {
   it('should create a valid hash from plain password', async () => {
     const result = await PasswordHash.createFromPlain(new FakeHasher(), 'Valid@123')
 

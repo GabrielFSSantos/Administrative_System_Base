@@ -9,7 +9,7 @@ import { ValidateSessionUseCase } from '@/domain/sessions/use-cases/validate-ses
 import { NotAllowedError } from '@/shared/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
-describe('Validate Session Test', () => {
+describe('ValidateSessionTest', () => {
   let inMemorySessionsRepository: InMemorySessionsRepository
   let sut: ValidateSessionUseCase
 

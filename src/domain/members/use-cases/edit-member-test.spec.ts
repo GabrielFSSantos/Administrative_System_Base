@@ -11,7 +11,7 @@ import { EditMemberUseCase } from './edit-member-use-case'
 let membersRepository: InMemoryMembersRepository
 let sut: EditMemberContract
 
-describe('Edit Member Use Case Test', () => {
+describe('EditMemberUseCaseTest', () => {
   beforeEach(() => {
     membersRepository = new InMemoryMembersRepository()
     sut = new EditMemberUseCase(membersRepository)

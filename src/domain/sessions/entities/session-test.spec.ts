@@ -6,7 +6,7 @@ import { InvalidSessionDateRevokedError } from '@/domain/sessions/entities/error
 import { SessionAlreadyRevokedError } from '@/domain/sessions/entities/errors/session-already-revoked-error'
 import { Session } from '@/domain/sessions/entities/session'
 
-describe('Session Entity Test', () => {
+describe('SessionEntityTest', () => {
   const validToken = generateAccessTokenValueObject()
   const now = new Date()
 

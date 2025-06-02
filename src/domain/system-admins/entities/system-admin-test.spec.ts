@@ -4,7 +4,7 @@ import { ActivationStatus } from '@/shared/value-objects/activation-status/activ
 import { AlreadyActivatedError } from '@/shared/value-objects/activation-status/errors/already-activated-error'
 import { AlreadyDeactivatedError } from '@/shared/value-objects/activation-status/errors/already-deactivated-error'
 
-describe('SystemAdmin Entity Test', () => {
+describe('SystemAdminEntityTest', () => {
   const recipientId = UniqueEntityId.create()
   const profileId = UniqueEntityId.create()
 

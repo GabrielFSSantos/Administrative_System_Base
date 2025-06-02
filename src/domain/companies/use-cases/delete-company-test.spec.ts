@@ -11,7 +11,7 @@ import { DeleteCompanyUseCase } from './delete-company-use-case'
 let companiesRepository: InMemoryCompaniesRepository
 let sut: DeleteCompanyContract
 
-describe('Delete Company Use Case Test', () => {
+describe('DeleteCompanyUseCaseTest', () => {
   beforeEach(() => {
     companiesRepository = new InMemoryCompaniesRepository()
     sut = new DeleteCompanyUseCase(companiesRepository)

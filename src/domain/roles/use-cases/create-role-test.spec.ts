@@ -7,7 +7,7 @@ import { Permissions } from '@/shared/permissions'
 import { InvalidNameError } from '@/shared/value-objects/errors/invalid-name-error'
 import { InvalidPermissionError } from '@/shared/watched-lists/permission-list/helpers/errors/invalid-permission-error'
 
-describe('Create Role Test', () => {
+describe('CreateRoleTest', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
   let sut: CreateRoleContract
 

@@ -8,7 +8,7 @@ import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination
 let systemAdminsRepository: InMemorySystemAdminsRepository
 let sut: FetchManySystemAdminsContract
 
-describe('Fetch Many System Admins Use Case', () => {
+describe('FetchManySystemAdminsUseCase', () => {
   beforeEach(() => {
     systemAdminsRepository = new InMemorySystemAdminsRepository()
     sut = new FetchManySystemAdminsUseCase(systemAdminsRepository)

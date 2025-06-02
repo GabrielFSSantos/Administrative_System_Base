@@ -9,7 +9,7 @@ import { SystemAdminAlreadyExistsError } from '@/domain/system-admins/use-cases/
 let systemAdminsRepository: InMemorySystemAdminsRepository
 let sut: CreateSystemAdminContract
 
-describe('Create SystemAdmin Use Case', () => {
+describe('CreateSystemAdminUseCase', () => {
   beforeEach(() => {
     systemAdminsRepository = new InMemorySystemAdminsRepository()
     sut = new CreateSystemAdminUseCase(systemAdminsRepository)

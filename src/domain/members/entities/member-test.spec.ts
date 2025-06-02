@@ -4,7 +4,7 @@ import { ActivationStatus } from '@/shared/value-objects/activation-status/activ
 import { AlreadyActivatedError } from '@/shared/value-objects/activation-status/errors/already-activated-error'
 import { AlreadyDeactivatedError } from '@/shared/value-objects/activation-status/errors/already-deactivated-error'
 
-describe('Member Entity Test', () => {
+describe('MemberEntityTest', () => {
   const recipientId = UniqueEntityId.create()
   const ownerId = UniqueEntityId.create()
   const profileId = UniqueEntityId.create()

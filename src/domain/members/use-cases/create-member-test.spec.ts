@@ -9,7 +9,7 @@ import { MemberAlreadyExistsError } from '@/domain/members/use-cases/errors/memb
 let membersRepository: InMemoryMembersRepository
 let sut: CreateMemberContract
 
-describe('Create Member Use Case', () => {
+describe('CreateMemberUseCase', () => {
   beforeEach(() => {
     membersRepository = new InMemoryMembersRepository()
     sut = new CreateMemberUseCase(membersRepository)

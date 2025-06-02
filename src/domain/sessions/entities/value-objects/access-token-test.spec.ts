@@ -1,7 +1,7 @@
 import { AccessToken } from '../value-objects/access-token'
 import { InvalidAccessTokenError } from '../value-objects/errors/invalid-access-token-error'
 
-describe('AccessToken Value Object Test', () => {
+describe('AccessTokenValueObjectTest', () => {
   const validJwt =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
     'eyJzdWIiOiJ1c2VySWQxMjMiLCJyb2xlIjoiYWRtaW4ifQ.' +

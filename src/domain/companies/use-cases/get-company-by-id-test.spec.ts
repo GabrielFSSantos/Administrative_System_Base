@@ -10,7 +10,7 @@ import { GetCompanyByIdUseCase } from './get-company-by-id-use-case'
 let companiesRepository: InMemoryCompaniesRepository
 let sut: GetCompanyByIdContract
 
-describe('Get Company By ID Use Case Test', () => {
+describe('GetCompanyByIdUseCaseTest', () => {
   beforeEach(() => {
     companiesRepository = new InMemoryCompaniesRepository()
     sut = new GetCompanyByIdUseCase(companiesRepository)

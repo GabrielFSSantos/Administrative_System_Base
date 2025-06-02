@@ -6,7 +6,7 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Role } from '@/domain/roles/entities/role'
 import { FetchManyRolesByRecipientIdUseCase } from '@/domain/roles/use-cases/fetch-many-roles-by-recipient-id-use-case'
 
-describe('Fetch Many Roles By RecipientId Test', () => {
+describe('FetchManyRolesByRecipientIdTest', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
   let sut: FetchManyRolesByRecipientIdUseCase
 

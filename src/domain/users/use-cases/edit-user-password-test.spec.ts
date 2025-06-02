@@ -15,7 +15,7 @@ let usersRepository: InMemoryUsersRepository
 let hasher: FakeHasher
 let sut: EditUserPasswordContract
 
-describe('Edit User Password Use Case Test', () => {
+describe('EditUserPasswordUseCaseTest', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     hasher = new FakeHasher()

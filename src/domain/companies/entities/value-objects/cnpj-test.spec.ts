@@ -1,7 +1,7 @@
 import { CNPJ } from '@/domain/companies/entities/value-objects/cnpj'
 import { InvalidCNPJError } from '@/domain/companies/entities/value-objects/errors/invalid-cnpj-error'
 
-describe('CNPJ Value Object Test', () => {
+describe('CNPJValueObjectTest', () => {
   it('should create a valid CNPJ object', () => {
     const result = CNPJ.create('45.723.174/0001-10') // CNPJ fictício válido
 

@@ -5,7 +5,7 @@ import { SendEmailError } from '@/domain/emails/use-cases/errors/send-email-erro
 
 export class FakeEmailService implements EmailServiceContract {
   public sentEmails: Email[] = []
-  public shouldFail = false // Adicionado para simular falhas
+  public shouldFail = false
 
   async send(email: Email): Promise<Either<SendEmailError, null>> {
     if (this.shouldFail) {

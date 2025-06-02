@@ -10,7 +10,7 @@ import { GetMemberByRecipientIdAndOwnerIdUseCase } from './get-member-by-recipie
 let membersRepository: InMemoryMembersRepository
 let sut: GetMemberByRecipientIdAndOwnerIdContract
 
-describe('Get Member By RecipientId and OwnerId Use Case Test', () => {
+describe('GetMemberByRecipientIdAndOwnerIdUseCaseTest', () => {
   beforeEach(() => {
     membersRepository = new InMemoryMembersRepository()
     sut = new GetMemberByRecipientIdAndOwnerIdUseCase(membersRepository)

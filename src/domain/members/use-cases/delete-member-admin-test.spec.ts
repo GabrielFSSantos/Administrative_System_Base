@@ -11,7 +11,7 @@ import { DeleteMemberUseCase } from './delete-member-use-case'
 let membersRepository: InMemoryMembersRepository
 let sut: DeleteMemberContract
 
-describe('Delete Member Use Case Test', () => {
+describe('DeleteMemberUseCaseTest', () => {
   beforeEach(() => {
     membersRepository = new InMemoryMembersRepository()
     sut = new DeleteMemberUseCase(membersRepository)

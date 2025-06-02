@@ -12,7 +12,7 @@ import { InvalidPermissionError } from '@/shared/watched-lists/permission-list/h
 
 import { EditRoleContract } from './contracts/edit-role-contract'
 
-describe('Edit Role Test', () => {
+describe('EditRoleTest', () => {
   let inMemoryRolesRepository: InMemoryRolesRepository
   let sut: EditRoleContract
 

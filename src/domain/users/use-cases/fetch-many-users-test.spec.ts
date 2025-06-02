@@ -11,7 +11,7 @@ import { FetchManyUsersUseCase } from './fetch-many-users-use-case'
 let usersRepository: InMemoryUsersRepository
 let sut: FetchManyUsersContract
 
-describe('Fetch Many Users Use Case Test', () => {
+describe('FetchManyUsersUseCaseTest', () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     sut = new FetchManyUsersUseCase(usersRepository)

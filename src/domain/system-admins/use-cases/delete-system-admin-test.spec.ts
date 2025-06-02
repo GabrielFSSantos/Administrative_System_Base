@@ -11,7 +11,7 @@ import { DeleteSystemAdminUseCase } from './delete-system-admin-use-case'
 let inMemorySystemAdminsRepository: InMemorySystemAdminsRepository
 let sut: DeleteSystemAdminContract
 
-describe('Delete System Admin Use Case Test', () => {
+describe('DeleteSystemAdminUseCaseTest', () => {
   beforeEach(() => {
     inMemorySystemAdminsRepository = new InMemorySystemAdminsRepository()
     sut = new DeleteSystemAdminUseCase(inMemorySystemAdminsRepository)

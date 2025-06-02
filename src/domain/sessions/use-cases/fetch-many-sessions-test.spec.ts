@@ -4,7 +4,7 @@ import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { FetchManySessionsUseCase } from '@/domain/sessions/use-cases/fetch-many-sessions-use-case'
 
-describe('Fetch Many Sessions Test', () => {
+describe('FetchManySessionsTest', () => {
   let sessionsRepository: InMemorySessionsRepository
   let sut: FetchManySessionsUseCase
 

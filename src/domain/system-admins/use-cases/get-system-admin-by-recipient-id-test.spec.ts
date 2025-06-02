@@ -10,7 +10,7 @@ import { GetSystemAdminByRecipientIdUseCase } from './get-system-admin-by-recipi
 let systemAdminsRepository: InMemorySystemAdminsRepository
 let sut: GetSystemAdminByRecipientIdContract
 
-describe('Get System Admin By Recipient ID Use Case Test', () => {
+describe('GetSystemAdminByRecipientIdUseCaseTest', () => {
   beforeEach(() => {
     systemAdminsRepository = new InMemorySystemAdminsRepository()
     sut = new GetSystemAdminByRecipientIdUseCase(systemAdminsRepository)

@@ -7,7 +7,7 @@ import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
 
 import { GetLastSessionByRecipientIdContract } from './contracts/get-last-session-by-recipient-id-contract'
 
-describe('Get Last Session By RecipientId Test', () => {
+describe('GetLastSessionByRecipientIdTest', () => {
   let inMemorySessionsRepository: InMemorySessionsRepository
   let sut: GetLastSessionByRecipientIdContract
 
