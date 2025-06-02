@@ -5,6 +5,7 @@ import { EventHandler } from '@/core/events/event-handler'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
 import { UserPasswordChangedEvent } from '@/domain/users/events/user-password-changed-event'
+import { buildUserPasswordChangedEmail } from '@/i18n/emails/builders/build-user-password-changed-email'
 
 import { EnvServiceContract } from './services/contracts/env-service-contract'
 
@@ -26,17 +27,22 @@ export class OnUserPasswordChanged implements EventHandler {
   }
 
   private async sendPasswordChangedEmail(
-    {user, ocurredAt}: UserPasswordChangedEvent,
+    { user, ocurredAt }: UserPasswordChangedEvent,
   ): Promise<void> {
-
     const from = this.envService.get('DEFAULT_SYSTEM_EMAIL_FROM')
+
+    const emailContent = buildUserPasswordChangedEmail({
+      name: user.name.toString(),
+      date: ocurredAt.toLocaleString(user.locale?.toString() ?? 'pt-BR'),
+      locale: user.locale?.value,
+    })
 
     const createEmailResult = await this.createEmail.execute({
       from,
-      to: user.emailAddress.value,
-      subject: 'Sua senha foi alterada',
-      title: 'Alteração de senha',
-      body: `Olá ${user.name.value}, sua senha foi alterada em ${ocurredAt.toLocaleString()}. Se não foi você, entre em contato conosco imediatamente.`,
+      to: user.emailAddress.toString(),
+      subject: emailContent.subject,
+      title: emailContent.title,
+      body: emailContent.body,
     })
 
     if (createEmailResult.isLeft()) {
@@ -45,9 +51,9 @@ export class OnUserPasswordChanged implements EventHandler {
       return
     }
 
-    const email = createEmailResult.value.email
-
-    const sendEmailResult = await this.sendEmail.execute({ email })
+    const sendEmailResult = await this.sendEmail.execute({
+      email: createEmailResult.value.email,
+    })
 
     if (sendEmailResult.isLeft()) {
       console.error(sendEmailResult.value)

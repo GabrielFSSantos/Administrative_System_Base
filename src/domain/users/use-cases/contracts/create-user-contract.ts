@@ -1,4 +1,3 @@
-
 import { Either } from '@/core/either'
 
 import { User } from '../../entities/user'
@@ -9,6 +8,7 @@ export interface ICreateUserUseCaseRequest {
   name: string
   emailAddress: string
   password: string
+  locale: string
 }
 
 export type ICreateUserUseCaseResponse = Either<
@@ -19,5 +19,7 @@ export type ICreateUserUseCaseResponse = Either<
 >
 
 export abstract class CreateUserContract {
-  abstract execute(input: ICreateUserUseCaseRequest): Promise<ICreateUserUseCaseResponse> 
+  abstract execute(
+    input: ICreateUserUseCaseRequest
+  ): Promise<ICreateUserUseCaseResponse>
 }

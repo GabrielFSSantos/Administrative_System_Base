@@ -1,10 +1,12 @@
 import { makeUser } from 'test/factories/users/make-user'
 import { generateEmailValueObject } from 'test/factories/value-objects/make-email'
+import { generateLocaleValueObject } from 'test/factories/value-objects/make-locale'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { vi } from 'vitest'
 
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
+import { SupportedLocale } from '@/shared/value-objects/locale/locale.enum'
 
 import { EditUserContract } from './contracts/edit-user-contract'
 import { EditUserUseCase } from './edit-user-use-case'
@@ -77,6 +79,25 @@ describe('EditUserUseCaseTest', () => {
     const updated = await usersRepository.findById(user.id.toString())
 
     expect(updated?.emailAddress.toString()).toBe(generateEmailValueObject(newEmail).toString())
+  })
+
+  it('should edit locale if provided', async () => {
+    const user = await makeUser({
+      locale: generateLocaleValueObject(SupportedLocale.PT_BR),
+    })
+
+    await usersRepository.create(user)
+
+    const result = await sut.execute({
+      userId: user.id.toString(),
+      locale: SupportedLocale.EN_US,
+    })
+
+    expect(result.isRight()).toBe(true)
+
+    const updated = await usersRepository.findById(user.id.toString())
+
+    expect(updated?.locale.value).toBe(SupportedLocale.EN_US)
   })
 
   it('should not allow editing to an email that already exists for another user', async () => {

@@ -5,6 +5,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { CPF } from '@/domain/users/entities/value-objects/cpf'
 import { WeakPasswordError } from '@/domain/users/entities/value-objects/errors/weak-password-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
+import { SupportedLocale } from '@/shared/value-objects/locale/locale.enum'
 import { Name } from '@/shared/value-objects/name'
 
 import { CreateUserContract } from './contracts/create-user-contract'
@@ -28,6 +29,7 @@ describe('CreateUserUseCaseTest', () => {
       emailAddress: 'john@example.com',
       password: 'Secure@123',
       cpf: generateValidCPF(),
+      locale: SupportedLocale.PT_BR,
     })
 
     expect(result.isRight()).toBe(true)
@@ -43,6 +45,7 @@ describe('CreateUserUseCaseTest', () => {
       emailAddress: 'john@example.com',
       password: 'Secure@123',
       cpf: generateValidCPF(),
+      locale: SupportedLocale.PT_BR,
     })
 
     const user = inMemoryUsersRepository.items[0]
@@ -58,6 +61,7 @@ describe('CreateUserUseCaseTest', () => {
       emailAddress: 'john@example.com',
       password: 'Plain@123',
       cpf: generateValidCPF(),
+      locale: SupportedLocale.PT_BR,
     })
 
     const user = inMemoryUsersRepository.items[0]
@@ -71,6 +75,7 @@ describe('CreateUserUseCaseTest', () => {
       emailAddress: 'john@example.com',
       password: 'Secure@123',
       cpf: generateValidCPF(),
+      locale: SupportedLocale.PT_BR,
     }
 
     await sut.execute(data)
@@ -88,6 +93,7 @@ describe('CreateUserUseCaseTest', () => {
       emailAddress: 'user1@example.com',
       password: 'Secure@123',
       cpf,
+      locale: SupportedLocale.PT_BR,
     })
 
     const result = await sut.execute({
@@ -95,6 +101,7 @@ describe('CreateUserUseCaseTest', () => {
       emailAddress: 'user2@example.com',
       password: 'Secure@123',
       cpf,
+      locale: SupportedLocale.PT_BR,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -107,6 +114,7 @@ describe('CreateUserUseCaseTest', () => {
       emailAddress: 'weak@example.com',
       password: 'weak',
       cpf: generateValidCPF(),
+      locale: SupportedLocale.PT_BR,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -119,6 +127,7 @@ describe('CreateUserUseCaseTest', () => {
       emailAddress: 'jane@example.com',
       password: 'Secure@123',
       cpf: generateValidCPF(),
+      locale: SupportedLocale.EN_US,
     })
 
     const user = inMemoryUsersRepository.items[0]

@@ -8,7 +8,7 @@ export interface IEditCompanyUseCaseRequest {
   name?: string
   emailAddress?: string
   permissionValues?: string[]
-  locale: string
+  locale?: string
 }
 
 export type IEditCompanyUseCaseResponse = Either<

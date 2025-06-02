@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
-import { left,right } from '@/core/either'
+import { left, right } from '@/core/either'
 import { HashGeneratorContract } from '@/shared/services/cryptography/contracts/hash-generator-contract'
 import { EmailAddress } from '@/shared/value-objects/email-address'
+import { Locale } from '@/shared/value-objects/locale/locale'
 import { Name } from '@/shared/value-objects/name'
 
 import { User } from '../entities/user'
@@ -10,17 +11,17 @@ import { CPF } from '../entities/value-objects/cpf'
 import { PasswordHash } from '../entities/value-objects/password-hash'
 import { UsersRepositoryContract } from '../repositories/contracts/users-repository-contract'
 import {
-  CreateUserContract, 
-  ICreateUserUseCaseRequest, 
-  ICreateUserUseCaseResponse, 
+  CreateUserContract,
+  ICreateUserUseCaseRequest,
+  ICreateUserUseCaseResponse,
 } from './contracts/create-user-contract'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 @Injectable()
 export class CreateUserUseCase implements CreateUserContract {
   constructor(
-    private usersRepository: UsersRepositoryContract,
-    private hashGenerator: HashGeneratorContract,
+    private readonly usersRepository: UsersRepositoryContract,
+    private readonly hashGenerator: HashGeneratorContract,
   ) {}
 
   async execute({
@@ -28,61 +29,51 @@ export class CreateUserUseCase implements CreateUserContract {
     name,
     emailAddress,
     password,
+    locale,
   }: ICreateUserUseCaseRequest): Promise<ICreateUserUseCaseResponse> {
+    const nameOrError = Name.create(name)
 
-    const nameObject = Name.create(name)
+    if (nameOrError.isLeft()) return left(nameOrError.value)
 
-    if(nameObject.isLeft()) {
-      return left(nameObject.value)
-    }
+    const cpfOrError = CPF.create(cpf)
 
-    const cpfObject = CPF.create(cpf)
+    if (cpfOrError.isLeft()) return left(cpfOrError.value)
 
-    if(cpfObject.isLeft()) {
-      return left(cpfObject.value)
-    }
+    const emailOrError = EmailAddress.create(emailAddress)
 
-    const emailObject = EmailAddress.create(emailAddress)
+    if (emailOrError.isLeft()) return left(emailOrError.value)
 
-    if(emailObject.isLeft()) {
-      return left(emailObject.value)
-    }
+    const localeOrError = Locale.create(locale)
 
-    const passwordObject = await PasswordHash.createFromPlain(this.hashGenerator, password)
+    if (localeOrError.isLeft()) return left(localeOrError.value)
 
-    if(passwordObject.isLeft()) {
-      return left(passwordObject.value)
-    }
+    const passwordHashOrError = await PasswordHash.createFromPlain(
+      this.hashGenerator,
+      password,
+    )
 
-    const existingCpfUser =
-      await this.usersRepository.findByCpf(cpfObject.value.toString())
+    if (passwordHashOrError.isLeft()) return left(passwordHashOrError.value)
 
-    if (existingCpfUser) {
-      return left(new UserAlreadyExistsError(cpfObject.value.toString()))
-    }
-    
-    const existingEmailUser =
-      await this.usersRepository.findByEmail(emailObject.value.toString())
+    const cpfExists = await this.usersRepository.findByCpf(cpfOrError.value.toString())
 
-    if (existingEmailUser) {
-      return left(new UserAlreadyExistsError(emailObject.value.toString()))
-    }
+    if (cpfExists) return left(new UserAlreadyExistsError(cpfOrError.value.toString()))
 
-    const user = User.create({
-      cpf: cpfObject.value,
-      name: nameObject.value,
-      emailAddress: emailObject.value,
-      passwordHash: passwordObject.value,
+    const emailExists = await this.usersRepository.findByEmail(emailOrError.value.toString())
+
+    if (emailExists) return left(new UserAlreadyExistsError(emailOrError.value.toString()))
+
+    const userOrError = User.create({
+      cpf: cpfOrError.value,
+      name: nameOrError.value,
+      emailAddress: emailOrError.value,
+      passwordHash: passwordHashOrError.value,
+      locale: localeOrError.value,
     })
 
-    if(user.isLeft()) {
-      return left(user.value)
-    }
+    if (userOrError.isLeft()) return left(userOrError.value)
 
-    await this.usersRepository.create(user.value)
+    await this.usersRepository.create(userOrError.value)
 
-    return right({
-      user: user.value,
-    })
+    return right({ user: userOrError.value })
   }
 }

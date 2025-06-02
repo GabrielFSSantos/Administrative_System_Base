@@ -29,7 +29,7 @@ export class EditRoleUseCase implements EditRoleContract {
       return left(new ResourceNotFoundError())
     }
 
-    if (name) {
+    if (name && name !== role.name.value) {
       const nameObject = Name.create(name)
 
       if(nameObject.isLeft()) {

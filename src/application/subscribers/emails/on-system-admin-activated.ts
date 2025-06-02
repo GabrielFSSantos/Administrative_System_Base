@@ -6,6 +6,7 @@ import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-c
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
 import { SystemAdminActivatedEvent } from '@/domain/system-admins/events/system-admin-activated-event'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
+import { buildSystemAdminActivatedEmail } from '@/i18n/emails/builders/build-system-admin-activated-email'
 
 import { EnvServiceContract } from './services/contracts/env-service-contract'
 
@@ -40,12 +41,18 @@ export class OnSystemAdminActivated implements EventHandler {
 
     const from = this.envService.get('DEFAULT_SYSTEM_EMAIL_FROM')
 
+    const emailContent = buildSystemAdminActivatedEmail({
+      name: user.name.toString(),
+      date: ocurredAt.toLocaleString(user.locale?.toString() ?? 'pt-BR'),
+      locale: user.locale?.value,
+    })
+
     const createEmailResult = await this.createEmail.execute({
       from,
-      to: user.emailAddress.value,
-      subject: 'Você foi ativado como administrador do sistema',
-      title: 'Acesso liberado',
-      body: `Olá ${user.name.value}, seu acesso como administrador do sistema foi ativado em ${ocurredAt.toLocaleString()}. Você já pode acessar todas as funcionalidades administrativas disponíveis.`,
+      to: user.emailAddress.toString(),
+      subject: emailContent.subject,
+      title: emailContent.title,
+      body: emailContent.body,
     })
 
     if (createEmailResult.isLeft()) {
@@ -54,9 +61,9 @@ export class OnSystemAdminActivated implements EventHandler {
       return
     }
 
-    const email = createEmailResult.value.email
-
-    const sendEmailResult = await this.sendEmail.execute({ email })
+    const sendEmailResult = await this.sendEmail.execute({
+      email: createEmailResult.value.email,
+    })
 
     if (sendEmailResult.isLeft()) {
       console.error(sendEmailResult.value)

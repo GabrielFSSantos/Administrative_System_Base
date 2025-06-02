@@ -7,6 +7,7 @@ import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-c
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
 import { MemberActivatedEvent } from '@/domain/members/events/member-activated-event'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
+import { buildMemberActivatedEmail } from '@/i18n/emails/builders/build-member-activated-email'
 
 @Injectable()
 export class OnMemberActivated implements EventHandler {
@@ -37,20 +38,27 @@ export class OnMemberActivated implements EventHandler {
       return
     }
 
-    const owner = await this.companiesRepository.findById(member.ownerId.toString())
+    const company = await this.companiesRepository.findById(member.ownerId.toString())
 
-    if (!owner) {
-      console.error(`Owner with ID ${member.ownerId.toString()} not found.`)
+    if (!company) {
+      console.error(`Company with ID ${member.ownerId.toString()} not found.`)
 
       return
     }
 
+    const emailContent = buildMemberActivatedEmail({
+      name: user.name.toString(),
+      companyName: company.name.toString(),
+      date: ocurredAt.toLocaleString(company.locale.toString()),
+      locale: company.locale.value,
+    })
+
     const createEmailResult = await this.createEmail.execute({
-      from: owner.emailAddress.toString(),
+      from: company.emailAddress.toString(),
       to: user.emailAddress.toString(),
-      subject: 'Você foi ativado como membro de uma empresa',
-      title: 'Acesso liberado',
-      body: `Olá ${user.name.toString()}, seu acesso como membro da empresa ${owner.name.toString()} foi ativado em ${ocurredAt.toLocaleString()}. Você já pode acessar o sistema normalmente.`,
+      subject: emailContent.subject,
+      title: emailContent.title,
+      body: emailContent.body,
     })
 
     if (createEmailResult.isLeft()) {

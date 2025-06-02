@@ -11,6 +11,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DomainEvents } from '@/core/events/domain-events'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
+import { EmailAddress } from '@/shared/value-objects/email-address'
 
 import { OnMemberActivated } from './on-member-activated'
 
@@ -18,20 +19,22 @@ let fakeEmailService: FakeEmailService
 let createEmailUseCase: CreateEmailUseCase
 let sendEmailUseCase: SendEmailUseCase
 let usersRepository: InMemoryUsersRepository
-let membersRepository: InMemoryMembersRepository
 let companiesRepository: InMemoryCompaniesRepository
+let membersRepository: InMemoryMembersRepository
+
 let createSpy: any
 let sendSpy: any
 
 describe('OnMemberActivatedTests', () => {
   beforeEach(() => {
     fakeEmailService = new FakeEmailService()
-    createEmailUseCase = new CreateEmailUseCase()
-    sendEmailUseCase = new SendEmailUseCase(fakeEmailService)
 
     usersRepository = new InMemoryUsersRepository()
-    membersRepository = new InMemoryMembersRepository()
     companiesRepository = new InMemoryCompaniesRepository()
+    membersRepository = new InMemoryMembersRepository()
+
+    createEmailUseCase = new CreateEmailUseCase()
+    sendEmailUseCase = new SendEmailUseCase(fakeEmailService)
 
     createSpy = vi.spyOn(createEmailUseCase, 'execute')
     sendSpy = vi.spyOn(sendEmailUseCase, 'execute')
@@ -46,14 +49,14 @@ describe('OnMemberActivatedTests', () => {
 
   it('should create and send email when member is activated', async () => {
     const user = await makeUser()
-    const owner = await makeCompany()
+    const company = await makeCompany()
     const member = await makeMember({
       recipientId: user.id,
-      ownerId: owner.id,
+      ownerId: company.id,
     })
 
     await usersRepository.create(user)
-    await companiesRepository.create(owner)
+    await companiesRepository.create(company)
     await membersRepository.create(member)
 
     member.activate()
@@ -67,18 +70,17 @@ describe('OnMemberActivatedTests', () => {
 
   it('should not send email if email creation fails', async () => {
     const user = await makeUser({
-      emailAddress: {
-        value: 'invalid-email',
-      } as any,
+      emailAddress: EmailAddress.create('invalid-email').value as EmailAddress,
     })
-    const owner = await makeCompany()
+
+    const company = await makeCompany()
     const member = await makeMember({
       recipientId: user.id,
-      ownerId: owner.id,
+      ownerId: company.id,
     })
 
     await usersRepository.create(user)
-    await companiesRepository.create(owner)
+    await companiesRepository.create(company)
     await membersRepository.create(member)
 
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})

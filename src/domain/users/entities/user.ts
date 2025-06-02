@@ -4,6 +4,7 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
+import { Locale } from '@/shared/value-objects/locale/locale'
 import { Name } from '@/shared/value-objects/name'
 
 import { UserPasswordChangedEvent } from '../events/user-password-changed-event'
@@ -11,50 +12,60 @@ import { CPF } from './value-objects/cpf'
 import { PasswordHash } from './value-objects/password-hash'
 
 export interface UserProps {
-  cpf: CPF
   name: Name
   emailAddress: EmailAddress
+  cpf: CPF
   passwordHash: PasswordHash
+  locale: Locale
   createdAt: Date
   updatedAt: Date | null
 }
 
 export class User extends AggregateRoot<UserProps> {
-  get cpf(): CPF {
-    return this.props.cpf
-  }
-
-  get name(): Name {
+  get name() {
     return this.props.name
   }
 
-  get emailAddress(): EmailAddress {
+  get emailAddress() {
     return this.props.emailAddress
   }
 
-  get passwordHash(): PasswordHash {
+  get cpf() {
+    return this.props.cpf
+  }
+
+  get passwordHash() {
     return this.props.passwordHash
   }
 
-  get createdAt(): Date {
+  get locale() {
+    return this.props.locale
+  }
+
+  get createdAt() {
     return this.props.createdAt
   }
 
-  get updatedAt(): Date | null {
+  get updatedAt() {
     return this.props.updatedAt
   }
 
-  private touch(): void {
+  private touch() {
     this.props.updatedAt = new Date()
   }
 
-  public changeName(newName: Name): void {
-    this.props.name = newName
+  public changeName(name: Name) {
+    this.props.name = name
     this.touch()
   }
 
-  public changeEmail(newEmailAddress: EmailAddress): void {
-    this.props.emailAddress = newEmailAddress
+  public changeEmail(email: EmailAddress) {
+    this.props.emailAddress = email
+    this.touch()
+  }
+
+  public changeLocale(locale: Locale) {
+    this.props.locale = locale
     this.touch()
   }
 
@@ -66,19 +77,17 @@ export class User extends AggregateRoot<UserProps> {
   }
 
   static create(
-    props: Optional<UserProps,  'createdAt' | 'updatedAt'>,
+    props: Optional<UserProps, 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId,
   ): Either<
       InvalidUpdatedAtError,
       User
     > {
-
     const createdAt = props.createdAt ?? new Date()
     const updatedAt = props.updatedAt ?? null
 
     if (updatedAt && updatedAt < createdAt) {
       return left(new InvalidUpdatedAtError())
-
     }
 
     const user = new User(
@@ -89,7 +98,7 @@ export class User extends AggregateRoot<UserProps> {
       },
       id,
     )
-    
+
     return right(user)
   }
 }

@@ -52,6 +52,15 @@ export class EditCompanyUseCase implements EditCompanyContract {
       company.changeEmail(emailOrError.value)
     }
 
+    if (locale && locale !== company.locale.value) {
+      const localeOrError = Locale.create(locale)
+
+      if (localeOrError.isLeft()) {
+        return left(localeOrError.value)
+      }
+      company.changeLocale(localeOrError.value)
+    }
+
     if (permissionValues) {
       const permissionsOrError = validateAndParsePermissions(permissionValues)
 
@@ -61,15 +70,6 @@ export class EditCompanyUseCase implements EditCompanyContract {
       const permissionList = PermissionList.create(permissionsOrError.value)
 
       company.updatePermissions(permissionList.getItems())
-    }
-
-    if (locale && locale !== company.locale.value) {
-      const localeOrError = Locale.create(locale)
-
-      if (localeOrError.isLeft()) {
-        return left(localeOrError.value)
-      }
-      company.changeLocale(localeOrError.value)
     }
 
     await this.companiesRepository.save(company)

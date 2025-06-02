@@ -6,6 +6,7 @@ import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-c
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
 import { SessionCreatedEvent } from '@/domain/sessions/events/create-session-event'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
+import { buildSessionCreatedEmail } from '@/i18n/emails/builders/build-session-created-email'
 
 import { EnvServiceContract } from './services/contracts/env-service-contract'
 
@@ -40,12 +41,18 @@ export class OnSessionCreated implements EventHandler {
 
     const from = this.envService.get('DEFAULT_SYSTEM_EMAIL_FROM')
 
+    const emailContent = buildSessionCreatedEmail({
+      name: user.name.toString(),
+      date: ocurredAt.toLocaleString(user.locale?.toString() ?? 'pt-BR'),
+      locale: user.locale?.value,
+    })
+
     const createEmailResult = await this.createEmail.execute({
       from,
-      to: user.emailAddress.value,
-      subject: 'Novo login detectado',
-      title: 'Nova sessão iniciada',
-      body: `Olá ${user.name.value}, uma nova sessão foi iniciada na sua conta em ${ocurredAt.toLocaleString()}. Se não foi você, recomendamos trocar sua senha imediatamente.`,
+      to: user.emailAddress.toString(),
+      subject: emailContent.subject,
+      title: emailContent.title,
+      body: emailContent.body,
     })
 
     if (createEmailResult.isLeft()) {
@@ -54,9 +61,9 @@ export class OnSessionCreated implements EventHandler {
       return
     }
 
-    const email = createEmailResult.value.email
-
-    const sendEmailResult = await this.sendEmail.execute({ email })
+    const sendEmailResult = await this.sendEmail.execute({
+      email: createEmailResult.value.email,
+    })
 
     if (sendEmailResult.isLeft()) {
       console.error(sendEmailResult.value)

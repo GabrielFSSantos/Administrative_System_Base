@@ -9,6 +9,7 @@ export interface IEditUserUseCaseRequest {
   userId: string
   name?: string
   emailAddress?: string
+  locale?: string
 }
 
 export type IEditUserUseCaseResponse = Either<

@@ -1,6 +1,7 @@
 import { makeUser } from 'test/factories/users/make-user'
 import { generatePasswordHashValueObject } from 'test/factories/users/value-objects/make-password-hash'
 import { generateEmailValueObject } from 'test/factories/value-objects/make-email'
+import { generateLocaleValueObject } from 'test/factories/value-objects/make-locale'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
@@ -9,6 +10,7 @@ import { CPF } from '@/domain/users/entities/value-objects/cpf'
 import { PasswordHash } from '@/domain/users/entities/value-objects/password-hash'
 import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
+import { Locale } from '@/shared/value-objects/locale/locale'
 import { Name } from '@/shared/value-objects/name'
 
 import { UserPasswordChangedEvent } from '../events/user-password-changed-event'
@@ -22,6 +24,7 @@ describe('UserEntityTest', () => {
     expect(user.emailAddress).toBeInstanceOf(EmailAddress)
     expect(user.cpf).toBeInstanceOf(CPF)
     expect(user.passwordHash).toBeInstanceOf(PasswordHash)
+    expect(user.locale).toBeInstanceOf(Locale)
   })
 
   it('should not create user if updatedAt is before createdAt', async () => {
@@ -30,16 +33,15 @@ describe('UserEntityTest', () => {
 
     const baseUser = await makeUser()
 
-    const result = User.create(
-      {
-        cpf: baseUser.cpf,
-        name: baseUser.name,
-        emailAddress: baseUser.emailAddress,
-        passwordHash: baseUser.passwordHash,
-        createdAt,
-        updatedAt,
-      },
-    )
+    const result = User.create({
+      cpf: baseUser.cpf,
+      name: baseUser.name,
+      emailAddress: baseUser.emailAddress,
+      passwordHash: baseUser.passwordHash,
+      locale: baseUser.locale,
+      createdAt,
+      updatedAt,
+    })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(InvalidUpdatedAtError)
@@ -78,6 +80,18 @@ describe('UserEntityTest', () => {
     user.changePasswordHash(newPasswordHash)
 
     expect(user.passwordHash).toBe(newPasswordHash)
+    expect(user.updatedAt?.getTime()).toBeGreaterThan(before?.getTime() ?? 0)
+  })
+
+  it('should update locale and refresh updatedAt', async () => {
+    const user = await makeUser()
+    const before = user.updatedAt
+
+    const newLocale = generateLocaleValueObject()
+
+    user.changeLocale(newLocale)
+
+    expect(user.locale).toBe(newLocale)
     expect(user.updatedAt?.getTime()).toBeGreaterThan(before?.getTime() ?? 0)
   })
 

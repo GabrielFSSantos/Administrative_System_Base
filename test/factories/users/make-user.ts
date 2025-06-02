@@ -2,6 +2,7 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { User, UserProps} from '@/domain/users/entities/user'
 
 import { generateEmailValueObject } from '../value-objects/make-email'
+import { generateLocaleValueObject } from '../value-objects/make-locale'
 import { generateNameValueObject } from '../value-objects/make-name'
 import { generateCPFValueObject } from './value-objects/make-cpf'
 import { generatePasswordHashValueObject } from './value-objects/make-password-hash'
@@ -15,6 +16,7 @@ export async function makeUser(
   const name = override.name ?? generateNameValueObject()
   const emailAddress = override.emailAddress ?? generateEmailValueObject()
   const passwordHash = override.passwordHash ?? await generatePasswordHashValueObject()
+  const locale = override.locale ?? generateLocaleValueObject()
 
   const user = User.create(
     {
@@ -22,6 +24,7 @@ export async function makeUser(
       name,
       emailAddress,
       passwordHash,
+      locale,
       ...override,
     },
     id,
