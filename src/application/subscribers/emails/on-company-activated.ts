@@ -5,6 +5,7 @@ import { EventHandler } from '@/core/events/event-handler'
 import { CompanyActivatedEvent } from '@/domain/companies/events/company-activated-event'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
+import { buildCompanyActivatedEmail } from '@/i18n/emails/builders/build-company-activated-email'
 
 import { EnvServiceContract } from './services/contracts/env-service-contract'
 
@@ -30,12 +31,18 @@ export class OnCompanyActivated implements EventHandler {
   ): Promise<void> {
     const from = this.envService.get('DEFAULT_SYSTEM_EMAIL_FROM')
 
+    const emailContent = buildCompanyActivatedEmail({
+      name: company.name.toString(),
+      date: ocurredAt.toLocaleString(company.locale.toString()),
+      locale: company.locale.value,
+    })
+
     const createEmailResult = await this.createEmail.execute({
       from,
       to: company.emailAddress.toString(),
-      subject: 'Sua empresa foi ativada',
-      title: 'Parabéns!',
-      body: `Olá ${company.name.toString()}, sua empresa foi ativada com sucesso em ${ocurredAt.toLocaleString()}. Agora você já pode acessar o sistema com todas as funcionalidades liberadas.`,
+      subject: emailContent.subject,
+      title: emailContent.title,
+      body: emailContent.body,
     })
 
     if (createEmailResult.isLeft()) {

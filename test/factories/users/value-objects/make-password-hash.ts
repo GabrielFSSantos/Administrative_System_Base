@@ -1,5 +1,5 @@
 
-import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
+import { FakeHasher } from 'test/fakes/services/cryptography/fake-hasher'
 
 import { PasswordHash } from '@/domain/users/entities/value-objects/password-hash'
 

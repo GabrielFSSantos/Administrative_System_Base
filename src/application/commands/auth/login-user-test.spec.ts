@@ -1,5 +1,5 @@
-import { FakeCreateSessionUseCase } from 'test/fakes/sessions/fake-create-session-use-case'
-import { FakeAuthenticateUserUseCase } from 'test/fakes/users/fake-authenticate-user-use-case'
+import { FakeCreateSessionUseCase } from 'test/fakes/use-cases/sessions/fake-create-session-use-case'
+import { FakeAuthenticateUserUseCase } from 'test/fakes/use-cases/users/fake-authenticate-user-use-case'
 
 import { WrongCredentialsError } from '@/domain/users/use-cases/errors/wrong-credentials-error'
 

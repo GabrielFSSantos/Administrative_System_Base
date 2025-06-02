@@ -1,7 +1,7 @@
 import { makeCompany } from 'test/factories/companies/make-company'
 import { makeMember } from 'test/factories/members/make-member'
 import { makeUser } from 'test/factories/users/make-user'
-import { FakeEmailService } from 'test/fakes/emails/fake-send-email'
+import { FakeEmailService } from 'test/fakes/services/emails/fake-send-email'
 import { InMemoryCompaniesRepository } from 'test/repositories/in-memory-companies-repository'
 import { InMemoryMembersRepository } from 'test/repositories/in-memory-members-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'

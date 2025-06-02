@@ -1,5 +1,5 @@
 import { makeEmail } from 'test/factories/emails/make-email'
-import { FakeEmailService } from 'test/fakes/emails/fake-send-email'
+import { FakeEmailService } from 'test/fakes/services/emails/fake-send-email'
 
 import { SendEmailContract } from '@/domain/emails/use-cases/contracts/send-email-contract'
 import { SendEmailError } from '@/domain/emails/use-cases/errors/send-email-error'

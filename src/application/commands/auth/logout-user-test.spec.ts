@@ -1,6 +1,6 @@
 import { makeSession } from 'test/factories/sessions/make-session'
 import { generateAccessTokenValueObject } from 'test/factories/sessions/value-objects/make-access-token'
-import { FakeRevokeSessionUseCase } from 'test/fakes/sessions/fake-revoke-session-use-case'
+import { FakeRevokeSessionUseCase } from 'test/fakes/use-cases/sessions/fake-revoke-session-use-case'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { SessionExpiredError } from '@/domain/sessions/use-cases/errors/session-expired-error'

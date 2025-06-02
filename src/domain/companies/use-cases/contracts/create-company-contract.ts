@@ -8,6 +8,7 @@ export interface ICreateCompanyUseCaseRequest {
   name: string
   emailAddress: string
   permissionValues: string[]
+  locale: string
 }
 
 export type ICreateCompanyUseCaseResponse = Either<

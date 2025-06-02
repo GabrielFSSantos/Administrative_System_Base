@@ -1,22 +1,25 @@
 import { makeCompany } from 'test/factories/companies/make-company'
 import { generateEmailValueObject } from 'test/factories/value-objects/make-email'
+import { generateLocaleValueObject } from 'test/factories/value-objects/make-locale'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
-import { generatePermissionValueObject } from 'test/factories/value-objects/make-permissions'
+import { generatePermissionList, generatePermissionValueObject } from 'test/factories/value-objects/make-permissions'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Company } from '@/domain/companies/entities/company'
 import { InvalidUpdatedAtError } from '@/shared/errors/invalid-updated-at-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
+import { SupportedLocale } from '@/shared/value-objects/locale/locale.enum'
 import { Name } from '@/shared/value-objects/name'
 
-describe('CompanyEntityTest', () => {
-  it('should create a valid company with makeCompany()', async () => {
+describe('CompanyEntityTests', () => {
+  it('should create a valid company using makeCompany()', async () => {
     const company = await makeCompany()
 
     expect(company).toBeInstanceOf(Company)
     expect(company.name).toBeInstanceOf(Name)
     expect(company.emailAddress).toBeInstanceOf(EmailAddress)
     expect(company.cnpj).toBeDefined()
+    expect(company.locale.value).toMatch(/pt-BR|en-US/)
   })
 
   it('should not create company if updatedAt is before createdAt', async () => {
@@ -25,16 +28,16 @@ describe('CompanyEntityTest', () => {
 
     const base = await makeCompany()
 
-    const result = Company.create(
-      {
-        cnpj: base.cnpj,
-        name: base.name,
-        emailAddress: base.emailAddress,
-        activationStatus: base.activationStatus,
-        createdAt,
-        updatedAt,
-      },
-    )
+    const result = Company.create({
+      cnpj: base.cnpj,
+      name: base.name,
+      emailAddress: base.emailAddress,
+      activationStatus: base.activationStatus,
+      permissions: generatePermissionList(),
+      locale: base.locale,
+      createdAt,
+      updatedAt,
+    })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(InvalidUpdatedAtError)
@@ -49,7 +52,7 @@ describe('CompanyEntityTest', () => {
     company.changeName(newName)
 
     expect(company.name).toBe(newName)
-    expect(company.updatedAt?.getTime()).toBeGreaterThan(before?.getTime() ?? 0)
+    expect(company.updatedAt!.getTime()).toBeGreaterThan(before?.getTime() ?? 0)
   })
 
   it('should update email and refresh updatedAt', async () => {
@@ -61,7 +64,7 @@ describe('CompanyEntityTest', () => {
     company.changeEmail(newEmail)
 
     expect(company.emailAddress).toBe(newEmail)
-    expect(company.updatedAt?.getTime()).toBeGreaterThan(before?.getTime() ?? 0)
+    expect(company.updatedAt!.getTime()).toBeGreaterThan(before?.getTime() ?? 0)
   })
 
   it('should handle permissions correctly', async () => {
@@ -92,5 +95,12 @@ describe('CompanyEntityTest', () => {
     const company = await makeCompany({}, customId)
 
     expect(company.id).toEqual(customId)
+  })
+
+  it('should accept and expose the locale value', async () => {
+    const locale = generateLocaleValueObject(SupportedLocale.EN_US)
+    const company = await makeCompany({ locale })
+
+    expect(company.locale.value.toString()).toBe('en-US')
   })
 })

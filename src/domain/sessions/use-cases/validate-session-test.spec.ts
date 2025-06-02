@@ -98,10 +98,14 @@ describe('ValidateSessionTest', () => {
   it('should return SessionAlreadyRevokedError for revoked session', async () => {
     const accessToken = generateAccessTokenValueObject()
 
+    const createdAt = new Date()
+    const revokedAt = new Date(createdAt.getTime() + 1) // +1ms para garantir ordem correta
+
     const session = makeSession({
       recipientId: UniqueEntityId.create('user-1'),
       accessToken,
-      revokedAt: new Date(),
+      createdAt,
+      revokedAt,
     })
 
     await inMemorySessionsRepository.create(session)
@@ -114,4 +118,5 @@ describe('ValidateSessionTest', () => {
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(SessionAlreadyRevokedError)
   })
+
 })

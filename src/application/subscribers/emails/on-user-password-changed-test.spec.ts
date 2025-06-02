@@ -1,7 +1,7 @@
 import { makeUser } from 'test/factories/users/make-user'
 import { generatePasswordHashValueObject } from 'test/factories/users/value-objects/make-password-hash'
-import { FakeEmailService } from 'test/fakes/emails/fake-send-email'
-import { FakeEnvService } from 'test/fakes/env/fake-env-service'
+import { FakeEmailService } from 'test/fakes/services/emails/fake-send-email'
+import { FakeEnvService } from 'test/fakes/services/env/fake-env-service'
 import { waitFor } from 'test/utils/wait.for'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 

@@ -1,10 +1,12 @@
 import { makeCompany } from 'test/factories/companies/make-company'
 import { generateEmailValueObject } from 'test/factories/value-objects/make-email'
+import { generateLocaleValueObject } from 'test/factories/value-objects/make-locale'
 import { generateNameValueObject } from 'test/factories/value-objects/make-name'
 import { InMemoryCompaniesRepository } from 'test/repositories/in-memory-companies-repository'
 import { vi } from 'vitest'
 
 import { ResourceNotFoundError } from '@/shared/errors/resource-not-found-error'
+import { SupportedLocale } from '@/shared/value-objects/locale/locale.enum'
 
 import { EditCompanyContract } from './contracts/edit-company-contract'
 import { EditCompanyUseCase } from './edit-company-use-case'
@@ -30,7 +32,8 @@ describe('EditCompanyUseCaseTest', () => {
       companyId: company.id.toString(),
       name: newName,
       emailAddress: newEmail,
-      permissionValues: [], 
+      permissionValues: [],
+      locale: company.locale.value,
     })
 
     expect(result.isRight()).toBe(true)
@@ -52,6 +55,7 @@ describe('EditCompanyUseCaseTest', () => {
       companyId: company.id.toString(),
       name: newName,
       permissionValues: [],
+      locale: company.locale.value,
     })
 
     expect(result.isRight()).toBe(true)
@@ -72,6 +76,7 @@ describe('EditCompanyUseCaseTest', () => {
       companyId: company.id.toString(),
       emailAddress: newEmail,
       permissionValues: [],
+      locale: company.locale.value,
     })
 
     expect(result.isRight()).toBe(true)
@@ -81,11 +86,32 @@ describe('EditCompanyUseCaseTest', () => {
     expect(updated?.emailAddress.toString()).toBe(generateEmailValueObject(newEmail).toString())
   })
 
+  it('should edit the locale if provided', async () => {
+    const company = await makeCompany({
+      locale: generateLocaleValueObject(SupportedLocale.PT_BR),
+    })
+
+    await companiesRepository.create(company)
+
+    const result = await sut.execute({
+      companyId: company.id.toString(),
+      permissionValues: [],
+      locale: SupportedLocale.EN_US,
+    })
+
+    expect(result.isRight()).toBe(true)
+
+    const updated = await companiesRepository.findById(company.id.toString())
+
+    expect(updated?.locale.value).toBe(SupportedLocale.EN_US)
+  })
+
   it('should return error if company does not exist', async () => {
     const result = await sut.execute({
       companyId: 'non-existent-id',
       name: 'Does Not Matter',
       permissionValues: [],
+      locale: SupportedLocale.PT_BR,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -103,6 +129,7 @@ describe('EditCompanyUseCaseTest', () => {
       companyId: company.id.toString(),
       name: 'Tracked Save Call',
       permissionValues: [],
+      locale: company.locale.value,
     })
 
     expect(spy).toHaveBeenCalledWith(expect.objectContaining({ id: company.id }))
@@ -119,6 +146,7 @@ describe('EditCompanyUseCaseTest', () => {
       companyId: company.id.toString(),
       name: 'With Timestamp',
       permissionValues: [],
+      locale: company.locale.value,
     })
 
     const updatedCompany = await companiesRepository.findById(company.id.toString())

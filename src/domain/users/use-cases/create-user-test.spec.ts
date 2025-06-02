@@ -1,5 +1,5 @@
 import { generateValidCPF } from 'test/factories/users/value-objects/make-cpf'
-import { FakeHasher } from 'test/fakes/cryptography/fake-hasher'
+import { FakeHasher } from 'test/fakes/services/cryptography/fake-hasher'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 
 import { CPF } from '@/domain/users/entities/value-objects/cpf'

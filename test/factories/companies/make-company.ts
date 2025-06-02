@@ -3,6 +3,7 @@ import { Company, CompanyProps } from '@/domain/companies/entities/company'
 
 import { generateActivationStatusValueObject } from '../value-objects/make-activation-status'
 import { generateEmailValueObject } from '../value-objects/make-email'
+import { generateLocaleValueObject } from '../value-objects/make-locale'
 import { generateNameValueObject } from '../value-objects/make-name'
 import { generatePermissionList } from '../value-objects/make-permissions'
 import { generateCNPJValueObject } from './value-objects/make-cnpj'
@@ -16,6 +17,7 @@ export async function makeCompany(
   const emailAddress = override.emailAddress ?? generateEmailValueObject()
   const permissions = override.permissions ?? generatePermissionList(1)
   const activationStatus = override.activationStatus ?? generateActivationStatusValueObject(false)
+  const locale = override.locale ?? generateLocaleValueObject()
 
   const companyOrError = Company.create(
     {
@@ -24,6 +26,7 @@ export async function makeCompany(
       emailAddress,
       permissions,
       activationStatus,
+      locale,
       ...override,
     },
     id,

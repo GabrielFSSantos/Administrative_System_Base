@@ -1,12 +1,14 @@
 import { makeCompany } from 'test/factories/companies/make-company'
-import { FakeEmailService } from 'test/fakes/emails/fake-send-email'
-import { FakeEnvService } from 'test/fakes/env/fake-env-service'
+import { generateLocaleValueObject } from 'test/factories/value-objects/make-locale'
+import { FakeEmailService } from 'test/fakes/services/emails/fake-send-email'
+import { FakeEnvService } from 'test/fakes/services/env/fake-env-service'
 import { waitFor } from 'test/utils/wait.for'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { DomainEvents } from '@/core/events/domain-events'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
+import { SupportedLocale } from '@/shared/value-objects/locale/locale.enum'
 
 import { OnCompanyActivated } from './on-company-activated'
 
@@ -66,4 +68,22 @@ describe('OnCompanyActivatedTests', () => {
 
     errorSpy.mockRestore()
   })
+
+  it('should create email in English when company locale is en-US', async () => {
+    const company = await makeCompany({
+      locale: generateLocaleValueObject(SupportedLocale.EN_US),
+    })
+
+    company.activate()
+    DomainEvents.dispatchEventsForAggregate(company.id)
+
+    await waitFor(() => {
+      expect(createSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          subject: 'Your company has been activated',
+        }),
+      )
+    })
+  })
+
 })

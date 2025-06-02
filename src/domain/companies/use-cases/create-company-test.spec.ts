@@ -4,6 +4,7 @@ import { InMemoryCompaniesRepository } from 'test/repositories/in-memory-compani
 import { CreateCompanyContract } from '@/domain/companies/use-cases/contracts/create-company-contract'
 import { CreateCompanyUseCase } from '@/domain/companies/use-cases/create-company-use-case'
 import { CompanyAlreadyExistsError } from '@/domain/companies/use-cases/errors/company-already-exists-error'
+import { SupportedLocale } from '@/shared/value-objects/locale/locale.enum'
 
 let companiesRepository: InMemoryCompaniesRepository
 let sut: CreateCompanyContract
@@ -22,6 +23,7 @@ describe('CreateCompanyUseCase', () => {
       name: 'Test Company',
       emailAddress: 'test@company.com',
       permissionValues: ['create_user'],
+      locale: SupportedLocale.PT_BR,
     })
 
     expect(result.isRight()).toBe(true)
@@ -31,6 +33,7 @@ describe('CreateCompanyUseCase', () => {
       expect(result.value.company.cnpj.value).toBe(validCNPJ)
       expect(result.value.company.name.value).toBe('Test Company')
       expect(result.value.company.emailAddress.value).toBe('test@company.com')
+      expect(result.value.company.locale.value).toBe(SupportedLocale.PT_BR)
     }
   })
 
@@ -42,6 +45,7 @@ describe('CreateCompanyUseCase', () => {
       name: 'Test Company',
       emailAddress: 'test@company.com',
       permissionValues: ['create_user'],
+      locale: SupportedLocale.PT_BR,
     })
 
     const result = await sut.execute({
@@ -49,6 +53,7 @@ describe('CreateCompanyUseCase', () => {
       name: 'Another Company',
       emailAddress: 'another@company.com',
       permissionValues: ['delete_user'],
+      locale: SupportedLocale.PT_BR,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -63,11 +68,13 @@ describe('CreateCompanyUseCase', () => {
       name: 'Test Company',
       emailAddress: 'test@company.com',
       permissionValues: ['create_user'],
+      locale: SupportedLocale.PT_BR,
     })
 
     const stored = await companiesRepository.findByCNPJ(validCNPJ)
 
     expect(stored).not.toBeNull()
     expect(stored?.cnpj.value).toBe(validCNPJ)
+    expect(stored?.locale.value).toBe(SupportedLocale.PT_BR)
   })
 })

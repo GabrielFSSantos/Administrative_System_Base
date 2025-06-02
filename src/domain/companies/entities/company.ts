@@ -7,6 +7,7 @@ import { ActivationStatus } from '@/shared/value-objects/activation-status/activ
 import { AlreadyActivatedError } from '@/shared/value-objects/activation-status/errors/already-activated-error'
 import { AlreadyDeactivatedError } from '@/shared/value-objects/activation-status/errors/already-deactivated-error'
 import { EmailAddress } from '@/shared/value-objects/email-address'
+import { Locale } from '@/shared/value-objects/locale/locale'
 import { Name } from '@/shared/value-objects/name'
 import { PermissionName } from '@/shared/value-objects/permission-name'
 import { PermissionList } from '@/shared/watched-lists/permission-list/permission-list'
@@ -20,6 +21,7 @@ export interface CompanyProps {
   emailAddress: EmailAddress
   permissions: PermissionList
   activationStatus: ActivationStatus
+  locale: Locale
   createdAt: Date
   updatedAt: Date | null
 }
@@ -41,6 +43,10 @@ export class Company extends AggregateRoot<CompanyProps> {
     return this.props.activationStatus
   }
 
+  get locale(): Locale {
+    return this.props.locale
+  }
+
   get createdAt(): Date {
     return this.props.createdAt
   }
@@ -60,6 +66,11 @@ export class Company extends AggregateRoot<CompanyProps> {
 
   public changeEmail(newEmailAddress: EmailAddress): void {
     this.props.emailAddress = newEmailAddress
+    this.touch()
+  }
+
+  public changeLocale(newLocale: Locale): void {
+    this.props.locale = newLocale
     this.touch()
   }
 
@@ -119,6 +130,7 @@ export class Company extends AggregateRoot<CompanyProps> {
 
     const activationStatus = props.activationStatus ?? ActivationStatus.deactivated()
     const permissionList = props.permissions ?? PermissionList.create()
+    const locale = props.locale ?? Locale.create('pt-BR').value
 
     const company = new Company(
       {
@@ -127,6 +139,7 @@ export class Company extends AggregateRoot<CompanyProps> {
         emailAddress: props.emailAddress,
         permissions: permissionList,
         activationStatus,
+        locale,
         createdAt,
         updatedAt,
       },
