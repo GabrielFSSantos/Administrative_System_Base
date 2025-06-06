@@ -4,6 +4,7 @@ import { DomainEvents } from '@/core/events/domain-events'
 import { EventHandler } from '@/core/events/event-handler'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
+import { CreateFailureLogUseCase } from '@/domain/failure-logs/use-cases/create-failure-log-use-case'
 import { SessionCreatedEvent } from '@/domain/sessions/events/create-session-event'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
 import { buildSessionCreatedEmail } from '@/i18n/emails/builders/build-session-created-email'
@@ -17,6 +18,7 @@ export class OnSessionCreated implements EventHandler {
     private readonly createEmail: CreateEmailUseCase,
     private readonly sendEmail: SendEmailUseCase,
     private readonly envService: EnvServiceContract,
+    private readonly createFailureLog: CreateFailureLogUseCase,
   ) {
     this.setupSubscriptions()
   }
@@ -34,7 +36,11 @@ export class OnSessionCreated implements EventHandler {
     const user = await this.usersRepository.findById(session.recipientId.toString())
 
     if (!user) {
-      console.error(`User with ID ${session.recipientId.toString()} not found.`)
+      await this.createFailureLog.execute({
+        context: 'OnSessionCreated',
+        errorName: 'UserNotFoundError',
+        errorMessage: `User with ID ${session.recipientId.toString()} not found.`,
+      })
 
       return
     }
@@ -56,7 +62,12 @@ export class OnSessionCreated implements EventHandler {
     })
 
     if (createEmailResult.isLeft()) {
-      console.error(createEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'OnSessionCreated',
+        errorName: createEmailResult.value.name,
+        errorMessage: createEmailResult.value.message,
+        stack: createEmailResult.value.stack,
+      })
 
       return
     }
@@ -66,7 +77,12 @@ export class OnSessionCreated implements EventHandler {
     })
 
     if (sendEmailResult.isLeft()) {
-      console.error(sendEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'OnSessionCreated',
+        errorName: sendEmailResult.value.name,
+        errorMessage: sendEmailResult.value.message,
+        stack: sendEmailResult.value.stack,
+      })
     }
   }
 }

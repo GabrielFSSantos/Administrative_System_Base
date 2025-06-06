@@ -5,6 +5,7 @@ import { EventHandler } from '@/core/events/event-handler'
 import { CompanyActivatedEvent } from '@/domain/companies/events/company-activated-event'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
+import { CreateFailureLogUseCase } from '@/domain/failure-logs/use-cases/create-failure-log-use-case'
 import { buildCompanyActivatedEmail } from '@/i18n/emails/builders/build-company-activated-email'
 
 import { EnvServiceContract } from './services/contracts/env-service-contract'
@@ -15,6 +16,7 @@ export class OnCompanyActivated implements EventHandler {
     private readonly createEmail: CreateEmailUseCase,
     private readonly sendEmail: SendEmailUseCase,
     private readonly envService: EnvServiceContract,
+    private readonly createFailureLog: CreateFailureLogUseCase,
   ) {
     this.setupSubscriptions()
   }
@@ -46,7 +48,18 @@ export class OnCompanyActivated implements EventHandler {
     })
 
     if (createEmailResult.isLeft()) {
-      console.error(createEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'OnCompanyActivated',
+        errorName: createEmailResult.value.name,
+        errorMessage: createEmailResult.value.message,
+        stack: createEmailResult.value.stack,
+        payload: {
+          companyId: company.id.toString(),
+          from,
+          to: company.emailAddress.toString(),
+          subject: emailContent.subject,
+        },
+      })
 
       return
     }
@@ -56,7 +69,16 @@ export class OnCompanyActivated implements EventHandler {
     const sendEmailResult = await this.sendEmail.execute({ email })
 
     if (sendEmailResult.isLeft()) {
-      console.error(sendEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'OnCompanyActivated',
+        errorName: sendEmailResult.value.name,
+        errorMessage: sendEmailResult.value.message,
+        stack: sendEmailResult.value.stack,
+        payload: {
+          companyId: company.id.toString(),
+          emailId: email.id.toString(),
+        },
+      })
     }
   }
 }

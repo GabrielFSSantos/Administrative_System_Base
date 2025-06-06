@@ -4,6 +4,7 @@ import { DomainEvents } from '@/core/events/domain-events'
 import { EventHandler } from '@/core/events/event-handler'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
+import { CreateFailureLogUseCase } from '@/domain/failure-logs/use-cases/create-failure-log-use-case'
 import { UserPasswordChangedEvent } from '@/domain/users/events/user-password-changed-event'
 import { buildUserPasswordChangedEmail } from '@/i18n/emails/builders/build-user-password-changed-email'
 
@@ -15,6 +16,7 @@ export class OnUserPasswordChanged implements EventHandler {
     private readonly createEmail: CreateEmailUseCase,
     private readonly sendEmail: SendEmailUseCase,
     private readonly envService: EnvServiceContract,
+    private readonly createFailureLog: CreateFailureLogUseCase,
   ) {
     this.setupSubscriptions()
   }
@@ -46,7 +48,15 @@ export class OnUserPasswordChanged implements EventHandler {
     })
 
     if (createEmailResult.isLeft()) {
-      console.error(createEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'on-user-password-changed',
+        errorName: createEmailResult.value.constructor.name,
+        errorMessage: createEmailResult.value.message,
+        payload: {
+          userId: user.id.toString(),
+          email: user.emailAddress.toString(),
+        },
+      })
 
       return
     }
@@ -56,7 +66,15 @@ export class OnUserPasswordChanged implements EventHandler {
     })
 
     if (sendEmailResult.isLeft()) {
-      console.error(sendEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'on-user-password-changed',
+        errorName: sendEmailResult.value.constructor.name,
+        errorMessage: sendEmailResult.value.message,
+        payload: {
+          userId: user.id.toString(),
+          email: user.emailAddress.toString(),
+        },
+      })
     }
   }
 }

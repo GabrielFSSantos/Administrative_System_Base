@@ -5,6 +5,7 @@ import { EventHandler } from '@/core/events/event-handler'
 import { CompaniesRepositoryContract } from '@/domain/companies/repositories/contracts/companies-repository-contract'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
+import { CreateFailureLogUseCase } from '@/domain/failure-logs/use-cases/create-failure-log-use-case'
 import { MemberActivatedEvent } from '@/domain/members/events/member-activated-event'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
 import { buildMemberActivatedEmail } from '@/i18n/emails/builders/build-member-activated-email'
@@ -16,6 +17,7 @@ export class OnMemberActivated implements EventHandler {
     private readonly companiesRepository: CompaniesRepositoryContract,
     private readonly createEmail: CreateEmailUseCase,
     private readonly sendEmail: SendEmailUseCase,
+    private readonly createFailureLog: CreateFailureLogUseCase,
   ) {
     this.setupSubscriptions()
   }
@@ -33,7 +35,12 @@ export class OnMemberActivated implements EventHandler {
     const user = await this.usersRepository.findById(member.recipientId.toString())
 
     if (!user) {
-      console.error(`User with ID ${member.recipientId.toString()} not found.`)
+      await this.createFailureLog.execute({
+        context: 'OnMemberActivated',
+        errorName: 'UserNotFoundError',
+        errorMessage: `User with ID ${member.recipientId.toString()} not found.`,
+        payload: member,
+      })
 
       return
     }
@@ -41,7 +48,12 @@ export class OnMemberActivated implements EventHandler {
     const company = await this.companiesRepository.findById(member.ownerId.toString())
 
     if (!company) {
-      console.error(`Company with ID ${member.ownerId.toString()} not found.`)
+      await this.createFailureLog.execute({
+        context: 'OnMemberActivated',
+        errorName: 'CompanyNotFoundError',
+        errorMessage: `Company with ID ${member.ownerId.toString()} not found.`,
+        payload: member,
+      })
 
       return
     }
@@ -62,7 +74,13 @@ export class OnMemberActivated implements EventHandler {
     })
 
     if (createEmailResult.isLeft()) {
-      console.error(createEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'OnMemberActivated',
+        errorName: createEmailResult.value.name,
+        errorMessage: createEmailResult.value.message,
+        payload: member,
+        stack: createEmailResult.value.stack,
+      })
 
       return
     }
@@ -72,7 +90,13 @@ export class OnMemberActivated implements EventHandler {
     const sendEmailResult = await this.sendEmail.execute({ email })
 
     if (sendEmailResult.isLeft()) {
-      console.error(sendEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'OnMemberActivated',
+        errorName: sendEmailResult.value.name,
+        errorMessage: sendEmailResult.value.message,
+        payload: member,
+        stack: sendEmailResult.value.stack,
+      })
     }
   }
 }

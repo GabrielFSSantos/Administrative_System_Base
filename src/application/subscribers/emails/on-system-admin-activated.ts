@@ -4,6 +4,7 @@ import { DomainEvents } from '@/core/events/domain-events'
 import { EventHandler } from '@/core/events/event-handler'
 import { CreateEmailUseCase } from '@/domain/emails/use-cases/create-email-use-case'
 import { SendEmailUseCase } from '@/domain/emails/use-cases/send-email-use-case'
+import { CreateFailureLogUseCase } from '@/domain/failure-logs/use-cases/create-failure-log-use-case'
 import { SystemAdminActivatedEvent } from '@/domain/system-admins/events/system-admin-activated-event'
 import { UsersRepositoryContract } from '@/domain/users/repositories/contracts/users-repository-contract'
 import { buildSystemAdminActivatedEmail } from '@/i18n/emails/builders/build-system-admin-activated-email'
@@ -17,6 +18,7 @@ export class OnSystemAdminActivated implements EventHandler {
     private readonly createEmail: CreateEmailUseCase,
     private readonly sendEmail: SendEmailUseCase,
     private readonly envService: EnvServiceContract,
+    private readonly createFailureLog: CreateFailureLogUseCase,
   ) {
     this.setupSubscriptions()
   }
@@ -34,7 +36,11 @@ export class OnSystemAdminActivated implements EventHandler {
     const user = await this.usersRepository.findById(systemAdmin.recipientId.toString())
 
     if (!user) {
-      console.error(`User with ID ${systemAdmin.recipientId.toString()} not found.`)
+      await this.createFailureLog.execute({
+        context: 'OnSystemAdminActivated',
+        errorName: 'UserNotFoundError',
+        errorMessage: `User with ID ${systemAdmin.recipientId.toString()} not found.`,
+      })
 
       return
     }
@@ -56,7 +62,12 @@ export class OnSystemAdminActivated implements EventHandler {
     })
 
     if (createEmailResult.isLeft()) {
-      console.error(createEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'OnSystemAdminActivated',
+        errorName: createEmailResult.value.name,
+        errorMessage: createEmailResult.value.message,
+        stack: createEmailResult.value.stack,
+      })
 
       return
     }
@@ -66,7 +77,12 @@ export class OnSystemAdminActivated implements EventHandler {
     })
 
     if (sendEmailResult.isLeft()) {
-      console.error(sendEmailResult.value)
+      await this.createFailureLog.execute({
+        context: 'OnSystemAdminActivated',
+        errorName: sendEmailResult.value.name,
+        errorMessage: sendEmailResult.value.message,
+        stack: sendEmailResult.value.stack,
+      })
     }
   }
 }
