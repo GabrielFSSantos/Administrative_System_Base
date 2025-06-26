@@ -3,6 +3,7 @@ import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { FetchManySessionsUseCase } from '@/domain/sessions/use-cases/fetch-many-sessions-use-case'
+import { InvalidPaginationParamsError } from '@/shared/errors/invalid-pagination-params-error'
 
 describe('Fetch Many Sessions Test', () => {
   let sessionsRepository: InMemorySessionsRepository
@@ -89,5 +90,9 @@ describe('Fetch Many Sessions Test', () => {
     })
 
     expect(result.isLeft()).toBe(true)
+
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(InvalidPaginationParamsError)
+    }
   })
 })
