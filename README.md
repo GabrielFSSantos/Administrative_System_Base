@@ -74,7 +74,7 @@ Adoção disciplinada de práticas para qualidade de código:
 - [TypeScript](https://www.typescriptlang.org/)
 - [Docker (opcional)](https://www.docker.com/)
 - [JWT / Passport](https://docs.nestjs.com/security/authentication)
-- [Prisma ORM] (dependendo da implementação)
+- Prisma ORM (dependendo da implementação)
 - [ESLint] para padronização de código
 
 ---
