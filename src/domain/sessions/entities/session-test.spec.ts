@@ -1,8 +1,8 @@
 import { generateAccessTokenValueObject } from 'test/factories/sessions/value-objects/make-access-token'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { InvalidSessionDateExpiredError } from '@/domain/sessions/entities/errors/invalid-session-date-expired-error-error'
-import { InvalidSessionDateRevokedError } from '@/domain/sessions/entities/errors/invalid-session-date-revoked-error-error'
+import { InvalidSessionDateExpiredError } from '@/domain/sessions/entities/errors/invalid-session-date-expired-error'
+import { InvalidSessionDateRevokedError } from '@/domain/sessions/entities/errors/invalid-session-date-revoked-error'
 import { SessionAlreadyRevokedError } from '@/domain/sessions/entities/errors/session-already-revoked-error'
 import { Session } from '@/domain/sessions/entities/session'
 

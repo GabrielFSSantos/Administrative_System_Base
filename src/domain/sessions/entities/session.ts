@@ -3,8 +3,8 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
-import { InvalidSessionDateExpiredError } from './errors/invalid-session-date-expired-error-error'
-import { InvalidSessionDateRevokedError } from './errors/invalid-session-date-revoked-error-error'
+import { InvalidSessionDateExpiredError } from './errors/invalid-session-date-expired-error'
+import { InvalidSessionDateRevokedError } from './errors/invalid-session-date-revoked-error'
 import { SessionAlreadyRevokedError } from './errors/session-already-revoked-error'
 import { AccessToken } from './value-objects/access-token'
 

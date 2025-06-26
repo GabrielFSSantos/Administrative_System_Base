@@ -2,7 +2,7 @@ import { generateFakeJwt } from 'test/factories/sessions/value-objects/make-acce
 import { InMemorySessionsRepository } from 'test/repositories/in-memory-sessions-repository'
 
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { InvalidSessionDateExpiredError } from '@/domain/sessions/entities/errors/invalid-session-date-expired-error-error'
+import { InvalidSessionDateExpiredError } from '@/domain/sessions/entities/errors/invalid-session-date-expired-error'
 import { InvalidAccessTokenError } from '@/domain/sessions/entities/value-objects/errors/invalid-access-token-error'
 import { CreateSessionUseCase } from '@/domain/sessions/use-cases/create-session-use-case'
 
