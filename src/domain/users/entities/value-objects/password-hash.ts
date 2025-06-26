@@ -76,13 +76,13 @@ export class PasswordHash extends ValueObject<PasswordHashProps> {
 
     const hashed = await hasher.generate(plain)
 
-    const hashedvalidat = this.createFromHashed(hashed)
+    const hashedValidated = this.createFromHashed(hashed)
 
-    if(hashedvalidat.isLeft()) {
-      return left(hashedvalidat.value)
+    if(hashedValidated.isLeft()) {
+      return left(hashedValidated.value)
     }
 
-    return right(hashedvalidat.value)
+    return right(hashedValidated.value)
   }
 
 }
